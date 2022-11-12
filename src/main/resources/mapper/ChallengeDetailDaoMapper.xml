@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dangdiary.api.dao.ChallengeDetailDAO">
+  <select id="getChallengeDetailDTO" parameterType="int" resultType="com.dangdiary.api.dto.challengeDetail.ChallengeDetailChallengeDTO">
+    SELECT challenge_id challengeId, category, image, title, content, authentication_method authenticationMethod, sticker_image stickerImage
+    FROM challenges
+    WHERE challenge_id = #{challengeId}
+  </select>
+  <select id="getNumOfComplete" parameterType="int" resultType="int">
+    SELECT COUNT(*) numOfComplete FROM user_challenges WHERE challenge_id = #{challengeId} AND end_date IS NOT NULL
+  </select>
+  <select id="getOtherDiaryIds" parameterType="int" resultType="int">
+    SELECT diary_id FROM user_challenges WHERE challenge_id = #{challengeId} AND end_date IS NOT NULL
+  </select>
+  <select id="getOtherDogChallenge" parameterType="int" resultType="com.dangdiary.api.dto.challengeDetail.OtherDogChallengeDTO">
+    SELECT diary_id diaryId, image1 image FROM diarys WHERE diary_id = #{diaryId};
+  </select>
+</mapper>

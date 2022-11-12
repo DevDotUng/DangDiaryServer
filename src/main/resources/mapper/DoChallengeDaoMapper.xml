@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dangdiary.api.dao.DoChallengeDAO">
+  <select id="postDoChallenge" parameterType="com.dangdiary.api.dto.doChallenge.DoChallengeDTO" >
+    INSERT INTO user_challenges
+    (user_id, challenge_id, diary_bool, start_date)
+    VALUES
+    (#{userId}, #{challengeId}, 0, NOW())
+  </select>
+  <select id="getUserChallenge" parameterType="int" resultType="com.dangdiary.api.dto.doChallenge.UserChallengeDTO">
+    SELECT * FROM user_challenges WHERE user_id = #{userId} ORDER BY start_date DESC LIMIT 1
+  </select>
+</mapper>

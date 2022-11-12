@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dangdiary.api.dao.HomeDAO">
+  <select id="getHomeDog" parameterType="int" resultType="com.dangdiary.api.dto.home.HomeDogDTO">
+    SELECT dog_id dogId, dog_name dogName, profile_image profileImage FROM dogs WHERE user_id = #{userId}
+  </select>
+  <select id="getHomeDiary" parameterType="int" resultType="com.dangdiary.api.dto.home.HomeDiaryDTO">
+    SELECT diary_id diaryId, image1 FROM diarys WHERE user_id = #{userId} ORDER BY register_date;
+  </select>
+  <select id="getHomeUserChallenge" parameterType="int" resultType="com.dangdiary.api.dto.home.HomeUserChallengeDTO">
+    SELECT user_challenge_id userChallengeId, challenge_id challengeId FROM user_challenges WHERE user_id = #{userId}
+  </select>
+  <select id="getHomeChallenge" parameterType="int" resultType="com.dangdiary.api.dto.home.HomeChallengeDTO">
+    SELECT challenge_id challengeId, title, content, image FROM challenges WHERE challenge_id = #{challengeId}
+  </select>
+</mapper>
