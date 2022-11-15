@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.dangdiary.api.dao.WriteDiaryDAO;
 import com.dangdiary.api.dto.writeDiary.DiaryDTO;
+import com.dangdiary.api.dto.writeDiary.WriteDiaryRequestDTO;
 
 @Service
 @Transactional
@@ -14,14 +15,13 @@ public class WriteDiaryServiceImp implements WriteDiaryService {
     @Autowired
     WriteDiaryDAO writeDiaryDAO;
 
-    // 사진 경로에 저장하는 로직 구현해야함
     @Override
-    public DiaryDTO postWriteDiary(DiaryDTO diaryDTO) {
+    public DiaryDTO postWriteDiary(WriteDiaryRequestDTO writeDiaryRequestDTO) {
         
-        int userId = diaryDTO.getUserId();
-        int challengeId = diaryDTO.getChallengeId();
+        int userId = writeDiaryRequestDTO.getUserId();
+        int challengeId = writeDiaryRequestDTO.getChallengeId();
 
-        writeDiaryDAO.postWriteDiary(diaryDTO);
+        writeDiaryDAO.postWriteDiary(writeDiaryRequestDTO);
         int diaryId = writeDiaryDAO.getDiaryId(userId, challengeId);
         writeDiaryDAO.updateUserChallenge(diaryId, userId, challengeId);
 
