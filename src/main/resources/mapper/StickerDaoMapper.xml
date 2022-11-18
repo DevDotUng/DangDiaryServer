@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dangdiary.api.dao.StickerDAO">
+  <select id="getNumberOfOverdueDiary" parameterType="int" resultType="int">
+    SELECT COUNT(*) FROM user_challenges
+    WHERE user_id = #{userId} and diary_bool = 0
+  </select>
+  <select id="getStickerItemDTOs" parameterType="int" resultType="com.dangdiary.api.dto.sticker.StickerItemDTO">
+    SELECT u.challenge_id, u.diary_id, c.title, c.sticker_image, u.end_date FROM challenges AS c
+    INNER JOIN user_challenges AS u ON c.challenge_id = u.challenge_id
+    WHERE user_id = #{userId}
+  </select>
+</mapper>
