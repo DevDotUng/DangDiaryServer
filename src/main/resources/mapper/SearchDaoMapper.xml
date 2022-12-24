@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dangdiary.api.dao.SearchDAO">
+  <select id="getImageDTOs" resultType="com.dangdiary.api.dto.search.ImageDTO">
+    SELECT diary_id diaryId, image1
+    FROM diarys
+  </select>
+</mapper>
