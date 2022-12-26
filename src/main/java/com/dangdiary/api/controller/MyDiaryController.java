@@ -27,12 +27,12 @@ public class MyDiaryController {
     @Autowired
 	ServletContext ctx;
     
-    @GetMapping(value = "completeChallenge", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<UserChallengeDTO> home(int userId, int challengeId) {
+    @GetMapping(value = "mydiary", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<MyDiaryDTO> home(int userId, int challengeId) {
 
-        UserChallengeDTO userChallengeDTO = completeChallengeService.completeChallenge(userId, challengeId);
+        MyDiaryDTO MyDiaryDTO = MyDiaryService.getMyDiary(userId);
 
-        return ResponseEntity.status(HttpStatus.OK).body(userChallengeDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(MyDiaryDTO);
     }
     
 }
