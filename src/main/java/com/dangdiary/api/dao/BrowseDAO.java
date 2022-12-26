@@ -4,9 +4,10 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.dangdiary.api.dto.search.ImageDTO;
+import com.dangdiary.api.dto.browse.ImageDTO;
 
 @Mapper
-public interface SearchDAO {
+public interface BrowseDAO {
     List<ImageDTO> getImageDTOs();
+    List<ImageDTO> getImageDTOsByKeyword(String keyword);
 }

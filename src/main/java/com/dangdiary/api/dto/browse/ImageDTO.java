@@ -1,4 +1,4 @@
-package com.dangdiary.api.dto.search;
+package com.dangdiary.api.dto.browse;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
