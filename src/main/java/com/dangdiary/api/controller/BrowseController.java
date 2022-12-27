@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dangdiary.api.dto.browse.BrowseDTO;
 import com.dangdiary.api.dto.browse.ImageDTO;
 import com.dangdiary.api.service.BrowseService;
 
@@ -20,9 +21,9 @@ public class BrowseController {
     BrowseService browseService;
 
     @GetMapping(value = "browse", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<List<ImageDTO>> home() {
-        List<ImageDTO> searchDTO = browseService.getSearchView();
-        return ResponseEntity.status(HttpStatus.OK).body(searchDTO);
+    public ResponseEntity<BrowseDTO> home() {
+        BrowseDTO browseDTO = browseService.getSearchView();
+        return ResponseEntity.status(HttpStatus.OK).body(browseDTO);
     }
 
     @GetMapping(value = "browse/search", produces = "application/json;charset=UTF-8")

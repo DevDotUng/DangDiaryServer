@@ -3,6 +3,13 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dangdiary.api.dao.BrowseDAO">
+  <select id="getAutoCompleteWords" resultType="String">
+    SELECT title autoCompleteWords FROM challenges
+    UNION
+    SELECT breed FROM dogs
+    UNION
+    SELECT name FROM users
+  </select>
   <select id="getImageDTOs" resultType="com.dangdiary.api.dto.browse.ImageDTO">
     SELECT diary_id diaryId, image1
     FROM diarys

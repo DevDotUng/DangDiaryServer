@@ -8,6 +8,7 @@ import com.dangdiary.api.dto.browse.ImageDTO;
 
 @Mapper
 public interface BrowseDAO {
+    List<String> getAutoCompleteWords();
     List<ImageDTO> getImageDTOs();
     List<ImageDTO> getImageDTOsByKeyword(String keyword);
 }

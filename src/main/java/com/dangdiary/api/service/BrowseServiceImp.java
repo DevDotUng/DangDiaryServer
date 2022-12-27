@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.dangdiary.api.dao.BrowseDAO;
+import com.dangdiary.api.dto.browse.BrowseDTO;
 import com.dangdiary.api.dto.browse.ImageDTO;
 
 @Service
@@ -15,9 +16,13 @@ public class BrowseServiceImp implements BrowseService {
     BrowseDAO browseDAO;
 
     @Override
-    public List<ImageDTO> getSearchView() {
+    public BrowseDTO getSearchView() {
+        List<String> autoCompleteWords = browseDAO.getAutoCompleteWords();
         List<ImageDTO> imageDTOs = browseDAO.getImageDTOs();
-        return imageDTOs;
+        
+        BrowseDTO browseDTO = new BrowseDTO(autoCompleteWords, imageDTOs);
+
+        return browseDTO;
     }
 
     @Override
