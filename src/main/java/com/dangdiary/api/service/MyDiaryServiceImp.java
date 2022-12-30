@@ -14,8 +14,12 @@ public class MyDiaryServiceImp implements MyDiaryService {
 
     @Override
     public MyDiaryDTO getMyDiary(int userId) {
-        int userId = 
+        MyDiaryDTO myDiaryDTO = new MyDiaryDTO();
+        myDiaryDTO.setMyDiaryDogDTO(myDiaryDAO.getMyDiaryDogDTO(userId));
+        myDiaryDTO.setMyDiaryNumbersDTO(myDiaryDAO.getMyDiaryNumbersDTO(userId));
+        myDiaryDTO.setMyDiaryMonthDTOs(myDiaryDAO.getMyDiaryMonthDTOs(userId));
 
+        return myDiaryDTO;
     }
     
 }

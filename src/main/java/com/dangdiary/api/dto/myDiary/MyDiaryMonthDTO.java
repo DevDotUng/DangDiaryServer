@@ -9,11 +9,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-
-public class MyDiaryDTO {
-    public MyDiaryDTO() {}
-    MyDiaryDogDTO myDiaryDogDTO;
-    MyDiaryNumbersDTO myDiaryNumbersDTO;
-    List<MyDiaryMonthDTO> myDiaryMonthDTOs;
-    
+public class MyDiaryMonthDTO {
+    String registerMonth;
+    String diaryTitle;
+    List<MyDiaryDailyDTO> myDiaryDailyDTOs;
 }

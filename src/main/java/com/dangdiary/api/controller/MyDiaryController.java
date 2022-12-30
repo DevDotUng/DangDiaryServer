@@ -22,17 +22,17 @@ import com.dangdiary.api.service.MyDiaryService;
 public class MyDiaryController {
 
     @Autowired
-    MyDiaryService MyDiaryService;
+    MyDiaryService myDiaryService;
 
     @Autowired
 	ServletContext ctx;
     
     @GetMapping(value = "mydiary", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<MyDiaryDTO> home(int userId, int challengeId) {
+    public ResponseEntity<MyDiaryDTO> home(int userId) {
 
-        MyDiaryDTO MyDiaryDTO = MyDiaryService.getMyDiary(userId);
+        MyDiaryDTO myDiaryDTO = myDiaryService.getMyDiary(userId);
 
-        return ResponseEntity.status(HttpStatus.OK).body(MyDiaryDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(myDiaryDTO);
     }
     
 }
