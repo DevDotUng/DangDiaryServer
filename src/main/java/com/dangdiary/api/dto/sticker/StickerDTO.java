@@ -10,7 +10,23 @@ import lombok.Setter;
 @Getter
 @Setter
 public class StickerDTO {
-    public StickerDTO() {};
-    int numberOfOverdueDiary;
-    List<StickerItemDTO> stickerItemDTOs;
+<<<<<<< HEAD
+    public StickerDTO() {}
+    private int totalStickers;
+    private String dogImage;
+    private int myStickers;
+    private int totalDiary;
+    private int overdueDiary;
+    List<MyStickerDTO> myStickerDTOs;
+        
+=======
+    public StickerDTO() {}
+    private int totalStickers;
+    private String dogImage;
+    private int myStickers;
+    private int totalDiary;
+    private int overdueDiary;
+    List<MyStickerDTO> myStickerDTOs;
+    
+>>>>>>> bong
 }
