@@ -4,15 +4,13 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.dangdiary.api.dto.home.HomeChallengeDTO;
-import com.dangdiary.api.dto.home.HomeDiaryDTO;
-import com.dangdiary.api.dto.home.HomeDogDTO;
-import com.dangdiary.api.dto.home.HomeUserChallengeDTO;
+import com.dangdiary.api.dto.home.HomeDTO;
+import com.dangdiary.api.dto.home.HomeInProgressChallengeDTO;
+import com.dangdiary.api.dto.home.HomeRecommendChallengeDTO;
 
 @Mapper
 public interface HomeDAO {
-    HomeDogDTO getHomeDog(int userId);
-    List<HomeDiaryDTO> getHomeDiary(int userId);
-    List<HomeUserChallengeDTO> getHomeUserChallenge(int userId);
-    List<HomeChallengeDTO> getHomeChallenge(int challengeId);
+    HomeDTO getHomeDTO(int userId);
+    List<HomeInProgressChallengeDTO> getHomeInProgressChallengeDTOs(int userId);
+    List<HomeRecommendChallengeDTO> getHomeRecommendChallengeDTOs(int userId);
 }

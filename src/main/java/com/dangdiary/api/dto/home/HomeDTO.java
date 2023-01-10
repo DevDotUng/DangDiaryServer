@@ -11,7 +11,8 @@ import lombok.Setter;
 @Setter
 public class HomeDTO {
     public HomeDTO() {}
-    private HomeDogDTO HomeDogDTO;
-    private List<HomeDiaryDTO> homeDiaryDTOs;
-    private List<HomeChallengeDTO> homeChallengeDTOs;
+    private String profileImage;
+    private String backgroundImage;
+    private List<HomeInProgressChallengeDTO> inProgressChallenges;
+    private List<HomeRecommendChallengeDTO> recommendChallenges;
 }

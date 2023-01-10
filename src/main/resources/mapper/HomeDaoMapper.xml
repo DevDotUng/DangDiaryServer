@@ -3,16 +3,32 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dangdiary.api.dao.HomeDAO">
-  <select id="getHomeDog" parameterType="int" resultType="com.dangdiary.api.dto.home.HomeDogDTO">
-    SELECT dog_id dogId, dog_name dogName, profile_image profileImage FROM dogs WHERE user_id = #{userId}
+  <select id="getHomeDTO" parameterType="int" resultType="com.dangdiary.api.dto.home.HomeDTO">
+    SELECT profile_image profileImage, image1 backgroundImage
+    FROM
+    (SELECT dog.user_id, dog.profile_image, diary.image1
+    FROM dogs dog
+    LEFT JOIN diarys diary
+    ON dog.user_id = diary.user_id) home
+    WHERE user_id = #{userId}
+    LIMIT 1;
   </select>
-  <select id="getHomeDiary" parameterType="int" resultType="com.dangdiary.api.dto.home.HomeDiaryDTO">
-    SELECT diary_id diaryId, image1 FROM diarys WHERE user_id = #{userId} ORDER BY register_date;
+  <select id="getHomeInProgressChallengeDTOs" parameterType="int" resultType="com.dangdiary.api.dto.home.HomeInProgressChallengeDTO">
+    SELECT challenge_id challengeId, title, content, image
+    FROM challenges
+    WHERE challenge_id
+    IN
+    (SELECT challenge_id
+    FROM user_challenges
+    WHERE user_id = #{userId} AND start_date IS NOT NULL AND end_date IS NULL)
   </select>
-  <select id="getHomeUserChallenge" parameterType="int" resultType="com.dangdiary.api.dto.home.HomeUserChallengeDTO">
-    SELECT user_challenge_id userChallengeId, challenge_id challengeId FROM user_challenges WHERE user_id = #{userId}
-  </select>
-  <select id="getHomeChallenge" parameterType="int" resultType="com.dangdiary.api.dto.home.HomeChallengeDTO">
-    SELECT challenge_id challengeId, title, content, image FROM challenges WHERE challenge_id = #{challengeId}
+  <select id="getHomeRecommendChallengeDTOs" parameterType="int" resultType="com.dangdiary.api.dto.home.HomeRecommendChallengeDTO">
+    SELECT challenge_id challengeId, title, content, image
+    FROM challenges
+    WHERE challenge_id NOT
+    IN
+    (SELECT challenge_id
+    FROM user_challenges
+    WHERE user_id = #{userId})
   </select>
 </mapper>

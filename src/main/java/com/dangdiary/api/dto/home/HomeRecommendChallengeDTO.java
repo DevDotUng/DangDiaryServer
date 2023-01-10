@@ -7,7 +7,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class HomeChallengeDTO {
+public class HomeRecommendChallengeDTO {
     private int challengeId;
     private String title;
     private String content;
