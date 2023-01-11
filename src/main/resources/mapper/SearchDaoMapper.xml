@@ -12,16 +12,16 @@
   </select>
   <select id="getImageDTOs" resultType="com.dangdiary.api.dto.browse.ImageDTO">
     SELECT diary_id diaryId, image1
-    FROM diarys
+    FROM diaries
   </select>
   <select id="getImageDTOsByKeyword" parameterType="String" resultType="com.dangdiary.api.dto.browse.ImageDTO">
     SELECT diary_id diaryId, image1 image1
-    FROM diarys 
+    FROM diaries 
     WHERE diary_id IN
     (SELECT diary_id
     FROM
     (SELECT diary.diary_id, challenge.title, dog.breed, user.name
-    FROM diarys diary
+    FROM diaries diary
     LEFT JOIN challenges challenge
     ON diary.challenge_id = challenge.challenge_id
     LEFT JOIN dogs dog

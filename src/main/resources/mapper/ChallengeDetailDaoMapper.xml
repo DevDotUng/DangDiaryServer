@@ -15,6 +15,6 @@
     SELECT diary_id FROM user_challenges WHERE challenge_id = #{challengeId} AND end_date IS NOT NULL
   </select>
   <select id="getOtherDogChallenge" parameterType="int" resultType="com.dangdiary.api.dto.challengeDetail.OtherDogChallengeDTO">
-    SELECT diary_id diaryId, image1 image FROM diarys WHERE diary_id = #{diaryId};
+    SELECT diary_id diaryId, image1 image FROM diaries WHERE diary_id = #{diaryId};
   </select>
 </mapper>

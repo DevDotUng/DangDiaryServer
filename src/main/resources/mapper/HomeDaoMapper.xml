@@ -8,7 +8,7 @@
     FROM
     (SELECT dog.user_id, dog.profile_image, diary.image1
     FROM dogs dog
-    LEFT JOIN diarys diary
+    LEFT JOIN diaries diary
     ON dog.user_id = diary.user_id) home
     WHERE user_id = #{userId}
     LIMIT 1;
