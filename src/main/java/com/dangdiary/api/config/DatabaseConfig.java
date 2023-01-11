@@ -25,7 +25,7 @@ public class DatabaseConfig {
         ds.setDriverClassName("com.mysql.cj.jdbc.Driver");
         ds.setUrl("jdbc:mysql://localhost:3306/dang_diary?serverTimezone=UTC");
         ds.setUsername("root");
-        ds.setPassword("wnqhd6642");
+        ds.setPassword("apfhdz12");
 
         return ds;
     }

@@ -3,17 +3,6 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dangdiary.api.dao.StickerDAO">
-<<<<<<< HEAD
-  <select id="getNumberOfOverdueDiary" parameterType="int" resultType="int">
-    SELECT COUNT(*) FROM user_challenges
-    WHERE user_id = #{userId} and diary_bool = 0
-  </select>
-  <select id="getStickerItemDTOs" parameterType="int" resultType="com.dangdiary.api.dto.sticker.StickerItemDTO">
-    SELECT u.challenge_id, u.diary_id, c.title, c.sticker_image, u.end_date FROM challenges AS c
-    INNER JOIN user_challenges AS u ON c.challenge_id = u.challenge_id
-    WHERE user_id = #{userId}
-  </select>
-=======
   <select id="getTotalStickers" parameterType="int" resultType="int">
     SELECT count(challenge_id) totalStickers from challenges
   </select>
@@ -35,5 +24,4 @@
   </select>
   <select id="getStickerDTOs" parameterType="int" resultType="com.dangdiary.api.dto.sticker.MyStickerDTO">
     SELECT challenges.challenge_id challengeId, challenges.title, diarys.register_date, challenges.sticker_image FROM challenges, diarys WHERE diarys.user_id = #{userId} and diarys.challenge_id = challenges.challenge_id and diarys.challenge_id=#{challengeId} order by diarys.register_date limit 1;  </select>
->>>>>>> bong
 </mapper>
