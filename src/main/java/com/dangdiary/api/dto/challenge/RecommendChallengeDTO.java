@@ -1,4 +1,4 @@
-package com.dangdiary.api.dto.home;
+package com.dangdiary.api.dto.challenge;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,9 +7,10 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class HomeInProgressChallengeDTO {
+public class RecommendChallengeDTO {
     private int challengeId;
     private String title;
     private String content;
     private String image;
+    private String recommendDate;
 }
