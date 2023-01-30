@@ -1,6 +1,5 @@
 package com.dangdiary.api.service;
 
-import com.dangdiary.api.dto.writeDiary.DiaryDTO;
 import com.dangdiary.api.dto.writeDiary.DiaryResponseDTO;
 import com.dangdiary.api.dto.writeDiary.WriteDiaryDTO;
 
