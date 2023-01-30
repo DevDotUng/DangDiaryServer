@@ -1,5 +1,7 @@
 package com.dangdiary.api.dto.writeDiary;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,18 +9,15 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class WriteDiaryRequestDTO {
-    WriteDiaryRequestDTO() {};
+public class WriteDiaryDTO {
+    WriteDiaryDTO() {};
     int userId;
     int challengeId;
-    String title;
-    String place;
     String weather;
     String feeling;
+    String title;
     String content;
-    String image1;
-    String image2;
-    String image3;
-    String image4;
-    String image5;
+    List<String> images;
+    List<String> tags;
+    int isPublic;
 }

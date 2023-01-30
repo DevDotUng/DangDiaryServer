@@ -3,18 +3,42 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dangdiary.api.dao.ChallengeDetailDAO">
-  <select id="getChallengeDetailDTO" parameterType="int" resultType="com.dangdiary.api.dto.challengeDetail.ChallengeDetailChallengeDTO">
-    SELECT challenge_id challengeId, category, image, title, content, authentication_method authenticationMethod, sticker_image stickerImage
+  <select id="getIsChallenge" parameterType="int" resultType="int">
+    SELECT COUNT(*)
+    FROM user_challenges
+    WHERE user_id = #{userId}
+    AND challenge_id = #{challengeId}
+    AND start_date IS NOT NULL
+    AND end_date IS NULL
+  </select>
+  <select id="getChallengeDetailDTO" parameterType="int" resultType="com.dangdiary.api.dto.challengeDetail.ChallengeDetailTempDTO">
+    SELECT image image, title title, content content, authentication_method authenticationMethod, sticker_image stickerImage, sticker_shape stickerShape
     FROM challenges
     WHERE challenge_id = #{challengeId}
+    LIMIT 1
   </select>
-  <select id="getNumOfComplete" parameterType="int" resultType="int">
-    SELECT COUNT(*) numOfComplete FROM user_challenges WHERE challenge_id = #{challengeId} AND end_date IS NOT NULL
+  <select id="getNumberOfComplete" parameterType="int" resultType="int">
+    SELECT COUNT(*) numberOfComplete
+    FROM user_challenges
+    WHERE user_id = #{userId}
+    AND challenge_id = #{challengeId}
+    AND end_date IS NOT NULL
   </select>
-  <select id="getOtherDiaryIds" parameterType="int" resultType="int">
-    SELECT diary_id FROM user_challenges WHERE challenge_id = #{challengeId} AND end_date IS NOT NULL
+  <select id="getRecommendDate" parameterType="int" resultType="String">
+    SELECT recommend_date recommendDate
+    FROM user_challenges
+    WHERE user_id = #{userId}
+    AND challenge_id = #{challengeId}
+    AND recommend_type IS NOT NULL
+    LIMIT 1
   </select>
-  <select id="getOtherDogChallenge" parameterType="int" resultType="com.dangdiary.api.dto.challengeDetail.OtherDogChallengeDTO">
-    SELECT diary_id diaryId, image1 image FROM diaries WHERE diary_id = #{diaryId};
+  <select id="getOtherChallenges" parameterType="int" resultType="com.dangdiary.api.dto.challengeDetail.OtherChallengeDTO">
+    SELECT
+    i.diary_id diaryId, image image
+    FROM diary_images i
+    LEFT JOIN diaries d
+    ON i.diary_id = d.diary_id
+    WHERE i.image_index = 0
+    AND d.challenge_id = #{challengeId}
   </select>
 </mapper>
