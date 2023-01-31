@@ -49,4 +49,18 @@
   <select id="getTags" parameterType="int" resultType="String">
     SELECT hash_tag FROM tags WHERE diary_id = #{diaryId} ORDER BY tag_index
   </select>
+  <select id="getIsExistCover" parameterType="int" resultType="int">
+    SELECT EXISTS
+    (SELECT *
+    FROM diary_covers
+    WHERE user_id = #{userId}
+    AND diary_yyyymm = #{yyyymm}
+    LIMIT 1)
+  </select>
+  <select id="insertCover" parameterType="int">
+    INSERT INTO diary_covers
+    (user_id, diary_yyyymm)
+    VALUES
+    (#{userId}, #{yyyymm})
+  </select>
 </mapper>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dangdiary.api.dao.MyDiaryDAO">
+  <select id="getMyDiaryDTO" parameterType="int" resultType="com.dangdiary.api.dto.myDiary.MyDiaryDTO">
+    SELECT dog_name dogName, profile_image profileImage
+    FROM dogs
+    WHERE user_id = #{userId}
+    LIMIT 1;
+  </select>
+  <select id="getBirth" parameterType="int" resultType="String">
+    SELECT birth birth
+    FROM dogs
+    WHERE user_id = #{userId}
+    LIMIT 1;
+  </select>
+  <select id="getNumberOfDiary" parameterType="int" resultType="int">
+    SELECT count(*)
+    FROM diaries
+    WHERE user_id = #{userId}
+    AND register_date IS NOT NULL
+  </select>
+  <select id="getNumberOfOverdueDiary" parameterType="int" resultType="int">
+    SELECT count(*)
+    FROM diaries
+    WHERE user_id = #{userId}
+    AND register_date IS NULL
+  </select>
+  <select id="getMyDiaryEachDTO" parameterType="int" resultType="com.dangdiary.api.dto.myDiary.MyDiaryEachDTO">
+    SELECT d.diary_id diaryId, d.register_date registerDate, c.title challengeTitle
+    FROM diaries d
+    LEFT JOIN challenges c
+    ON d.challenge_id = c.challenge_id
+    WHERE d.user_id = #{userId}
+    ORDER BY d.register_date
+  </select>
+  <select id="getNumberOfLikeAndIsLike" parameterType="int" resultType="int">
+    SELECT count(*)
+    FROM likes
+    WHERE diary_id = #{diaryId}
+    UNION ALL
+    SELECT EXISTS
+    (SELECT *
+    FROM likes
+    WHERE diary_id = #{diaryId}
+    AND user_id = #{userId} LIMIT 1)
+  </select>
+  <select id="getMyDiaryByCoverDTO" parameterType="int" resultType="com.dangdiary.api.dto.myDiary.CoverDTO">
+    SELECT cover_id coverId, diary_yyyymm yyyymm, cover_title coverTitle, cover_color coverColor, holder_color holderColor
+    FROM diary_covers
+    WHERE user_id = #{userId}
+  </select>
+</mapper>

@@ -1,5 +1,6 @@
 package com.dangdiary.api.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.dangdiary.api.dao.WriteDiaryDAO;
 import com.dangdiary.api.dto.writeDiary.DiaryDTO;
-import com.dangdiary.api.dto.writeDiary.DiaryResponseDTO;
 import com.dangdiary.api.dto.writeDiary.ImageOrTagDTO;
 import com.dangdiary.api.dto.writeDiary.WriteDiaryDTO;
 
@@ -20,7 +20,7 @@ public class WriteDiaryServiceImp implements WriteDiaryService {
     WriteDiaryDAO writeDiaryDAO;
 
     @Override
-    public DiaryResponseDTO postWriteDiary(WriteDiaryDTO writeDiaryDTO) {
+    public DiaryDTO postWriteDiary(WriteDiaryDTO writeDiaryDTO) {
         
         int userId = writeDiaryDTO.getUserId();
         int challengeId = writeDiaryDTO.getChallengeId();
@@ -31,23 +31,12 @@ public class WriteDiaryServiceImp implements WriteDiaryService {
         postImages(diaryId, writeDiaryDTO.getImages());
         postTags(diaryId, writeDiaryDTO.getTags());
 
-        DiaryDTO diaryDTO = writeDiaryDAO.getDiary(diaryId);
-        List<String> images = writeDiaryDAO.getImages(diaryId);
-        List<String> tags = writeDiaryDAO.getTags(diaryId);
-        DiaryResponseDTO result = new DiaryResponseDTO(
-            diaryDTO.getDiaryId(), 
-            diaryDTO.getUserId(), 
-            diaryDTO.getChallengeId(), 
-            diaryDTO.getTitle(), 
-            diaryDTO.getRegisterDate(), 
-            diaryDTO.getWeather(), 
-            diaryDTO.getFeeling(), 
-            diaryDTO.getContent(), 
-            diaryDTO.getHit(), 
-            diaryDTO.getIsPublic(), 
-            images, 
-            tags
-            );
+        DiaryDTO result = writeDiaryDAO.getDiary(diaryId);
+
+        result.setImages(writeDiaryDAO.getImages(diaryId));
+        result.setTags(writeDiaryDAO.getTags(diaryId));
+
+        insertCoverIfIsNotExist(userId);
 
         return result;
     }
@@ -67,6 +56,16 @@ public class WriteDiaryServiceImp implements WriteDiaryService {
             ImageOrTagDTO imageOrTagDTO = new ImageOrTagDTO(diaryId, index, tag);
             writeDiaryDAO.postTag(imageOrTagDTO);
             index++;
+        }
+    }
+
+    void insertCoverIfIsNotExist(int userId) {
+        LocalDate now = LocalDate.now();
+
+        int yyyymm = now.getYear() * 100 + now.getMonthValue();
+
+        if (writeDiaryDAO.getIsExistCover(userId, yyyymm) == 0) {
+            writeDiaryDAO.insertCover(userId, yyyymm);
         }
     }
     

@@ -19,4 +19,6 @@ public interface WriteDiaryDAO {
     DiaryDTO getDiary(int diaryId);
     List<String> getImages(int diaryId);
     List<String> getTags(int diaryId);
+    int getIsExistCover(@Param("userId") int userId, @Param("yyyymm") int yyyymm);
+    void insertCover(@Param("userId") int userId, @Param("yyyymm") int yyyymm);
 }

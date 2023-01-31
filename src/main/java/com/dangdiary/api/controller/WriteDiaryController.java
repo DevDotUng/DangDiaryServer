@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.dangdiary.api.dto.writeDiary.DiaryResponseDTO;
+import com.dangdiary.api.dto.writeDiary.DiaryDTO;
 import com.dangdiary.api.dto.writeDiary.WriteDiaryDTO;
 import com.dangdiary.api.service.WriteDiaryService;
 
@@ -32,7 +32,7 @@ public class WriteDiaryController {
 	ServletContext ctx;
     
     @PostMapping("writeDiary")
-    public ResponseEntity<DiaryResponseDTO> home(
+    public ResponseEntity<DiaryDTO> home(
         @RequestParam("userId") int userId,
         @RequestParam("challengeId") int challengeId,
         @RequestParam("weather") String weather,
@@ -64,7 +64,7 @@ public class WriteDiaryController {
             intIsPublic
         );
 
-        DiaryResponseDTO result = writeDiaryService.postWriteDiary(writeDiaryRequestDTO);
+        DiaryDTO result = writeDiaryService.postWriteDiary(writeDiaryRequestDTO);
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
