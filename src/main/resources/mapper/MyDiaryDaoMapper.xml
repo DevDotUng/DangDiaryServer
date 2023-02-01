@@ -28,12 +28,17 @@
     AND register_date IS NULL
   </select>
   <select id="getMyDiaryEachDTO" parameterType="int" resultType="com.dangdiary.api.dto.myDiary.MyDiaryEachDTO">
-    SELECT d.diary_id diaryId, d.register_date registerDate, c.title challengeTitle
+    SELECT j.diaryId diaryId, j.registerDate registerDate, j.challengeTitle challengeTitle, i.image image
+    FROM
+    (SELECT d.diary_id diaryId, d.register_date registerDate, c.title challengeTitle
     FROM diaries d
     LEFT JOIN challenges c
     ON d.challenge_id = c.challenge_id
-    WHERE d.user_id = #{userId}
-    ORDER BY d.register_date
+    WHERE d.user_id = #{userId}) j
+    LEFT JOIN diary_images i
+    ON j.diaryId = i.diary_id
+    WHERE i.image_index = 0
+    ORDER BY j.registerDate
   </select>
   <select id="getNumberOfLikeAndIsLike" parameterType="int" resultType="int">
     SELECT count(*)
@@ -50,5 +55,45 @@
     SELECT cover_id coverId, diary_yyyymm yyyymm, cover_title coverTitle, cover_color coverColor, holder_color holderColor
     FROM diary_covers
     WHERE user_id = #{userId}
+  </select>
+
+  <select id="getCoverDTO" parameterType="int" resultType="com.dangdiary.api.dto.myDiary.CoverDTO">
+    SELECT cover_id coverId, diary_yyyymm yyyymm, cover_title coverTitle, cover_color coverColor, holder_color holderColor
+    FROM diary_covers
+    WHERE cover_id = #{coverId}
+  </select>
+  <select id="getDiaries" parameterType="int" resultType="com.dangdiary.api.dto.myDiary.DiaryDTO">
+    SELECT d.diary_id diaryId, d.title title, d.register_date registerDate, d.weather weather, d.feeling feeling, d.content content, c.sticker_image stickerImage, c.sticker_shape stickerShape
+    FROM diaries d
+    LEFT JOIN challenges c
+    ON d.challenge_id = c.challenge_id
+    WHERE d.user_id = #{userId}
+  </select>
+  <select id="getIsPublicAndNumberOfLikeAndIsLike" parameterType="int" resultType="int">
+    SELECT is_public isPublic
+    FROM diaries
+    WHERE diary_id = #{diaryId}
+    UNION ALL
+    SELECT count(*)
+    FROM likes
+    WHERE diary_id = #{diaryId}
+    UNION ALL
+    SELECT EXISTS
+    (SELECT *
+    FROM likes
+    WHERE diary_id = #{diaryId}
+    AND user_id = #{userId} LIMIT 1)
+  </select>
+  <select id="getDiaryImages" parameterType="int" resultType="String">
+    SELECT image images
+    FROM diary_images
+    WHERE diary_id = #{diaryId}
+    ORDER BY image_index
+  </select>
+  <select id="getDiaryTags" parameterType="int" resultType="String">
+    SELECT hash_tag tags
+    FROM tags
+    WHERE diary_id = #{diaryId}
+    ORDER BY tag_index
   </select>
 </mapper>

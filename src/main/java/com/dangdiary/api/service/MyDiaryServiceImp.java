@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import com.dangdiary.api.dao.MyDiaryDAO;
 import com.dangdiary.api.dto.myDiary.CoverDTO;
+import com.dangdiary.api.dto.myDiary.DiariesWithCoverDTO;
+import com.dangdiary.api.dto.myDiary.DiaryDTO;
 import com.dangdiary.api.dto.myDiary.MyDiaryByCoverDTO;
 import com.dangdiary.api.dto.myDiary.MyDiaryDTO;
 import com.dangdiary.api.dto.myDiary.MyDiaryEachDTO;
@@ -44,6 +46,33 @@ public class MyDiaryServiceImp implements MyDiaryService {
         myDiaryDTO.setDiaries(getMyDiaryByCover(userId, myDiaryEachDTOs));
 
         return myDiaryDTO;
+    }
+
+    @Override
+    public DiariesWithCoverDTO getDiaryView(int userId, int coverId) {
+        CoverDTO coverDTO = myDiaryDAO.getCoverDTO(coverId);
+        int coverYear = coverDTO.getYyyymm()/100;
+        int coverMonth = coverDTO.getYyyymm()%100;
+        String date = new StringBuilder(Integer.toString(coverYear))
+            .append("년 ")
+            .append(Integer.toString(coverMonth))
+            .append("월")
+            .toString();
+
+        List<DiaryDTO> diaries = getDiaries(userId, coverYear, coverMonth);
+        int numberOfLike = getNumberOfLike(diaries);
+
+        DiariesWithCoverDTO diariesWithCoverDTO = new DiariesWithCoverDTO(
+            coverId, 
+            date,
+            coverDTO.getCoverTitle(),
+            coverDTO.getCoverColor(),
+            coverDTO.getHolderColor(),
+            numberOfLike,
+            diaries
+        );
+
+        return diariesWithCoverDTO;
     }
 
     int getBirth(int userId) {
@@ -109,5 +138,60 @@ public class MyDiaryServiceImp implements MyDiaryService {
         }
 
         return myDiaryByCovers;
+    }
+
+    List<DiaryDTO> getDiaries(int userId, int coverYear, int coverMonth) {
+
+        List<DiaryDTO> allDiaries = myDiaryDAO.getDiaries(userId);
+        List<DiaryDTO> diaries = new ArrayList<DiaryDTO>();
+        for (DiaryDTO allDiary: allDiaries) {
+            int year;
+            int month;
+            try {
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    
+                String birth = allDiary.getRegisterDate();
+    
+                Date birthDate = format.parse(birth);
+    
+                year = birthDate.getYear() + 1900;
+                month = birthDate.getMonth() + 1;
+            } catch (ParseException e) {
+                year = 0;
+                month = 0;
+            }
+            if (coverYear == year && coverMonth == month) {
+                diaries.add(allDiary);
+            }
+        }
+
+        for (DiaryDTO diary: diaries) {
+            int diaryId = diary.getDiaryId();
+            List<Integer> isPublicAndNumberOfLikeAndIsLike
+                = myDiaryDAO.getIsPublicAndNumberOfLikeAndIsLike(userId, diaryId);
+            if (isPublicAndNumberOfLikeAndIsLike.get(0) == 1) {
+                diary.setIsPublic(true);
+            } else {
+                diary.setIsPublic(false);
+            }
+            diary.setNumberOfLike(isPublicAndNumberOfLikeAndIsLike.get(1));
+            if (isPublicAndNumberOfLikeAndIsLike.get(2) == 1) {
+                diary.setIsLike(true);
+            } else {
+                diary.setIsLike(false);
+            }
+            diary.setImages(myDiaryDAO.getDiaryImages(diaryId));
+            diary.setTags(myDiaryDAO.getDiaryTags(diaryId));
+        }
+
+        return diaries;
+    }
+
+    int getNumberOfLike(List<DiaryDTO> diaries) {
+        int numberOfLike = 0;
+        for (DiaryDTO diary: diaries) {
+            numberOfLike += diary.getNumberOfLike();
+        }
+        return numberOfLike;
     }
 }

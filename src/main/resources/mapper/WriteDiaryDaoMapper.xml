@@ -29,7 +29,7 @@
     VALUES
     (#{diaryId}, #{index}, #{imageOrTag})
   </insert>
-  <select id="getDiary" parameterType="int" resultType="com.dangdiary.api.dto.writeDiary.DiaryDTO">
+  <select id="getDiary" parameterType="int" resultType="com.dangdiary.api.dto.writeDiary.DiaryResponseDTO">
     SELECT
     diary_id diaryId,
     user_id userId,

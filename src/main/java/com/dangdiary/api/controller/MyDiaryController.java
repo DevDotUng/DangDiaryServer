@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dangdiary.api.dto.myDiary.DiariesWithCoverDTO;
 import com.dangdiary.api.dto.myDiary.MyDiaryDTO;
 import com.dangdiary.api.service.MyDiaryService;
 
@@ -21,5 +22,11 @@ public class MyDiaryController {
     public ResponseEntity<MyDiaryDTO> home(int userId) {
         MyDiaryDTO myDiaryDTO = myDiaryService.getMyDiaryView(userId);
         return ResponseEntity.status(HttpStatus.OK).body(myDiaryDTO);
+    }
+
+    @GetMapping(value = "diary", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<DiariesWithCoverDTO> diary(int userId, int coverId) {
+        DiariesWithCoverDTO diaryDTO = myDiaryService.getDiaryView(userId, coverId);
+        return ResponseEntity.status(HttpStatus.OK).body(diaryDTO);
     }
 }

@@ -11,7 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class DiaryDTO {
+public class DiaryResponseDTO {
     int diaryId;
     int userId;
     int challengeId;

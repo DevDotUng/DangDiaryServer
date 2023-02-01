@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dangdiary.api.dao.WriteDiaryDAO;
-import com.dangdiary.api.dto.writeDiary.DiaryDTO;
+import com.dangdiary.api.dto.writeDiary.DiaryResponseDTO;
 import com.dangdiary.api.dto.writeDiary.ImageOrTagDTO;
 import com.dangdiary.api.dto.writeDiary.WriteDiaryDTO;
 
@@ -20,7 +20,7 @@ public class WriteDiaryServiceImp implements WriteDiaryService {
     WriteDiaryDAO writeDiaryDAO;
 
     @Override
-    public DiaryDTO postWriteDiary(WriteDiaryDTO writeDiaryDTO) {
+    public DiaryResponseDTO postWriteDiary(WriteDiaryDTO writeDiaryDTO) {
         
         int userId = writeDiaryDTO.getUserId();
         int challengeId = writeDiaryDTO.getChallengeId();
@@ -31,7 +31,7 @@ public class WriteDiaryServiceImp implements WriteDiaryService {
         postImages(diaryId, writeDiaryDTO.getImages());
         postTags(diaryId, writeDiaryDTO.getTags());
 
-        DiaryDTO result = writeDiaryDAO.getDiary(diaryId);
+        DiaryResponseDTO result = writeDiaryDAO.getDiary(diaryId);
 
         result.setImages(writeDiaryDAO.getImages(diaryId));
         result.setTags(writeDiaryDAO.getTags(diaryId));
