@@ -30,14 +30,8 @@ public class WriteDiaryServiceImp implements WriteDiaryService {
             writeDiaryDTO.getContent() == null || writeDiaryDTO.getContent() == "" ||
             writeDiaryDTO.getImages() == null || writeDiaryDTO.getImages().isEmpty()
         ) {
-            System.out.println("a");
             writeDiaryDAO.postOverdueWriteDiary(writeDiaryDTO);
         } else {
-            System.out.println("b");
-            System.out.println(writeDiaryDTO.getWeather());
-            System.out.println(writeDiaryDTO.getFeeling());
-            System.out.println(writeDiaryDTO.getContent());
-            System.out.println(writeDiaryDTO.getImages());
             writeDiaryDAO.postWriteDiary(writeDiaryDTO);
         }
 
