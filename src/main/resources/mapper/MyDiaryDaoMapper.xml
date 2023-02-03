@@ -58,7 +58,7 @@
   </select>
 
   <select id="getCoverDTO" parameterType="int" resultType="com.dangdiary.api.dto.myDiary.CoverDTO">
-    SELECT cover_id coverId, diary_yyyymm yyyymm, cover_title coverTitle, cover_color coverColor, holder_color holderColor
+    SELECT cover_id coverId, user_id userId, diary_yyyymm yyyymm, cover_title coverTitle, cover_color coverColor, holder_color holderColor
     FROM diary_covers
     WHERE cover_id = #{coverId}
   </select>
@@ -112,5 +112,27 @@
     <foreach collection="list" item="diaryId" open="(" close=")" separator=",">
     	#{diaryId}
     </foreach>
+  </select>
+
+  <update id="editCoverTitle" parameterType="com.dangdiary.api.dto.myDiary.CoverIdAndCoverTitleDTO">
+    UPDATE diary_covers
+    SET cover_title = #{coverTitleOrColor}
+    WHERE cover_id = #{coverId}
+  </update>
+  <select id="getEditCoverTitleResponse" parameterType="int" resultType="com.dangdiary.api.dto.myDiary.EditCoverTitleResponseDTO">
+    SELECT cover_id coverId, cover_title coverTitle
+    FROM diary_covers
+    WHERE cover_id = #{coverId}
+  </select>
+
+  <update id="editCoverColor" parameterType="com.dangdiary.api.dto.myDiary.CoverIdAndCoverHolderColorDTO">
+    UPDATE diary_covers
+    SET cover_color = #{coverColor}, holder_color = #{holderColor}
+    WHERE cover_id = #{coverId}
+  </update>
+  <select id="getEditCoverColorResponse" parameterType="int" resultType="com.dangdiary.api.dto.myDiary.EditCoverColorResponseDTO">
+    SELECT cover_id coverId, cover_color coverColor, holder_color holderColor
+    FROM diary_covers
+    WHERE cover_id = #{coverId}
   </select>
 </mapper>

@@ -6,7 +6,11 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.dangdiary.api.dto.myDiary.CoverDTO;
+import com.dangdiary.api.dto.myDiary.CoverIdAndCoverHolderColorDTO;
+import com.dangdiary.api.dto.myDiary.CoverIdAndCoverTitleDTO;
 import com.dangdiary.api.dto.myDiary.DiaryDTO;
+import com.dangdiary.api.dto.myDiary.EditCoverColorResponseDTO;
+import com.dangdiary.api.dto.myDiary.EditCoverTitleResponseDTO;
 import com.dangdiary.api.dto.myDiary.MakePublicAllDiariesByCoverResponseDTO;
 import com.dangdiary.api.dto.myDiary.MyDiaryDTO;
 import com.dangdiary.api.dto.myDiary.MyDiaryEachDTO;
@@ -29,4 +33,10 @@ public interface MyDiaryDAO {
 
     void changeAllDiariesByCoverIsPublic(List<Integer> diaryIds);
     List<MakePublicAllDiariesByCoverResponseDTO> getMakePublicAllDiariesByCoverResponseDTO(List<Integer> diaryIds);
+
+    void editCoverTitle(CoverIdAndCoverTitleDTO coverIdAndCoverTitle);
+    EditCoverTitleResponseDTO getEditCoverTitleResponse(int coverId);
+
+    void editCoverColor(CoverIdAndCoverHolderColorDTO coverIdAndCoverHolderColorDTO);
+    EditCoverColorResponseDTO getEditCoverColorResponse(int coverId);
 }

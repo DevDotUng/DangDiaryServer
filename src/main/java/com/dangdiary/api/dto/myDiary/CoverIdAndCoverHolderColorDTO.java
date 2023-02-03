@@ -7,11 +7,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class CoverDTO {
+public class CoverIdAndCoverHolderColorDTO {
     private int coverId;
-    private int userId;
-    private int yyyymm;
-    private String coverTitle;
     private String coverColor;
     private String holderColor;
 }

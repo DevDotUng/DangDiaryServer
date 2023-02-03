@@ -13,8 +13,12 @@ import org.springframework.stereotype.Service;
 import com.dangdiary.api.dao.MyDiaryDAO;
 import com.dangdiary.api.dto.myDiary.MakePublicAllDiariesByCoverResponseDTO;
 import com.dangdiary.api.dto.myDiary.CoverDTO;
+import com.dangdiary.api.dto.myDiary.CoverIdAndCoverHolderColorDTO;
+import com.dangdiary.api.dto.myDiary.CoverIdAndCoverTitleDTO;
 import com.dangdiary.api.dto.myDiary.DiariesWithCoverDTO;
 import com.dangdiary.api.dto.myDiary.DiaryDTO;
+import com.dangdiary.api.dto.myDiary.EditCoverColorResponseDTO;
+import com.dangdiary.api.dto.myDiary.EditCoverTitleResponseDTO;
 import com.dangdiary.api.dto.myDiary.MyDiaryByCoverDTO;
 import com.dangdiary.api.dto.myDiary.MyDiaryDTO;
 import com.dangdiary.api.dto.myDiary.MyDiaryEachDTO;
@@ -50,7 +54,7 @@ public class MyDiaryServiceImp implements MyDiaryService {
     }
 
     @Override
-    public DiariesWithCoverDTO getDiaryView(int userId, int coverId) {
+    public DiariesWithCoverDTO getDiaryView(int coverId) {
         CoverDTO coverDTO = myDiaryDAO.getCoverDTO(coverId);
         int coverYear = coverDTO.getYyyymm()/100;
         int coverMonth = coverDTO.getYyyymm()%100;
@@ -60,7 +64,7 @@ public class MyDiaryServiceImp implements MyDiaryService {
             .append("월")
             .toString();
 
-        List<DiaryDTO> diaries = getDiaries(userId, coverYear, coverMonth);
+        List<DiaryDTO> diaries = getDiaries(coverDTO.getUserId(), coverYear, coverMonth);
         int numberOfLike = getNumberOfLike(diaries);
 
         DiariesWithCoverDTO diariesWithCoverDTO = new DiariesWithCoverDTO(
@@ -77,38 +81,34 @@ public class MyDiaryServiceImp implements MyDiaryService {
     }
 
     @Override
-    public List<MakePublicAllDiariesByCoverResponseDTO> makePublicAllDiariesByCover(int userId, int coverId) {
-        CoverDTO coverDTO = myDiaryDAO.getCoverDTO(coverId);
-        int coverYear = coverDTO.getYyyymm()/100;
-        int coverMonth = coverDTO.getYyyymm()%100;
-
-        List<DiaryDTO> allDiaries = myDiaryDAO.getDiaries(userId);
-        List<Integer> diaryIds = new ArrayList<Integer>();
-        for (DiaryDTO allDiary: allDiaries) {
-            int year;
-            int month;
-            try {
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    
-                String birth = allDiary.getRegisterDate();
-    
-                Date birthDate = format.parse(birth);
-    
-                year = birthDate.getYear() + 1900;
-                month = birthDate.getMonth() + 1;
-            } catch (ParseException e) {
-                year = 0;
-                month = 0;
-            }
-            if (coverYear == year && coverMonth == month) {
-                diaryIds.add(allDiary.getDiaryId());
-            }
-        }
+    public List<MakePublicAllDiariesByCoverResponseDTO> makePublicAllDiariesByCover(List<Integer> diaryIds) {
 
         myDiaryDAO.changeAllDiariesByCoverIsPublic(diaryIds);
         List<MakePublicAllDiariesByCoverResponseDTO> makePublicAllDiariesByCoverResponseDTO = myDiaryDAO.getMakePublicAllDiariesByCoverResponseDTO(diaryIds);
 
         return makePublicAllDiariesByCoverResponseDTO;
+    }
+
+    @Override
+    public EditCoverTitleResponseDTO editCoverTitle(int coverId, String title) {
+
+        CoverIdAndCoverTitleDTO  coverTitleOrColorDTO = new CoverIdAndCoverTitleDTO(coverId, title);
+        myDiaryDAO.editCoverTitle(coverTitleOrColorDTO);
+        
+        EditCoverTitleResponseDTO editCoverTitleResponse = myDiaryDAO.getEditCoverTitleResponse(coverId);
+
+        return editCoverTitleResponse;
+    }
+
+    @Override
+    public EditCoverColorResponseDTO editCoverColor(int coverId, String coverColor, String holderColor) {
+
+        CoverIdAndCoverHolderColorDTO coverIdAndCoverHolderColorDTO = new CoverIdAndCoverHolderColorDTO(coverId, coverColor, holderColor);
+        myDiaryDAO.editCoverColor(coverIdAndCoverHolderColorDTO);
+
+        EditCoverColorResponseDTO editCoverColorResponse = myDiaryDAO.getEditCoverColorResponse(coverId);
+
+        return editCoverColorResponse;
     }
 
     int getBirth(int userId) {
