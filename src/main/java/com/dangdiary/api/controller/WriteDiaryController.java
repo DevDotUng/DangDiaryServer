@@ -73,25 +73,27 @@ public class WriteDiaryController {
         
         List<String> imageList = new ArrayList<String>();
         int index = 0;
-        for (MultipartFile image: images) {
-            String uuid = UUID.randomUUID().toString();
-		
-            String fileName = uuid + image.getOriginalFilename();
-
-            String webPath = "/static/diary";
-            String realPath = ctx.getRealPath(webPath);
+        if (images != null && !images.isEmpty()) {
+            for (MultipartFile image: images) {
+                String uuid = UUID.randomUUID().toString();
             
-            File savePath = new File(realPath);
-            if (!savePath.exists())
-                savePath.mkdirs();
-            
-            realPath += File.separator + fileName;
-            File saveFile = new File(realPath);
-            
-            image.transferTo(saveFile);
-
-            imageList.add(index, fileName);
-            index++;
+                String fileName = uuid + image.getOriginalFilename();
+    
+                String webPath = "/static/diary";
+                String realPath = ctx.getRealPath(webPath);
+                
+                File savePath = new File(realPath);
+                if (!savePath.exists())
+                    savePath.mkdirs();
+                
+                realPath += File.separator + fileName;
+                File saveFile = new File(realPath);
+                
+                image.transferTo(saveFile);
+    
+                imageList.add(index, fileName);
+                index++;
+            }
         }
 
         return imageList;

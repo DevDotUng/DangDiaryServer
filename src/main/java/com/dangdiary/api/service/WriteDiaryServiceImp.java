@@ -27,7 +27,8 @@ public class WriteDiaryServiceImp implements WriteDiaryService {
 
         if (writeDiaryDTO.getWeather() == null || writeDiaryDTO.getWeather() == "" ||
             writeDiaryDTO.getFeeling() == null || writeDiaryDTO.getTitle() == "" ||
-            writeDiaryDTO.getContent() == null || writeDiaryDTO.getContent() == ""
+            writeDiaryDTO.getContent() == null || writeDiaryDTO.getContent() == "" ||
+            writeDiaryDTO.getImages() == null || writeDiaryDTO.getImages().isEmpty()
         ) {
             System.out.println("a");
             writeDiaryDAO.postOverdueWriteDiary(writeDiaryDTO);
@@ -36,6 +37,7 @@ public class WriteDiaryServiceImp implements WriteDiaryService {
             System.out.println(writeDiaryDTO.getWeather());
             System.out.println(writeDiaryDTO.getFeeling());
             System.out.println(writeDiaryDTO.getContent());
+            System.out.println(writeDiaryDTO.getImages());
             writeDiaryDAO.postWriteDiary(writeDiaryDTO);
         }
 
