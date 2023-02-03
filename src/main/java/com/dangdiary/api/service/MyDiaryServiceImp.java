@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.dangdiary.api.dao.MyDiaryDAO;
 import com.dangdiary.api.dto.myDiary.MakePublicAllDiariesByCoverResponseDTO;
@@ -19,9 +20,12 @@ import com.dangdiary.api.dto.myDiary.DiariesWithCoverDTO;
 import com.dangdiary.api.dto.myDiary.DiaryDTO;
 import com.dangdiary.api.dto.myDiary.EditCoverColorResponseDTO;
 import com.dangdiary.api.dto.myDiary.EditCoverTitleResponseDTO;
+import com.dangdiary.api.dto.myDiary.EditDiaryDTO;
 import com.dangdiary.api.dto.myDiary.MyDiaryByCoverDTO;
 import com.dangdiary.api.dto.myDiary.MyDiaryDTO;
 import com.dangdiary.api.dto.myDiary.MyDiaryEachDTO;
+import com.dangdiary.api.dto.writeDiary.DiaryResponseDTO;
+import com.dangdiary.api.dto.writeDiary.ImageOrTagDTO;
 
 @Service
 public class MyDiaryServiceImp implements MyDiaryService {
@@ -109,6 +113,50 @@ public class MyDiaryServiceImp implements MyDiaryService {
         EditCoverColorResponseDTO editCoverColorResponse = myDiaryDAO.getEditCoverColorResponse(coverId);
 
         return editCoverColorResponse;
+    }
+
+    @Override
+    public void deleteAllDiaries(List<Integer> diaryIds) {
+        myDiaryDAO.deleteAllDiaries(diaryIds);
+    }
+
+    @Override
+    public MakePublicAllDiariesByCoverResponseDTO changeIsPublicDiary(int diaryId, Boolean isPublic) {
+
+        int is_public;
+        if (isPublic) {
+            is_public = 1;
+        } else {
+            is_public = 0;
+        }
+        myDiaryDAO.changeIsPublicDiary(diaryId, is_public);
+        MakePublicAllDiariesByCoverResponseDTO isPublicResponse = myDiaryDAO.getIsPublic(diaryId);
+
+        return isPublicResponse;
+    }
+
+    @Transactional
+    public DiaryResponseDTO editDiary(EditDiaryDTO diary) {
+
+        int diaryId = diary.getDiaryId();
+        myDiaryDAO.editDiary(diary);
+        deleteAndPostImages(diaryId, diary.getImages());
+        deleteAndPostTags(diaryId, diary.getTags());
+
+        DiaryResponseDTO diaryResponse = myDiaryDAO.getDiary(diaryId);
+
+        diaryResponse.setImages(myDiaryDAO.getImages(diaryId));
+        diaryResponse.setTags(myDiaryDAO.getTags(diaryId));
+
+        return diaryResponse;
+    }
+
+    @Transactional
+    public void deleteDiary(int diaryId) {
+        
+        myDiaryDAO.deleteDiary(diaryId);
+        myDiaryDAO.deleteImages(diaryId);
+        myDiaryDAO.deleteTags(diaryId);
     }
 
     int getBirth(int userId) {
@@ -229,5 +277,25 @@ public class MyDiaryServiceImp implements MyDiaryService {
             numberOfLike += diary.getNumberOfLike();
         }
         return numberOfLike;
+    }
+
+    void deleteAndPostImages(int diaryId, List<String> images) {
+        myDiaryDAO.deleteImages(diaryId);
+        int index = 0;
+        for (String image: images) {
+            ImageOrTagDTO imageOrTagDTO = new ImageOrTagDTO(diaryId, index, image);
+            myDiaryDAO.postImage(imageOrTagDTO);
+            index++;
+        }
+    }
+
+    void deleteAndPostTags(int diaryId, List<String> tags) {
+        myDiaryDAO.deleteTags(diaryId);
+        int index = 0;
+        for (String tag: tags) {
+            ImageOrTagDTO imageOrTagDTO = new ImageOrTagDTO(diaryId, index, tag);
+            myDiaryDAO.postTag(imageOrTagDTO);
+            index++;
+        }
     }
 }

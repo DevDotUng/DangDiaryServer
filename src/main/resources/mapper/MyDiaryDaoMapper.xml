@@ -135,4 +135,74 @@
     FROM diary_covers
     WHERE cover_id = #{coverId}
   </select>
+
+  <delete id="deleteAllDiaries" parameterType="int">
+    DELETE FROM diaries
+    WHERE diary_id IN
+    <foreach collection="list" item="diaryId" open="(" close=")" separator=",">
+    	#{diaryId}
+    </foreach>
+  </delete>
+
+  <update id="changeIsPublicDiary" parameterType="int">
+    UPDATE diaries
+    SET is_public = #{isPublic}
+    WHERE diary_id = #{diaryId}
+  </update>
+  <select id="getIsPublic" parameterType="int" resultType="com.dangdiary.api.dto.myDiary.MakePublicAllDiariesByCoverResponseDTO">
+    SELECT diary_id diaryId, is_public isPublic
+    FROM diaries
+    WHERE diary_id = #{diaryId}
+  </select>
+
+  <update id="editDiary" parameterType="com.dangdiary.api.dto.myDiary.EditDiaryDTO">
+    UPDATE diaries
+    SET weather = #{weather}, feeling = #{feeling}, title = #{title}, content = #{content}, is_public = #{isPublic}
+    WHERE diary_id = #{diaryId}
+  </update>
+  <delete id="deleteImages" parameterType="int">
+    DELETE FROM diary_images
+    WHERE diary_id = #{diaryId}
+  </delete>
+  <insert id="postImage" parameterType="com.dangdiary.api.dto.writeDiary.ImageOrTagDTO">
+    INSERT INTO diary_images
+    (diary_id, image_index, image)
+    VALUES
+    (#{diaryId}, #{index}, #{imageOrTag})
+  </insert>
+  <delete id="deleteTags" parameterType="int">
+    DELETE FROM tags
+    WHERE diary_id = #{diaryId}
+  </delete>
+  <insert id="postTag" parameterType="com.dangdiary.api.dto.writeDiary.ImageOrTagDTO">
+    INSERT INTO tags
+    (diary_id, tag_index, hash_tag)
+    VALUES
+    (#{diaryId}, #{index}, #{imageOrTag})
+  </insert>
+  <select id="getDiary" parameterType="int" resultType="com.dangdiary.api.dto.writeDiary.DiaryResponseDTO">
+    SELECT
+    diary_id diaryId,
+    user_id userId,
+    challenge_id challengeId,
+    title title,
+    register_date registerDate,
+    weather weather,
+    feeling feeling,
+    content content,
+    hit hit,
+    is_public isPublic
+    FROM diaries WHERE diary_id = #{diaryId} LIMIT 1
+  </select>
+  <select id="getImages" parameterType="int" resultType="String">
+    SELECT image FROM diary_images WHERE diary_id = #{diaryId} ORDER BY image_index
+  </select>
+  <select id="getTags" parameterType="int" resultType="String">
+    SELECT hash_tag FROM tags WHERE diary_id = #{diaryId} ORDER BY tag_index
+  </select>
+
+  <delete id="deleteDiary" parameterType="int">
+    DELETE FROM diaries
+    WHERE diary_id = #{diaryId}
+  </delete>
 </mapper>

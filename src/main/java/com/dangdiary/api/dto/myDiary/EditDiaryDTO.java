@@ -1,4 +1,4 @@
-package com.dangdiary.api.dto.writeDiary;
+package com.dangdiary.api.dto.myDiary;
 
 import java.util.List;
 
@@ -11,9 +11,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class WriteDiaryDTO {
-    int userId;
-    int challengeId;
+public class EditDiaryDTO {
+    int diaryId;
     String weather;
     String feeling;
     String title;

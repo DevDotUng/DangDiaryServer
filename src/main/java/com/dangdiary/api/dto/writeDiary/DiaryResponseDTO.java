@@ -21,7 +21,7 @@ public class DiaryResponseDTO {
     String feeling;
     String content;
     int hit;
-    int isPublic;
+    Boolean isPublic;
     List<String> images;
     List<String> tags;
 }
