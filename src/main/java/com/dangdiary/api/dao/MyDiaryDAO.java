@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.dangdiary.api.dto.myDiary.CoverDTO;
 import com.dangdiary.api.dto.myDiary.DiaryDTO;
+import com.dangdiary.api.dto.myDiary.MakePublicAllDiariesByCoverResponseDTO;
 import com.dangdiary.api.dto.myDiary.MyDiaryDTO;
 import com.dangdiary.api.dto.myDiary.MyDiaryEachDTO;
 
@@ -25,4 +26,7 @@ public interface MyDiaryDAO {
     List<Integer> getIsPublicAndNumberOfLikeAndIsLike(@Param("userId") int userId,@Param("diaryId") int diaryId);
     List<String> getDiaryImages(int diaryId);
     List<String> getDiaryTags(int diaryId);
+
+    void changeAllDiariesByCoverIsPublic(List<Integer> diaryIds);
+    List<MakePublicAllDiariesByCoverResponseDTO> getMakePublicAllDiariesByCoverResponseDTO(List<Integer> diaryIds);
 }

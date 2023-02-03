@@ -96,4 +96,21 @@
     WHERE diary_id = #{diaryId}
     ORDER BY tag_index
   </select>
+
+  <update id="changeAllDiariesByCoverIsPublic" parameterType="int">
+    UPDATE diaries
+    SET is_public = 1
+    WHERE diary_id IN
+    <foreach collection="list" item="diaryId" open="(" close=")" separator=",">
+    	#{diaryId}
+    </foreach>
+  </update>
+  <select id="getMakePublicAllDiariesByCoverResponseDTO" parameterType="int" resultType="com.dangdiary.api.dto.myDiary.MakePublicAllDiariesByCoverResponseDTO">
+    SELECT diary_id diaryId, is_public isPublic
+    FROM diaries
+    WHERE diary_id IN
+    <foreach collection="list" item="diaryId" open="(" close=")" separator=",">
+    	#{diaryId}
+    </foreach>
+  </select>
 </mapper>
