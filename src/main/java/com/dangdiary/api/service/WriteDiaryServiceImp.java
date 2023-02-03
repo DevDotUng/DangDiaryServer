@@ -20,12 +20,25 @@ public class WriteDiaryServiceImp implements WriteDiaryService {
     WriteDiaryDAO writeDiaryDAO;
 
     @Override
-    public DiaryResponseDTO postWriteDiary(WriteDiaryDTO writeDiaryDTO) {
+    public DiaryResponseDTO postWriteDiary(WriteDiaryDTO writeDiaryDTO) { 
         
         int userId = writeDiaryDTO.getUserId();
         int challengeId = writeDiaryDTO.getChallengeId();
 
-        writeDiaryDAO.postWriteDiary(writeDiaryDTO);
+        if (writeDiaryDTO.getWeather() == null || writeDiaryDTO.getWeather() == "" ||
+            writeDiaryDTO.getFeeling() == null || writeDiaryDTO.getTitle() == "" ||
+            writeDiaryDTO.getContent() == null || writeDiaryDTO.getContent() == ""
+        ) {
+            System.out.println("a");
+            writeDiaryDAO.postOverdueWriteDiary(writeDiaryDTO);
+        } else {
+            System.out.println("b");
+            System.out.println(writeDiaryDTO.getWeather());
+            System.out.println(writeDiaryDTO.getFeeling());
+            System.out.println(writeDiaryDTO.getContent());
+            writeDiaryDAO.postWriteDiary(writeDiaryDTO);
+        }
+
         int diaryId = writeDiaryDAO.getDiaryId(userId, challengeId);
         writeDiaryDAO.updateUserChallenge(diaryId, userId, challengeId);
         postImages(diaryId, writeDiaryDTO.getImages());

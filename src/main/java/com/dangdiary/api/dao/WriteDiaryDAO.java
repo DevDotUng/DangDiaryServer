@@ -12,6 +12,7 @@ import com.dangdiary.api.dto.writeDiary.WriteDiaryDTO;
 @Mapper
 public interface WriteDiaryDAO {
     void postWriteDiary(WriteDiaryDTO writeDiaryDTO);
+    void postOverdueWriteDiary(WriteDiaryDTO writeDiaryDTO);
     int getDiaryId(@Param("userId") int userId, @Param("challengeId") int challengeId);
     void updateUserChallenge(@Param("diaryId") int diaryId, @Param("userId") int userId, @Param("challengeId") int challengeId);
     void postImage(ImageOrTagDTO imageOrTagDTO);

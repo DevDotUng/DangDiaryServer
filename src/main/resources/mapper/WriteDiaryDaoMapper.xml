@@ -9,8 +9,14 @@
     VALUES
     (#{userId}, #{challengeId}, #{title}, NOW(), #{weather}, #{feeling}, #{content}, #{isPublic})
   </insert>
+  <insert id="postOverdueWriteDiary" parameterType="com.dangdiary.api.dto.writeDiary.WriteDiaryDTO">
+    INSERT INTO diaries
+    (user_id, challenge_id, title, weather, feeling, content, is_public)
+    VALUES
+    (#{userId}, #{challengeId}, #{title}, #{weather}, #{feeling}, #{content}, #{isPublic})
+  </insert>
   <select id="getDiaryId" parameterType="int" resultType="int">
-    SELECT diary_id FROM diaries WHERE user_id = #{userId} and challenge_id = #{challengeId} ORDER BY register_date DESC LIMIT 1
+    SELECT diary_id FROM diaries WHERE user_id = #{userId} and challenge_id = #{challengeId} ORDER BY diary_id DESC LIMIT 1
   </select>
   <update id="updateUserChallenge" parameterType="int">
     UPDATE user_challenges

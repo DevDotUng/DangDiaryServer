@@ -118,6 +118,12 @@ public class MyDiaryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(diaryDTO);
     }
 
+    @DeleteMapping(value = "diary", produces = "application/json;charset=UTF-8")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteDiary(int diaryId) {
+        myDiaryService.deleteDiary(diaryId);
+    }
+
     List<String> saveImages(List<MultipartFile> images) throws IllegalStateException, IOException {
         
         List<String> imageList = new ArrayList<String>();
@@ -144,11 +150,5 @@ public class MyDiaryController {
         }
 
         return imageList;
-    }
-
-    @DeleteMapping(value = "diary", produces = "application/json;charset=UTF-8")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteDiary(int diaryId) {
-        myDiaryService.deleteDiary(diaryId);
     }
 }
