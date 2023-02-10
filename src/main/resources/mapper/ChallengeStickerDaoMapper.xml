@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dangdiary.api.dao.ChallengeStickerDAO">
+  <select id="getTotalStickers" parameterType="int" resultType="int">
+    select count(diaries.challenge_id) from diaries where challenge_id=#{challengeId} and user_id = #{userId};
+  </select>
+  <select id="getStickerImage" parameterType="int" resultType="String">
+    select sticker_image from challenges where challenge_id = #{challengeId};  
+  </select>
+  <select id="getChallengeTitle" parameterType="int" resultType="String">
+    SELECT title from challenges where challenge_id = #{challengeId}
+  </select>
+  <select id="getFirstDate" parameterType="int" resultType="String">
+    select MIN(register_date) from diaries where user_id = #{userId} and challenge_id = #{challengeId};  
+  </select>
+  <select id="getRecentDate" parameterType="int" resultType="String">
+    select MAX(register_date) from diaries where user_id = #{userId} and challenge_id = #{challengeId};  
+  </select>
+  <select id="getChallengeDiaryDTOs" parameterType="int" resultType="com.dangdiary.api.dto.challengeSticker.ChallengeDiaryDTO">
+    select diaries.register_date diaryDate, diaries.title diaryTitle, count(likes.like_id) numOfLike from diaries left outer join likes on diaries.diary_id = likes.diary_id where diaries.user_id = #{userId} and diaries.challenge_id = #{challengeId} group by diaries.diary_id;  
+  </select>
+
+</mapper>
