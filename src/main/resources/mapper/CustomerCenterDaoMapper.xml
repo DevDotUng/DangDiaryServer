@@ -4,9 +4,23 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dangdiary.api.dao.CustomerCenterDAO">
   <select id="getNoticeDTOs" resultType="com.dangdiary.api.dto.customerCenter.NoticeDTO">
-    SELECT notice_id noticeId, register_date registerDate, version, content FROM notices;
+    SELECT notice_id noticeId, title title, content content, register_date registerDate
+    FROM notices
+    ORDER BY register_date DESC
   </select>
   <select id="getFAQDTOs" resultType="com.dangdiary.api.dto.customerCenter.FAQDTO">
     SELECT FAQ_id FAQId, question, answer FROM FAQs;
+  </select>
+
+  <insert id="postNotice" parameterType="String">
+    INSERT INTO notices(title, content, register_date)
+    VALUES
+    (#{title}, #{content}, NOW())
+  </insert>
+  <select id="getNotice" resultType="com.dangdiary.api.dto.customerCenter.NoticeDTO">
+    SELECT notice_id noticeId, title title, content content, register_date registerDate
+    FROM notices
+    ORDER BY notice_id DESC
+    LIMIT 1
   </select>
 </mapper>

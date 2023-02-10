@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.dangdiary.api.dao.WriteDiaryDAO;
 import com.dangdiary.api.dto.writeDiary.DiaryResponseDTO;
 import com.dangdiary.api.dto.writeDiary.ImageOrTagDTO;
+import com.dangdiary.api.dto.writeDiary.UpdateUserChallengeDTO;
 import com.dangdiary.api.dto.writeDiary.WriteDiaryDTO;
 
 @Service
@@ -36,7 +37,8 @@ public class WriteDiaryServiceImp implements WriteDiaryService {
         }
 
         int diaryId = writeDiaryDAO.getDiaryId(userId, challengeId);
-        writeDiaryDAO.updateUserChallenge(diaryId, userId, challengeId);
+        UpdateUserChallengeDTO updateUserChallengeDTO = new UpdateUserChallengeDTO(diaryId, userId, challengeId, writeDiaryDTO.getEndDate());
+        writeDiaryDAO.updateUserChallenge(updateUserChallengeDTO);
         postImages(diaryId, writeDiaryDTO.getImages());
         postTags(diaryId, writeDiaryDTO.getTags());
 

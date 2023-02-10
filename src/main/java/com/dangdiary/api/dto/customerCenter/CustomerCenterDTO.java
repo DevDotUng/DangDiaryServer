@@ -12,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CustomerCenterDTO {
-    List<NoticeDTO> noticeDTO;
-    @JsonProperty("FAQDTOs")
-    List<FAQDTO> FAQDTOs;
+    List<NoticeDTO> notices;
+    @JsonProperty("FAQs")
+    List<FAQDTO> FAQs;
 }

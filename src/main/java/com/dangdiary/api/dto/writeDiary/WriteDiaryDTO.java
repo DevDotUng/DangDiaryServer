@@ -14,6 +14,7 @@ import lombok.Setter;
 public class WriteDiaryDTO {
     int userId;
     int challengeId;
+    String endDate;
     String weather;
     String feeling;
     String title;

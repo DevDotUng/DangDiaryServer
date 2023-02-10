@@ -35,6 +35,7 @@ public class WriteDiaryController {
     public ResponseEntity<DiaryResponseDTO> home(
         @RequestParam("userId") int userId,
         @RequestParam("challengeId") int challengeId,
+        @RequestParam("endDate") String endDate,
         @RequestParam("weather") String weather,
         @RequestParam("feeling") String feeling,
         @RequestParam("title") String title,
@@ -55,6 +56,7 @@ public class WriteDiaryController {
         WriteDiaryDTO writeDiaryRequestDTO = new WriteDiaryDTO(
             userId,
             challengeId,
+            endDate,
             weather,
             feeling,
             title,

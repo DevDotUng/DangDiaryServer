@@ -4,10 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dangdiary.api.dto.customerCenter.CustomerCenterDTO;
+import com.dangdiary.api.dto.customerCenter.NoticeDTO;
 import com.dangdiary.api.service.CustomerCenterService;
 
 @RestController
@@ -23,5 +26,16 @@ public class CustomerCenterController {
         CustomerCenterDTO customerCenterDTO = customerCenterService.getCustomerCenterDTO();
 
         return ResponseEntity.status(HttpStatus.OK).body(customerCenterDTO);
+    }
+
+    @PostMapping(value = "notice", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<NoticeDTO> notice(
+        @RequestParam("title") String title,
+        @RequestParam("content") String content
+    ) {
+
+        NoticeDTO noticeDTO = customerCenterService.postNotice(title, content);
+
+        return ResponseEntity.status(HttpStatus.OK).body(noticeDTO);
     }
 }

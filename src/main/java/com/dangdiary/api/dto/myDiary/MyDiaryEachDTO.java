@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 public class MyDiaryEachDTO {
     private int diaryId;
-    private String registerDate;
+    private String endDate;
     private String challengeTitle;
     private String image;
     private int numberOfLike;

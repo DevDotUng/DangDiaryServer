@@ -28,17 +28,21 @@
     AND register_date IS NULL
   </select>
   <select id="getMyDiaryEachDTO" parameterType="int" resultType="com.dangdiary.api.dto.myDiary.MyDiaryEachDTO">
-    SELECT j.diaryId diaryId, j.registerDate registerDate, j.challengeTitle challengeTitle, i.image image
+    SELECT j.diaryId diaryId, j.endDate endDate, j.challengeTitle challengeTitle, i.image image
     FROM
-    (SELECT d.diary_id diaryId, d.register_date registerDate, c.title challengeTitle
+    (SELECT j.diaryId diaryId, u.end_date endDate, j.challengeTitle challengeTitle
+    FROM
+    (SELECT d.diary_id diaryId, c.title challengeTitle
     FROM diaries d
     LEFT JOIN challenges c
     ON d.challenge_id = c.challenge_id
     WHERE d.user_id = #{userId}) j
+    LEFT JOIN user_challenges u
+    ON j.diaryId = u.diary_id) j
     LEFT JOIN diary_images i
     ON j.diaryId = i.diary_id
     WHERE i.image_index = 0
-    ORDER BY j.registerDate
+    ORDER BY j.endDate
   </select>
   <select id="getNumberOfLikeAndIsLike" parameterType="int" resultType="int">
     SELECT count(*)
@@ -52,7 +56,7 @@
     AND user_id = #{userId} LIMIT 1)
   </select>
   <select id="getMyDiaryByCoverDTO" parameterType="int" resultType="com.dangdiary.api.dto.myDiary.CoverDTO">
-    SELECT cover_id coverId, diary_yyyymm yyyymm, cover_title coverTitle, cover_color coverColor, holder_color holderColor
+    SELECT cover_id coverId, user_id userId, diary_yyyymm yyyymm, cover_title coverTitle, cover_color coverColor, holder_color holderColor
     FROM diary_covers
     WHERE user_id = #{userId}
   </select>

@@ -16,7 +16,7 @@ public class DiaryResponseDTO {
     int userId;
     int challengeId;
     String title;
-    String registerDate;
+    String endDate;
     String weather;
     String feeling;
     String content;

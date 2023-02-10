@@ -72,7 +72,7 @@ public class MyDiaryServiceImp implements MyDiaryService {
         int numberOfLike = getNumberOfLike(diaries);
 
         DiariesWithCoverDTO diariesWithCoverDTO = new DiariesWithCoverDTO(
-            coverId, 
+            coverId,
             date,
             coverDTO.getCoverTitle(),
             coverDTO.getCoverColor(),
@@ -204,7 +204,7 @@ public class MyDiaryServiceImp implements MyDiaryService {
                     try {
                         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             
-                        String birth = myDiaryEachDTO.getRegisterDate();
+                        String birth = myDiaryEachDTO.getEndDate();
             
                         Date birthDate = format.parse(birth);
 
