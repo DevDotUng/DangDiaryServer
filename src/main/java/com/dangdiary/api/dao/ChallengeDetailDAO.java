@@ -3,14 +3,16 @@ package com.dangdiary.api.dao;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
-import com.dangdiary.api.dto.challengeDetail.ChallengeDetailChallengeDTO;
-import com.dangdiary.api.dto.challengeDetail.OtherDogChallengeDTO;
+import com.dangdiary.api.dto.challengeDetail.ChallengeDetailTempDTO;
+import com.dangdiary.api.dto.challengeDetail.OtherChallengeDTO;
 
 @Mapper
 public interface ChallengeDetailDAO {
-    ChallengeDetailChallengeDTO getChallengeDetailDTO(int challengeId);
-    int getNumOfComplete(int challengeId);
-    List<Integer> getOtherDiaryIds(int challengeId);
-    OtherDogChallengeDTO getOtherDogChallenge(int diaryId);
+    int getIsChallenge(@Param("userId") int userId,@Param("challengeId") int challengeId);
+    ChallengeDetailTempDTO getChallengeDetailDTO(int challengeId);
+    int getNumberOfComplete(@Param("userId") int userId,@Param("challengeId") int challengeId);
+    String getRecommendDate(@Param("userId") int userId,@Param("challengeId") int challengeId);
+    List<OtherChallengeDTO> getOtherChallenges(int challengeId);
 }

@@ -25,5 +25,14 @@ public class CustomerCenterServiceImp implements CustomerCenterService {
 
         return customerCenterDTO;
     }
+
+    @Override
+    public NoticeDTO postNotice(String title, String content) {
+
+        customerCenterDAO.postNotice(title, content);
+        NoticeDTO notice = customerCenterDAO.getNotice();
+
+        return notice;
+    }
     
 }

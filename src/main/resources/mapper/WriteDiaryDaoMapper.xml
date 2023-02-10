@@ -3,21 +3,63 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dangdiary.api.dao.WriteDiaryDAO">
-  <insert id="postWriteDiary" parameterType="com.dangdiary.api.dto.writeDiary.WriteDiaryRequestDTO" >
-    INSERT INTO diarys
-    (user_id, challenge_id, title, place, weather, register_date, feeling, content, image1, image2, image3, image4, image5)
+  <insert id="postWriteDiary" parameterType="com.dangdiary.api.dto.writeDiary.WriteDiaryDTO">
+    INSERT INTO diaries
+    (user_id, challenge_id, register_date, title, weather, feeling, content, is_public)
     VALUES
-    (#{userId}, #{challengeId}, #{title}, #{place}, #{weather}, NOW(), #{feeling}, #{content}, #{image1}, #{image2}, #{image3}, #{image4}, #{image5})
+    (#{userId}, #{challengeId}, NOW(), #{title}, #{weather}, #{feeling}, #{content}, #{isPublic})
+  </insert>
+  <insert id="postOverdueWriteDiary" parameterType="com.dangdiary.api.dto.writeDiary.WriteDiaryDTO">
+    INSERT INTO diaries
+    (user_id, challenge_id, title, weather, feeling, content, is_public)
+    VALUES
+    (#{userId}, #{challengeId}, #{title}, #{weather}, #{feeling}, #{content}, #{isPublic})
   </insert>
   <select id="getDiaryId" parameterType="int" resultType="int">
-    SELECT diary_id FROM diarys WHERE user_id = #{userId} and challenge_id = #{challengeId} ORDER BY register_date DESC LIMIT 1
+    SELECT diary_id FROM diaries WHERE user_id = #{userId} and challenge_id = #{challengeId} ORDER BY diary_id DESC LIMIT 1
   </select>
-  <update id="updateUserChallenge" parameterType="int">
+  <update id="updateUserChallenge" parameterType="com.dangdiary.api.dto.writeDiary.UpdateUserChallengeDTO">
     UPDATE user_challenges
-    SET diary_bool = 1, diary_id = #{diaryId}
-    WHERE user_id = #{userId} and challenge_id = #{challengeId}
+    SET end_date = #{endDate}, diary_id = #{diaryId}
+    WHERE user_id = #{userId} and challenge_id = #{challengeId} and diary_id IS NULL
   </update>
-  <select id="getDiary" parameterType="int" resultType="com.dangdiary.api.dto.writeDiary.DiaryDTO">
-    SELECT * FROM diarys WHERE user_id = #{userId} ORDER BY register_date DESC LIMIT 1
+  <insert id="postImage" parameterType="com.dangdiary.api.dto.writeDiary.ImageOrTagDTO">
+    INSERT INTO diary_images
+    (diary_id, image_index, image)
+    VALUES
+    (#{diaryId}, #{index}, #{imageOrTag})
+  </insert>
+  <insert id="postTag" parameterType="com.dangdiary.api.dto.writeDiary.ImageOrTagDTO">
+    INSERT INTO tags
+    (diary_id, tag_index, hash_tag)
+    VALUES
+    (#{diaryId}, #{index}, #{imageOrTag})
+  </insert>
+  <select id="getDiary" parameterType="int" resultType="com.dangdiary.api.dto.writeDiary.DiaryResponseDTO">
+    SELECT d.diary_id diaryId, d.user_id userId, d.challenge_id challengeId, d.title title, u.end_date endDate, d.weather weather, d.feeling feeling, d.content content, d.hit hit, d.is_public isPublic
+    FROM diaries d
+    LEFT JOIN user_challenges u
+    ON d.diary_id = u.diary_id
+    WHERE d.diary_id = #{diary_id}
+  </select>
+  <select id="getImages" parameterType="int" resultType="String">
+    SELECT image FROM diary_images WHERE diary_id = #{diaryId} ORDER BY image_index
+  </select>
+  <select id="getTags" parameterType="int" resultType="String">
+    SELECT hash_tag FROM tags WHERE diary_id = #{diaryId} ORDER BY tag_index
+  </select>
+  <select id="getIsExistCover" parameterType="int" resultType="int">
+    SELECT EXISTS
+    (SELECT *
+    FROM diary_covers
+    WHERE user_id = #{userId}
+    AND diary_yyyymm = #{yyyymm}
+    LIMIT 1)
+  </select>
+  <select id="insertCover" parameterType="int">
+    INSERT INTO diary_covers
+    (user_id, diary_yyyymm)
+    VALUES
+    (#{userId}, #{yyyymm})
   </select>
 </mapper>

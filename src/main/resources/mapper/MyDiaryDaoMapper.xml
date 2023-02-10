@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dangdiary.api.dao.MyDiaryDAO">
+  <select id="getMyDiaryDTO" parameterType="int" resultType="com.dangdiary.api.dto.myDiary.MyDiaryDTO">
+    SELECT dog_name dogName, profile_image profileImage
+    FROM dogs
+    WHERE user_id = #{userId}
+    LIMIT 1;
+  </select>
+  <select id="getBirth" parameterType="int" resultType="String">
+    SELECT birth birth
+    FROM dogs
+    WHERE user_id = #{userId}
+    LIMIT 1;
+  </select>
+  <select id="getNumberOfDiary" parameterType="int" resultType="int">
+    SELECT count(*)
+    FROM diaries
+    WHERE user_id = #{userId}
+    AND register_date IS NOT NULL
+  </select>
+  <select id="getNumberOfOverdueDiary" parameterType="int" resultType="int">
+    SELECT count(*)
+    FROM diaries
+    WHERE user_id = #{userId}
+    AND register_date IS NULL
+  </select>
+  <select id="getMyDiaryEachDTO" parameterType="int" resultType="com.dangdiary.api.dto.myDiary.MyDiaryEachDTO">
+    SELECT j.diaryId diaryId, j.endDate endDate, j.challengeTitle challengeTitle, i.image image
+    FROM
+    (SELECT j.diaryId diaryId, u.end_date endDate, j.challengeTitle challengeTitle
+    FROM
+    (SELECT d.diary_id diaryId, c.title challengeTitle
+    FROM diaries d
+    LEFT JOIN challenges c
+    ON d.challenge_id = c.challenge_id
+    WHERE d.user_id = #{userId}) j
+    LEFT JOIN user_challenges u
+    ON j.diaryId = u.diary_id) j
+    LEFT JOIN diary_images i
+    ON j.diaryId = i.diary_id
+    WHERE i.image_index = 0
+    ORDER BY j.endDate
+  </select>
+  <select id="getNumberOfLikeAndIsLike" parameterType="int" resultType="int">
+    SELECT count(*)
+    FROM likes
+    WHERE diary_id = #{diaryId}
+    UNION ALL
+    SELECT EXISTS
+    (SELECT *
+    FROM likes
+    WHERE diary_id = #{diaryId}
+    AND user_id = #{userId} LIMIT 1)
+  </select>
+  <select id="getMyDiaryByCoverDTO" parameterType="int" resultType="com.dangdiary.api.dto.myDiary.CoverDTO">
+    SELECT cover_id coverId, user_id userId, diary_yyyymm yyyymm, cover_title coverTitle, cover_color coverColor, holder_color holderColor
+    FROM diary_covers
+    WHERE user_id = #{userId}
+  </select>
+
+  <select id="getCoverDTO" parameterType="int" resultType="com.dangdiary.api.dto.myDiary.CoverDTO">
+    SELECT cover_id coverId, user_id userId, diary_yyyymm yyyymm, cover_title coverTitle, cover_color coverColor, holder_color holderColor
+    FROM diary_covers
+    WHERE cover_id = #{coverId}
+  </select>
+  <select id="getDiaries" parameterType="int" resultType="com.dangdiary.api.dto.myDiary.DiaryDTO">
+    SELECT d.diary_id diaryId, d.title title, d.register_date registerDate, d.weather weather, d.feeling feeling, d.content content, c.sticker_image stickerImage, c.sticker_shape stickerShape
+    FROM diaries d
+    LEFT JOIN challenges c
+    ON d.challenge_id = c.challenge_id
+    WHERE d.user_id = #{userId}
+  </select>
+  <select id="getIsPublicAndNumberOfLikeAndIsLike" parameterType="int" resultType="int">
+    SELECT is_public isPublic
+    FROM diaries
+    WHERE diary_id = #{diaryId}
+    UNION ALL
+    SELECT count(*)
+    FROM likes
+    WHERE diary_id = #{diaryId}
+    UNION ALL
+    SELECT EXISTS
+    (SELECT *
+    FROM likes
+    WHERE diary_id = #{diaryId}
+    AND user_id = #{userId} LIMIT 1)
+  </select>
+  <select id="getDiaryImages" parameterType="int" resultType="String">
+    SELECT image images
+    FROM diary_images
+    WHERE diary_id = #{diaryId}
+    ORDER BY image_index
+  </select>
+  <select id="getDiaryTags" parameterType="int" resultType="String">
+    SELECT hash_tag tags
+    FROM tags
+    WHERE diary_id = #{diaryId}
+    ORDER BY tag_index
+  </select>
+
+  <update id="changeAllDiariesByCoverIsPublic" parameterType="int">
+    UPDATE diaries
+    SET is_public = 1
+    WHERE diary_id IN
+    <foreach collection="list" item="diaryId" open="(" close=")" separator=",">
+    	#{diaryId}
+    </foreach>
+  </update>
+  <select id="getMakePublicAllDiariesByCoverResponseDTO" parameterType="int" resultType="com.dangdiary.api.dto.myDiary.MakePublicAllDiariesByCoverResponseDTO">
+    SELECT diary_id diaryId, is_public isPublic
+    FROM diaries
+    WHERE diary_id IN
+    <foreach collection="list" item="diaryId" open="(" close=")" separator=",">
+    	#{diaryId}
+    </foreach>
+  </select>
+
+  <update id="editCoverTitle" parameterType="com.dangdiary.api.dto.myDiary.CoverIdAndCoverTitleDTO">
+    UPDATE diary_covers
+    SET cover_title = #{coverTitleOrColor}
+    WHERE cover_id = #{coverId}
+  </update>
+  <select id="getEditCoverTitleResponse" parameterType="int" resultType="com.dangdiary.api.dto.myDiary.EditCoverTitleResponseDTO">
+    SELECT cover_id coverId, cover_title coverTitle
+    FROM diary_covers
+    WHERE cover_id = #{coverId}
+  </select>
+
+  <update id="editCoverColor" parameterType="com.dangdiary.api.dto.myDiary.CoverIdAndCoverHolderColorDTO">
+    UPDATE diary_covers
+    SET cover_color = #{coverColor}, holder_color = #{holderColor}
+    WHERE cover_id = #{coverId}
+  </update>
+  <select id="getEditCoverColorResponse" parameterType="int" resultType="com.dangdiary.api.dto.myDiary.EditCoverColorResponseDTO">
+    SELECT cover_id coverId, cover_color coverColor, holder_color holderColor
+    FROM diary_covers
+    WHERE cover_id = #{coverId}
+  </select>
+
+  <delete id="deleteAllDiaries" parameterType="int">
+    DELETE FROM diaries
+    WHERE diary_id IN
+    <foreach collection="list" item="diaryId" open="(" close=")" separator=",">
+    	#{diaryId}
+    </foreach>
+  </delete>
+
+  <update id="changeIsPublicDiary" parameterType="int">
+    UPDATE diaries
+    SET is_public = #{isPublic}
+    WHERE diary_id = #{diaryId}
+  </update>
+  <select id="getIsPublic" parameterType="int" resultType="com.dangdiary.api.dto.myDiary.MakePublicAllDiariesByCoverResponseDTO">
+    SELECT diary_id diaryId, is_public isPublic
+    FROM diaries
+    WHERE diary_id = #{diaryId}
+  </select>
+
+  <update id="editDiary" parameterType="com.dangdiary.api.dto.myDiary.EditDiaryDTO">
+    UPDATE diaries
+    SET weather = #{weather}, feeling = #{feeling}, title = #{title}, content = #{content}, is_public = #{isPublic}
+    WHERE diary_id = #{diaryId}
+  </update>
+  <delete id="deleteImages" parameterType="int">
+    DELETE FROM diary_images
+    WHERE diary_id = #{diaryId}
+  </delete>
+  <insert id="postImage" parameterType="com.dangdiary.api.dto.writeDiary.ImageOrTagDTO">
+    INSERT INTO diary_images
+    (diary_id, image_index, image)
+    VALUES
+    (#{diaryId}, #{index}, #{imageOrTag})
+  </insert>
+  <delete id="deleteTags" parameterType="int">
+    DELETE FROM tags
+    WHERE diary_id = #{diaryId}
+  </delete>
+  <insert id="postTag" parameterType="com.dangdiary.api.dto.writeDiary.ImageOrTagDTO">
+    INSERT INTO tags
+    (diary_id, tag_index, hash_tag)
+    VALUES
+    (#{diaryId}, #{index}, #{imageOrTag})
+  </insert>
+  <select id="getDiary" parameterType="int" resultType="com.dangdiary.api.dto.writeDiary.DiaryResponseDTO">
+    SELECT
+    diary_id diaryId,
+    user_id userId,
+    challenge_id challengeId,
+    title title,
+    register_date registerDate,
+    weather weather,
+    feeling feeling,
+    content content,
+    hit hit,
+    is_public isPublic
+    FROM diaries WHERE diary_id = #{diaryId} LIMIT 1
+  </select>
+  <select id="getImages" parameterType="int" resultType="String">
+    SELECT image FROM diary_images WHERE diary_id = #{diaryId} ORDER BY image_index
+  </select>
+  <select id="getTags" parameterType="int" resultType="String">
+    SELECT hash_tag FROM tags WHERE diary_id = #{diaryId} ORDER BY tag_index
+  </select>
+
+  <delete id="deleteDiary" parameterType="int">
+    DELETE FROM diaries
+    WHERE diary_id = #{diaryId}
+  </delete>
+</mapper>

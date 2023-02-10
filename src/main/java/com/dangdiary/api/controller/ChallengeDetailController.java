@@ -18,8 +18,8 @@ public class ChallengeDetailController {
     ChallengeDetailService challengeDetailService;
 
     @GetMapping(value = "challengeDetail", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<ChallengeDetailDTO> home(int challengeId) {
-        ChallengeDetailDTO challengeDetailDTO = challengeDetailService.getChallengeDetailView(challengeId);
+    public ResponseEntity<ChallengeDetailDTO> home(int userId, int challengeId) {
+        ChallengeDetailDTO challengeDetailDTO = challengeDetailService.getChallengeDetailView(userId, challengeId);
         return ResponseEntity.status(HttpStatus.OK).body(challengeDetailDTO);
     }
 }

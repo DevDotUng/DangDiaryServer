@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 public class NoticeDTO {
     int noticeId;
-    String registerDate;
-    String version;
+    String title;
     String content;
+    String registerDate;
 }

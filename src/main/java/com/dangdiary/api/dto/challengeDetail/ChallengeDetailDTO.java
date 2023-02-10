@@ -10,8 +10,14 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ChallengeDetailDTO {
-    public ChallengeDetailDTO() {};
-    ChallengeDetailChallengeDTO challengeDetailChallengeDTO;
-    int numOfComplete;
-    List<OtherDogChallengeDTO> otherDogChallenges;
+    private Boolean isChallenge;
+    private String image;
+    private String title;
+    private String content;
+    private String authenticationMethod;
+    private String stickerImage;
+    private String stickerShape;
+    private int numberOfComplete;
+    private String recommendDate;
+    List<OtherChallengeDTO> otherDogChallenges;
 }

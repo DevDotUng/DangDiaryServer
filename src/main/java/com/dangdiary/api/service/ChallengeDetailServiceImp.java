@@ -1,6 +1,5 @@
 package com.dangdiary.api.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.dangdiary.api.dao.ChallengeDetailDAO;
 import com.dangdiary.api.dto.challengeDetail.ChallengeDetailDTO;
-import com.dangdiary.api.dto.challengeDetail.OtherDogChallengeDTO;
+import com.dangdiary.api.dto.challengeDetail.ChallengeDetailTempDTO;
+import com.dangdiary.api.dto.challengeDetail.OtherChallengeDTO;
 
 @Service
 public class ChallengeDetailServiceImp implements ChallengeDetailService {
@@ -17,19 +17,34 @@ public class ChallengeDetailServiceImp implements ChallengeDetailService {
     ChallengeDetailDAO challengeDetailDAO;
 
     @Override
-    public ChallengeDetailDTO getChallengeDetailView(int challengeId) {
-        ChallengeDetailDTO challengeDetailDTO = new ChallengeDetailDTO();
-        challengeDetailDTO.setChallengeDetailChallengeDTO(challengeDetailDAO.getChallengeDetailDTO(challengeId));
-        challengeDetailDTO.setNumOfComplete(challengeDetailDAO.getNumOfComplete(challengeId));
-        List<Integer> otherDiaryIds = challengeDetailDAO.getOtherDiaryIds(challengeId);
+    public ChallengeDetailDTO getChallengeDetailView(int userId, int challengeId) {
 
-        List<OtherDogChallengeDTO> homeChallengeDTOs = new ArrayList<OtherDogChallengeDTO>();
-
-        for (int otherDiaryId: otherDiaryIds) {
-            homeChallengeDTOs.add(challengeDetailDAO.getOtherDogChallenge(otherDiaryId));
-        }
-        challengeDetailDTO.setOtherDogChallenges(homeChallengeDTOs);
+        Boolean isChallenge = getIsChallenge(userId, challengeId);
+        ChallengeDetailTempDTO challengeDetailTempDTO = challengeDetailDAO.getChallengeDetailDTO(challengeId);
+        int numberOfComplete = challengeDetailDAO.getNumberOfComplete(userId, challengeId);
+        String recommendDate = challengeDetailDAO.getRecommendDate(userId, challengeId);
+        List<OtherChallengeDTO> otherChallengeDTOs = challengeDetailDAO.getOtherChallenges(challengeId);
+        ChallengeDetailDTO challengeDetailDTO = new ChallengeDetailDTO(
+            isChallenge,
+            challengeDetailTempDTO.getImage(),
+            challengeDetailTempDTO.getTitle(),
+            challengeDetailTempDTO.getContent(),
+            challengeDetailTempDTO.getAuthenticationMethod(),
+            challengeDetailTempDTO.getStickerImage(),
+            challengeDetailTempDTO.getStickerShape(),
+            numberOfComplete,
+            recommendDate,
+            otherChallengeDTOs
+        );
 
         return challengeDetailDTO;
+    }
+
+    Boolean getIsChallenge(int userId, int challengeId) {
+        int isChallenge = challengeDetailDAO.getIsChallenge(userId, challengeId);
+        if (isChallenge == 0) {
+            return false;
+        }
+        return true;
     }
 }
