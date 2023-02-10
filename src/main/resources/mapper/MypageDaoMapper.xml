@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dangdiary.api.dao.MypageDAO">
+  <select id="getUserName" parameterType="int" resultType="String">
+    select nickname from users where user_id=#{userId};
+  </select>
+  <select id="getDogImage" parameterType="int" resultType="String">
+    select profile_image dogImage from dogs where user_id=#{userId};
+  </select>
+  <select id="getDogName" parameterType="int" resultType="String">
+    select dog_name dogName from dogs where user_id=#{userId};
+  </select>
+  <select id="getDogBreed" parameterType="int" resultType="String">
+    select breed dogBreed from dogs where user_id=#{userId};
+  </select>
+  <select id="getDogAge" parameterType="int" resultType="int">
+    SELECT floor((TO_DAYS(NOW()) - (TO_DAYS(birth))) / 365) from dogs where user_id=#{userId};  
+  </select>
+  <select id="getDogGender" parameterType="int" resultType="String">
+    select gender dogGender from dogs where user_id = #{userId};
+  </select>
+  <select id="getDogBirth" parameterType="int" resultType="String">
+    select birth dogBirth from dogs where user_id = #{userId};
+  </select>
+
+</mapper>
