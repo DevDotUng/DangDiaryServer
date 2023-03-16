@@ -28,20 +28,16 @@
     AND register_date IS NULL
   </select>
   <select id="getMyDiaryEachDTO" parameterType="int" resultType="com.dangdiary.api.dto.myDiary.MyDiaryEachDTO">
-    SELECT j.diaryId diaryId, j.endDate endDate, j.challengeTitle challengeTitle, i.image image
+    SELECT j.diaryId diaryId, j.endDate endDate, i.image image
     FROM
-    (SELECT j.diaryId diaryId, u.end_date endDate, j.challengeTitle challengeTitle
-    FROM
-    (SELECT d.diary_id diaryId, c.title challengeTitle
+    (SELECT d.diary_id diaryId, u.end_date endDate
     FROM diaries d
-    LEFT JOIN challenges c
-    ON d.challenge_id = c.challenge_id
-    WHERE d.user_id = #{userId}) j
     LEFT JOIN user_challenges u
-    ON j.diaryId = u.diary_id) j
+    ON d.diary_id = u.diary_id
+    WHERE d.user_id = #{userId}) j
     LEFT JOIN diary_images i
     ON j.diaryId = i.diary_id
-    WHERE i.image_index = 0
+    WHERE i.image_index = 0 AND j.endDate IS NOT NULL
     ORDER BY j.endDate
   </select>
   <select id="getNumberOfLikeAndIsLike" parameterType="int" resultType="int">

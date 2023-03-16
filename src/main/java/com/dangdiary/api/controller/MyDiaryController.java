@@ -133,7 +133,7 @@ public class MyDiaryController {
 		
             String fileName = uuid + image.getOriginalFilename();
 
-            String webPath = "/static/diary";
+            String webPath = "/upload/diary";
             String realPath = ctx.getRealPath(webPath);
             
             File savePath = new File(realPath);

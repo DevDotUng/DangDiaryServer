@@ -167,6 +167,7 @@ public class MyDiaryServiceImp implements MyDiaryService {
 
             String now = format.format(calendar.getTime());
             String birth = myDiaryDAO.getBirth(userId);
+            birth += " 00:00:00";
 
             Date nowDate = format.parse(now);
             Date birthDate = format.parse(birth);
