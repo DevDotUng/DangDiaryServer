@@ -12,6 +12,6 @@ import lombok.Setter;
 public class KakaoLoginDTO {
     int userId = 0;
     long id;
-    String nickname;
+    String name;
     String refreshToken;
 }

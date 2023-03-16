@@ -20,17 +20,17 @@
     WHERE social_id = ${socialId}
   </select>
   <insert id="addUserWithKakao" parameterType="com.dangdiary.api.dto.login.KakaoLoginDTO">
-    INSERT INTO users(social_id, refresh_token, nickname, admission_date)
+    INSERT INTO users(social_id, refresh_token, name, admission_date)
     VALUES
-    (#{id}, #{refreshToken}, #{nickname}, NOW())
+    (#{id}, #{refreshToken}, #{name}, NOW())
   </insert>
   <update id="updateUserWithKakao" parameterType="com.dangdiary.api.dto.login.KakaoLoginDTO">
     UPDATE users
-    SET social_id = #{id}, refresh_token = #{refreshToken}, nickname = #{nickname}
+    SET social_id = #{id}, refresh_token = #{refreshToken}, name = #{name}
     WHERE user_id = #{userId};
   </update>
   <select id="getLoginResponseDTO" parameterType="long" resultType="com.dangdiary.api.dto.login.LoginResponseDTO">
-    SELECT user_id userId, nickname nickname, admission_date admissionDate
+    SELECT user_id userId, name name, admission_date admissionDate
     FROM users
     WHERE social_id = #{socialId}
     LIMIT 1

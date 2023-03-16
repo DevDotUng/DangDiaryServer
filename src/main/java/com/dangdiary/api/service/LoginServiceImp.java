@@ -112,6 +112,7 @@ public class LoginServiceImp implements LoginService {
                         sb.append(line).append("\n");
                     }
                     result = sb.toString();
+                    System.out.println(result);
 
                     String updatedAccessToken = "";
                     String updatedRefreshToken = "";
@@ -119,7 +120,11 @@ public class LoginServiceImp implements LoginService {
                     try {
                         JsonNode node = mapper.readTree(result);
                         updatedAccessToken = node.get("access_token").asText();
-                        updatedRefreshToken = node.get("refresh_token").asText();
+                        if (result.contains("refresh_token")) {
+                            updatedRefreshToken = node.get("refresh_token").asText();
+                        } else {
+                            updatedRefreshToken = refreshToken;
+                        }
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     }
@@ -145,7 +150,7 @@ public class LoginServiceImp implements LoginService {
         try {
             JsonNode node = mapper.readTree(str);
             kakaoLoginDTO.setId(node.get("id").asLong());
-            kakaoLoginDTO.setNickname(node.get("properties").get("nickname").asText());
+            kakaoLoginDTO.setName(node.get("properties").get("nickname").asText());
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

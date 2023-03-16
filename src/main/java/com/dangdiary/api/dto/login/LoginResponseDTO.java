@@ -11,6 +11,6 @@ import lombok.Setter;
 @Setter
 public class LoginResponseDTO {
     int userId;
-    String nickname;
+    String name;
     String admissionDate;
 }
