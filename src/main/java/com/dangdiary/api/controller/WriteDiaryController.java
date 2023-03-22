@@ -68,7 +68,7 @@ public class WriteDiaryController {
 
         DiaryResponseDTO result = writeDiaryService.postWriteDiary(writeDiaryRequestDTO);
 
-        return ResponseEntity.status(HttpStatus.OK).body(result);
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
     List<String> saveImages(List<MultipartFile> images) throws IllegalStateException, IOException {

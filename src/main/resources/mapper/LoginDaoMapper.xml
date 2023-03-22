@@ -8,28 +8,44 @@
     FROM users
     WHERE user_id = #{userId};
   </select>
-  <select id="existId" parameterType="long" resultType="int">
+  <select id="existId" parameterType="String" resultType="int">
     SELECT EXISTS
     (SELECT *
     FROM users
     WHERE social_id = #{socialId}) as existId
   </select>
-  <select id="getUserId" parameterType="long" resultType="int">
+  <select id="getUserId" parameterType="String" resultType="int">
     SELECT user_id
     FROM users
-    WHERE social_id = ${socialId}
+    WHERE social_id = #{socialId}
   </select>
-  <insert id="addUserWithKakao" parameterType="com.dangdiary.api.dto.login.KakaoLoginDTO">
+  <insert id="addUserWithKakao" parameterType="com.dangdiary.api.dto.login.LoginDTO">
     INSERT INTO users(social_id, refresh_token, name, admission_date)
     VALUES
-    (#{id}, #{refreshToken}, #{name}, NOW())
+    ('kakao', #{id}, #{refreshToken}, #{name}, NOW())
   </insert>
-  <update id="updateUserWithKakao" parameterType="com.dangdiary.api.dto.login.KakaoLoginDTO">
+  <insert id="addUserWithApple" parameterType="com.dangdiary.api.dto.login.LoginDTO">
+    INSERT INTO users(login_type, social_id, refresh_token, name, admission_date)
+    VALUES
+    ('apple', #{id}, #{refreshToken}, #{name}, NOW())
+  </insert>
+  <update id="updateUserWithKakao" parameterType="com.dangdiary.api.dto.login.LoginDTO">
     UPDATE users
     SET social_id = #{id}, refresh_token = #{refreshToken}, name = #{name}
     WHERE user_id = #{userId};
   </update>
-  <select id="getLoginResponseDTO" parameterType="long" resultType="com.dangdiary.api.dto.login.LoginResponseDTO">
+  <update id="updateUserWithApple" parameterType="com.dangdiary.api.dto.login.LoginDTO">
+    UPDATE users
+    SET social_id = #{id}, refresh_token = #{refreshToken}
+    WHERE user_id = #{userId};
+  </update>
+  <select id="existDog" parameterType="int" resultType="int">
+    SELECT EXISTS
+    (SELECT *
+    FROM dogs
+    WHERE user_id = #{userId}) as existDog
+  </select>
+  <select id="getLoginResponseDTO" parameterType="String" resultType="com.dangdiary.api.dto.login.LoginResponseDTO">
     SELECT user_id userId, name name, admission_date admissionDate
     FROM users
     WHERE social_id = #{socialId}
@@ -40,5 +56,22 @@
     FROM users
     WHERE user_id = #{userId}
     LIMIT 1
+  </select>
+  <insert id="registerDogInfo" parameterType="com.dangdiary.api.dto.login.DogInfoDTO">
+    INSERT INTO dogs(user_id, dog_name, profile_image, breed, birth, gender)
+    VALUES
+    (#{userId}, #{dogName}, #{profileImage}, #{breed}, #{birth}, #{gender})
+  </insert>
+  <update id="registerNickname" parameterType="com.dangdiary.api.dto.login.DogInfoDTO">
+    UPDATE users
+    SET nickname = #{nickname}
+    WHERE user_id = #{userId};
+  </update>
+  <select id="getDogInfo" parameterType="int" resultType="com.dangdiary.api.dto.login.DogInfoDTO">
+    SELECT u.user_id userId, u.nickname nickname, d.dog_name dogName, d.profile_image profileImage, d.breed breed, d.birth birth, d.gender gender
+    FROM users u
+    LEFT JOIN dogs d
+    ON u.user_id = d.user_id
+    WHERE u.user_id = #{userId}
   </select>
 </mapper>
