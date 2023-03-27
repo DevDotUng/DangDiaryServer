@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dangdiary.api.dto.sticker.StickerDTO;
+import com.dangdiary.api.dto.sticker.StickerResponseDTO;
 import com.dangdiary.api.service.StickerService;
 
 
@@ -19,8 +19,8 @@ public class StickerController {
     StickerService stickerService;
 
     @GetMapping(value="sticker", produces="application/json;charset=UTF-8")
-    public ResponseEntity<StickerDTO> sticker(int userId) {
-        StickerDTO stickerDTO = stickerService.getStickerView(userId);
-        return ResponseEntity.status(HttpStatus.OK).body(stickerDTO);
+    public ResponseEntity<StickerResponseDTO> sticker(int userId) {
+        StickerResponseDTO stickerResponse = stickerService.getStickerView(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(stickerResponse);
     }
 }

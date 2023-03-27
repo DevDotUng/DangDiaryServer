@@ -4,25 +4,23 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dangdiary.api.dao.WriteDiaryDAO">
   <insert id="postWriteDiary" parameterType="com.dangdiary.api.dto.writeDiary.WriteDiaryDTO">
-    INSERT INTO diaries
-    (user_id, challenge_id, register_date, title, weather, feeling, content, is_public)
-    VALUES
-    (#{userId}, #{challengeId}, NOW(), #{title}, #{weather}, #{feeling}, #{content}, #{isPublic})
+    UPDATE diaries
+    SET user_id = #{userId}, challenge_id = #{challengeId}, register_date = NOW(), title = #{title}, weather = #{weather}, feeling = #{feeling}, content = #{content}, is_public = #{isPublic}
+    WHERE diary_id = #{diaryId}
   </insert>
-  <insert id="postOverdueWriteDiary" parameterType="com.dangdiary.api.dto.writeDiary.WriteDiaryDTO">
-    INSERT INTO diaries
-    (user_id, challenge_id, title, weather, feeling, content, is_public)
-    VALUES
-    (#{userId}, #{challengeId}, #{title}, #{weather}, #{feeling}, #{content}, #{isPublic})
-  </insert>
-  <select id="getDiaryId" parameterType="int" resultType="int">
-    SELECT diary_id FROM diaries WHERE user_id = #{userId} and challenge_id = #{challengeId} ORDER BY diary_id DESC LIMIT 1
-  </select>
-  <update id="updateUserChallenge" parameterType="com.dangdiary.api.dto.writeDiary.UpdateUserChallengeDTO">
+  <update id="updateEndDate" parameterType="com.dangdiary.api.dto.writeDiary.WriteDiaryDTO">
     UPDATE user_challenges
-    SET end_date = #{endDate}, diary_id = #{diaryId}
-    WHERE user_id = #{userId} and challenge_id = #{challengeId} and diary_id IS NULL
+    SET end_date = #{endDate}
+    WHERE diary_id = #{diaryId}
   </update>
+  <delete id="deleteImage" parameterType="int">
+    DELETE FROM diary_images
+    WHERE diary_id = #{diaryId}
+  </delete>
+  <delete id="deleteTag" parameterType="int">
+    DELETE FROM tags
+    WHERE diary_id = #{diaryId}
+  </delete>
   <insert id="postImage" parameterType="com.dangdiary.api.dto.writeDiary.ImageOrTagDTO">
     INSERT INTO diary_images
     (diary_id, image_index, image)

@@ -1,4 +1,4 @@
-package com.dangdiary.api.dto.doChallenge;
+package com.dangdiary.api.dto.sticker;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,8 +7,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class DoChallengeDTO {
-    DoChallengeDTO() {};
-    int userId;
+public class LockedStickerDTO {
     int challengeId;
+    String stickerImage;
+    String stickerShape;
 }

@@ -22,4 +22,22 @@ public class ChallengeDetailController {
         ChallengeDetailDTO challengeDetailDTO = challengeDetailService.getChallengeDetailView(userId, challengeId);
         return ResponseEntity.status(HttpStatus.OK).body(challengeDetailDTO);
     }
+
+    @GetMapping(value = "challengeDetail/start", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<Boolean> start(int userId, int challengeId) {
+        Boolean isChallenge = challengeDetailService.startChallenge(userId, challengeId);
+        return ResponseEntity.status(HttpStatus.OK).body(isChallenge);
+    }
+
+    @GetMapping(value = "challengeDetail/stop", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<Boolean> stop(int userId, int challengeId) {
+        Boolean isChallenge = challengeDetailService.stopChallenge(userId, challengeId);
+        return ResponseEntity.status(HttpStatus.OK).body(isChallenge);
+    }
+
+    @GetMapping(value = "challengeDetail/end", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<Integer> end(int userId, int challengeId) {
+        int diaryId = challengeDetailService.endChallenge(userId, challengeId);
+        return ResponseEntity.status(HttpStatus.OK).body(diaryId);
+    }
 }

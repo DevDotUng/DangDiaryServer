@@ -1,7 +1,7 @@
 package com.dangdiary.api.service;
 
-import com.dangdiary.api.dto.sticker.StickerDTO;
+import com.dangdiary.api.dto.sticker.StickerResponseDTO;
 
 public interface StickerService {
-    StickerDTO getStickerView(int userId);
+    StickerResponseDTO getStickerView(int userId);
 }

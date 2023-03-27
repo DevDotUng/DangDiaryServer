@@ -1,6 +1,5 @@
 package com.dangdiary.api.dto.sticker;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,8 +8,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MyStickerDTO {
-    private int challengeId;
-    private String challengeTitle;
-    private String recentDate;
-    private String stickerImage;
+    int challengeId;
+    String stickerImage;
+    String stickerShape;
+    String challengeTitle;
+    String recentGetDate;
 }

@@ -10,7 +10,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ChallengeDTO {
-    private RecommendChallengeDTO dailyRecommendChallenge;
     private List<RecommendChallengeDTO> recommendChallenges;
-    private List<InProgressChallengeDTO> inProgressChallenges;
+    private List<RecommendChallengeDTO> inProgressChallenges;
 }

@@ -41,4 +41,69 @@
     WHERE i.image_index = 0
     AND d.challenge_id = #{challengeId}
   </select>
+  <select id="getUserChallengeId" parameterType="int" resultType="int">
+    SELECT user_challenge_id userChallengeId
+    FROM user_challenges
+    WHERE user_id = #{userId}
+    AND challenge_id = #{challengeId}
+    AND start_date IS NULL
+  </select>
+  <insert id="insertUserChallenge" parameterType="int">
+    INSERT INTO user_challenges(user_id, challenge_id, start_date)
+    VALUES
+    (#{userId}, #{challengeId}, NOW())
+  </insert>
+  <update id="updateUserChallenge" parameterType="int">
+    UPDATE user_challenges
+    SET start_date = NOW()
+    WHERE user_challenge_id = #{userChallengeId}
+  </update>
+
+  <select id="getRecommendType" parameterType="int" resultType="String">
+    SELECT recommend_type recommendType
+    FROM user_challenges
+    WHERE user_id = #{userId}
+    AND challenge_id = #{challengeId}
+    AND start_date IS NOT NULL
+    AND end_date IS NULL
+    ORDER BY user_challenge_id DESC
+    LIMIT 1
+  </select>
+  <delete id="deleteUserChallenge" parameterType="int">
+    DELETE FROM user_challenges
+    WHERE user_id = #{userId}
+    AND challenge_id = #{challengeId}
+    AND start_date IS NOT NULL
+    AND end_date IS NULL
+  </delete>
+  <update id="stopUserChallenge" parameterType="int">
+    UPDATE user_challenges
+    SET start_date = NULL
+    WHERE user_id = #{userId}
+    AND challenge_id = #{challengeId}
+    AND start_date IS NOT NULL
+    AND end_date IS NULL
+  </update>
+
+  <insert id="insertEmptyDiary" parameterType="int">
+    INSERT INTO diaries(user_id, challenge_id)
+    VALUES
+    (#{userId}, #{challengeId})
+  </insert>
+  <select id="getDiaryId" parameterType="int" resultType="int">
+    SELECT diary_id diaryId
+    FROM diaries
+    WHERE user_id = #{userId}
+    AND challenge_id = #{challengeId}
+    ORDER BY diary_id DESC
+    LIMIT 1
+  </select>
+  <update id="updateEndDateAndDiaryId" parameterType="int">
+    UPDATE user_challenges
+    SET end_date = NOW(), diary_id = #{diaryId}
+    WHERE user_id = #{userId}
+    AND challenge_id = #{challengeId}
+    AND start_date IS NOT NULL
+    AND end_date IS NULL
+  </update>
 </mapper>

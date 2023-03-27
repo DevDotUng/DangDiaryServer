@@ -12,6 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class WriteDiaryDTO {
+    int diaryId;
     int userId;
     int challengeId;
     String endDate;

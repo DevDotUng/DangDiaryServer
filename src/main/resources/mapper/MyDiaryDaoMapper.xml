@@ -9,9 +9,9 @@
     WHERE user_id = #{userId}
     LIMIT 1;
   </select>
-  <select id="getBirth" parameterType="int" resultType="String">
-    SELECT birth birth
-    FROM dogs
+  <select id="getAdmissionDate" parameterType="int" resultType="String">
+    SELECT admission_date admissionDate
+    FROM users
     WHERE user_id = #{userId}
     LIMIT 1;
   </select>

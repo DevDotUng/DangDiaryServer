@@ -13,4 +13,5 @@ public class RecommendChallengeDTO {
     private String content;
     private String image;
     private String recommendDate;
+    private String recommendType;
 }

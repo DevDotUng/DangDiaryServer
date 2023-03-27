@@ -15,25 +15,24 @@
     ON c.challenge_id = r.challenge_id
   </select>
   <select id="getRecommendChallengeDTOs" parameterType="int" resultType="com.dangdiary.api.dto.challenge.RecommendChallengeDTO">
-    SELECT c.challenge_id challengeId, c.title title, c.content content, c.image image, r.recommend_date recommendDate
+    SELECT c.challenge_id challengeId, c.title title, c.content content, c.image image, r.recommend_date recommendDate, r.recommend_type recommendType
     FROM challenges c
-    LEFT JOIN
-    (SELECT challenge_id, recommend_date
+    RIGHT JOIN
+    (SELECT challenge_id, recommend_date, recommend_type
     FROM user_challenges
     WHERE user_id = #{userId}
-    AND recommend_type != 'daily'
     AND recommend_date IS NOT NULL
     AND start_date IS NULL) r
     ON c.challenge_id = r.challenge_id
     ORDER BY recommend_date
   </select>
-  <select id="getInProgressChallengeDTOs" parameterType="int" resultType="com.dangdiary.api.dto.challenge.InProgressChallengeDTO">
-    SELECT c.challenge_id challengeId, c.title title, c.content content, c.image image, r.recommend_date recommendDate
+  <select id="getInProgressChallengeDTOs" parameterType="int" resultType="com.dangdiary.api.dto.challenge.RecommendChallengeDTO">
+    SELECT c.challenge_id challengeId, c.title title, c.content content, c.image image, r.recommend_date recommendDate, r.recommend_type recommendType
     FROM challenges c
     RIGHT JOIN
-    (SELECT challenge_id, recommend_date
+    (SELECT challenge_id, recommend_date, recommend_type
     FROM user_challenges
-    WHERE user_id = 1
+    WHERE user_id = #{userId}
     AND start_date IS NOT NULL
     AND end_date IS NULL) r
     ON c.challenge_id = r.challenge_id

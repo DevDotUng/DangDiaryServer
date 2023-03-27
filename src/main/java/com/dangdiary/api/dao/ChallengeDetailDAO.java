@@ -15,4 +15,16 @@ public interface ChallengeDetailDAO {
     int getNumberOfComplete(@Param("userId") int userId,@Param("challengeId") int challengeId);
     String getRecommendDate(@Param("userId") int userId,@Param("challengeId") int challengeId);
     List<OtherChallengeDTO> getOtherChallenges(int challengeId);
+
+    Integer getUserChallengeId(@Param("userId") int userId,@Param("challengeId") int challengeId);
+    void insertUserChallenge(@Param("userId") int userId,@Param("challengeId") int challengeId);
+    void updateUserChallenge(int userChallengeId);
+
+    String getRecommendType(@Param("userId") int userId,@Param("challengeId") int challengeId);
+    void deleteUserChallenge(@Param("userId") int userId,@Param("challengeId") int challengeId);
+    void stopUserChallenge(@Param("userId") int userId,@Param("challengeId") int challengeId);
+
+    void insertEmptyDiary(@Param("userId") int userId,@Param("challengeId") int challengeId);
+    int getDiaryId(@Param("userId") int userId,@Param("challengeId") int challengeId);
+    void updateEndDateAndDiaryId(@Param("userId") int userId,@Param("challengeId") int challengeId,@Param("diaryId") int diaryId);
 }

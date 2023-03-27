@@ -33,6 +33,7 @@ public class WriteDiaryController {
     
     @PostMapping("writeDiary")
     public ResponseEntity<DiaryResponseDTO> home(
+        @RequestParam("diaryId") int diaryId,
         @RequestParam("userId") int userId,
         @RequestParam("challengeId") int challengeId,
         @RequestParam("endDate") String endDate,
@@ -54,6 +55,7 @@ public class WriteDiaryController {
         }
 
         WriteDiaryDTO writeDiaryRequestDTO = new WriteDiaryDTO(
+            diaryId,
             userId,
             challengeId,
             endDate,

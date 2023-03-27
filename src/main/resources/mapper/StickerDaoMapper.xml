@@ -3,25 +3,44 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dangdiary.api.dao.StickerDAO">
-  <select id="getTotalStickers" parameterType="int" resultType="int">
-    SELECT count(challenge_id) totalStickers from challenges
+  <select id="getNumberOfTotalSticker" resultType="int">
+    SELECT count(*)
+    FROM challenges
   </select>
-  <select id="getDogImage" parameterType="int" resultType="String">
-    SELECT profile_image dogImage from dogs where user_id=#{userId}
+  <select id="getProfileImage" parameterType="int" resultType="String">
+    SELECT profile_image profileImage
+    FROM dogs
+    WHERE user_id = #{userId}
+    LIMIT 1
   </select>
-  <select id="getMyStickers" parameterType="int" resultType="int">
-    SELECT count(user_challenge_id) myStickers from user_challenges where user_id=#{userId}
+  <select id="getNumberOfDiary" parameterType="int" resultType="int">
+    SELECT count(*)
+    FROM diaries
+    WHERE user_id = #{userId}
+    AND register_date IS NOT NULL
   </select>
-  <select id="getTotalDiary" parameterType="int" resultType="int">
-    SELECT count(diary_id) totalDiary from diaries where user_id=#{userId}
+  <select id="getNumberOfOverdueDiary" parameterType="int" resultType="int">
+    SELECT count(*)
+    FROM diaries
+    WHERE user_id = #{userId}
+    AND register_date IS NULL
   </select>
-  <select id="getOverdueDiary" parameterType="int" resultType="int">
-    SELECT count(user_challenge_id) from user_challenges where end_date IS NOT null and diary_bool=0 and user_id=#{userId}
+  <select id="getMyStickerDTO" parameterType="int" resultType="com.dangdiary.api.dto.sticker.MyStickerDTO">
+    SELECT d.challengeId challengeId, c.sticker_image stickerImage, c.sticker_shape stickerShape, c.title challengeTitle, d.recentGetDate
+    FROM
+    (SELECT challenge_id challengeId, MAX(register_date) recentGetDate
+    FROM diaries
+    WHERE user_id = #{userId} AND register_date IS NOT NULL
+    GROUP BY challenge_id) d
+    LEFT JOIN challenges c
+    ON d.challengeId = c.challenge_id
   </select>
-
-  <select id="getMyStickerUserDTO" parameterType="int" resultType="com.dangdiary.api.dto.sticker.MyStickerUserDTO">
-    SELECT user_challenge_id userChallengeId, challenge_id challengeId FROM user_challenges WHERE user_id = #{userId}
+  <select id="getLockedStickerDTO" parameterType="int" resultType="com.dangdiary.api.dto.sticker.LockedStickerDTO">
+    SELECT challenge_id challengeId, sticker_image stickerImage, sticker_shape stickerShape
+    FROM challenges
+    WHERE challenge_id NOT IN
+    (SELECT DISTINCT challenge_id
+    FROM diaries
+    WHERE user_id = #{userId} AND register_date IS NOT NULL)
   </select>
-  <select id="getStickerDTOs" parameterType="int" resultType="com.dangdiary.api.dto.sticker.MyStickerDTO">
-    SELECT challenges.challenge_id challengeId, challenges.title, diaries.register_date, challenges.sticker_image FROM challenges, diaries WHERE diaries.user_id = #{userId} and diaries.challenge_id = challenges.challenge_id and diaries.challenge_id=#{challengeId} order by diaries.register_date limit 1;  </select>
 </mapper>

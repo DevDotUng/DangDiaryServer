@@ -21,24 +21,13 @@ public class WriteDiaryServiceImp implements WriteDiaryService {
     WriteDiaryDAO writeDiaryDAO;
 
     @Override
-    public DiaryResponseDTO postWriteDiary(WriteDiaryDTO writeDiaryDTO) { 
+    public DiaryResponseDTO postWriteDiary(WriteDiaryDTO writeDiaryDTO) {
+
+        int diaryId = writeDiaryDTO.getDiaryId();
         
-        int userId = writeDiaryDTO.getUserId();
-        int challengeId = writeDiaryDTO.getChallengeId();
-
-        if (writeDiaryDTO.getWeather() == null || writeDiaryDTO.getWeather() == "" ||
-            writeDiaryDTO.getFeeling() == null || writeDiaryDTO.getTitle() == "" ||
-            writeDiaryDTO.getContent() == null || writeDiaryDTO.getContent() == "" ||
-            writeDiaryDTO.getImages() == null || writeDiaryDTO.getImages().isEmpty()
-        ) {
-            writeDiaryDAO.postOverdueWriteDiary(writeDiaryDTO);
-        } else {
-            writeDiaryDAO.postWriteDiary(writeDiaryDTO);
-        }
-
-        int diaryId = writeDiaryDAO.getDiaryId(userId, challengeId);
-        UpdateUserChallengeDTO updateUserChallengeDTO = new UpdateUserChallengeDTO(diaryId, userId, challengeId, writeDiaryDTO.getEndDate());
-        writeDiaryDAO.updateUserChallenge(updateUserChallengeDTO);
+        writeDiaryDAO.postWriteDiary(writeDiaryDTO);
+        writeDiaryDAO.updateEndDate(writeDiaryDTO);
+        
         postImages(diaryId, writeDiaryDTO.getImages());
         postTags(diaryId, writeDiaryDTO.getTags());
 
@@ -47,7 +36,7 @@ public class WriteDiaryServiceImp implements WriteDiaryService {
         result.setImages(writeDiaryDAO.getImages(diaryId));
         result.setTags(writeDiaryDAO.getTags(diaryId));
 
-        insertCoverIfIsNotExist(userId);
+        insertCoverIfIsNotExist(writeDiaryDTO.getUserId());
 
         return result;
     }
