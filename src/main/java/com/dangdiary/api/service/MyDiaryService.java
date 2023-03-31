@@ -9,7 +9,7 @@ import com.dangdiary.api.dto.myDiary.EditCoverColorResponseDTO;
 import com.dangdiary.api.dto.myDiary.EditCoverTitleResponseDTO;
 import com.dangdiary.api.dto.myDiary.EditDiaryDTO;
 import com.dangdiary.api.dto.myDiary.MyDiaryDTO;
-import com.dangdiary.api.dto.writeDiary.DiaryResponseDTO;
+import com.dangdiary.api.dto.writeDiary.WriteDiaryResponseDTO;
 
 public interface MyDiaryService {
     MyDiaryDTO getMyDiaryView(int userId);
@@ -19,6 +19,6 @@ public interface MyDiaryService {
     EditCoverColorResponseDTO editCoverColor(int coverId, String coverColor, String holderColor);
     void deleteAllDiaries(List<Integer> diaryIds);
     MakePublicAllDiariesByCoverResponseDTO changeIsPublicDiary(int diaryId, Boolean isPublic);
-    DiaryResponseDTO editDiary(EditDiaryDTO diary);
+    WriteDiaryResponseDTO editDiary(EditDiaryDTO diary);
     void deleteDiary(int diaryId);
 }

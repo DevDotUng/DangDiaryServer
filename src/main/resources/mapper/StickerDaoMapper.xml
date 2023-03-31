@@ -43,4 +43,64 @@
     FROM diaries
     WHERE user_id = #{userId} AND register_date IS NOT NULL)
   </select>
+
+  <select id="getStickerDetail" parameterType="int" resultType="com.dangdiary.api.dto.sticker.StickerDetailResponseDTO">
+    SELECT sticker_image stickerImage, sticker_shape stickerShape, title challengeTitle
+    FROM challenges
+    WHERE challenge_id = #{challengeId}
+    LIMIT 1
+  </select>
+  <select id="getNumberOfSticker" parameterType="int" resultType="int">
+    SELECT COUNT(*) numberOfSticker
+    FROM diaries
+    WHERE user_id = #{userId}
+    AND challenge_id = #{challengeId}
+    AND register_date IS NOT NULL
+  </select>
+  <select id="getFirstGetDate" parameterType="int" resultType="String">
+    SELECT end_date firstGetDate
+    FROM user_challenges
+    WHERE user_id = #{userId}
+    AND challenge_id = #{challengeId}
+    AND diary_id IS NOT NULL
+    ORDER BY end_date
+    LIMIT 1
+  </select>
+  <select id="getRecentGetDate" parameterType="int" resultType="String">
+    SELECT end_date firstGetDate
+    FROM user_challenges
+    WHERE user_id = #{userId}
+    AND challenge_id = #{challengeId}
+    AND diary_id IS NOT NULL
+    ORDER BY end_date DESC
+    LIMIT 1
+  </select>
+  <select id="getDiaryBySticker" parameterType="int" resultType="com.dangdiary.api.dto.sticker.DiaryByStickerDTO">
+    SELECT d.diary_id diaryId, d.end_date endDate, d.title diaryTitle, IFNULL(l.cnt, 0) numberOfLike
+    FROM (SELECT d.diary_id, u.end_date, d.title
+    FROM diaries d
+    LEFT JOIN user_challenges u
+    ON d.diary_id = u.diary_id
+    WHERE d.user_id = #{userId}
+    AND d.challenge_id = #{challengeId}
+    AND register_date IS NOT NULL) d
+    LEFT JOIN (SELECT diary_id, COUNT(*) cnt
+    FROM likes
+    WHERE diary_id
+    IN (SELECT diary_id
+    FROM diaries
+    WHERE user_id = #{userId}
+    AND challenge_id = #{challengeId}
+    AND register_date IS NOT NULL)
+    GROUP BY diary_id) l
+    ON d.diary_id = l.diary_id
+    ORDER BY d.end_date DESC
+  </select>
+  <select id="getCoverColor" parameterType="int" resultType="String">
+    SELECT cover_color coverColor
+    FROM diary_covers
+    WHERE user_id = #{userId}
+    AND diary_yyyymm = #{yyyymm}
+    LIMIT 1
+  </select>
 </mapper>

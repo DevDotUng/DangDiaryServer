@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.dangdiary.api.dto.challengeDetail.ChallengeDetailTempDTO;
 import com.dangdiary.api.dto.challengeDetail.OtherChallengeDTO;
+import com.dangdiary.api.dto.challengeDetail.ReasonDTO;
 
 @Mapper
 public interface ChallengeDetailDAO {
@@ -23,6 +24,7 @@ public interface ChallengeDetailDAO {
     String getRecommendType(@Param("userId") int userId,@Param("challengeId") int challengeId);
     void deleteUserChallenge(@Param("userId") int userId,@Param("challengeId") int challengeId);
     void stopUserChallenge(@Param("userId") int userId,@Param("challengeId") int challengeId);
+    void submitReason(ReasonDTO reasonDTO);
 
     void insertEmptyDiary(@Param("userId") int userId,@Param("challengeId") int challengeId);
     int getDiaryId(@Param("userId") int userId,@Param("challengeId") int challengeId);

@@ -24,7 +24,7 @@ import com.dangdiary.api.dto.myDiary.EditDiaryDTO;
 import com.dangdiary.api.dto.myDiary.MyDiaryByCoverDTO;
 import com.dangdiary.api.dto.myDiary.MyDiaryDTO;
 import com.dangdiary.api.dto.myDiary.MyDiaryEachDTO;
-import com.dangdiary.api.dto.writeDiary.DiaryResponseDTO;
+import com.dangdiary.api.dto.writeDiary.WriteDiaryResponseDTO;
 import com.dangdiary.api.dto.writeDiary.ImageOrTagDTO;
 
 @Service
@@ -136,14 +136,14 @@ public class MyDiaryServiceImp implements MyDiaryService {
     }
 
     @Transactional
-    public DiaryResponseDTO editDiary(EditDiaryDTO diary) {
+    public WriteDiaryResponseDTO editDiary(EditDiaryDTO diary) {
 
         int diaryId = diary.getDiaryId();
         myDiaryDAO.editDiary(diary);
         deleteAndPostImages(diaryId, diary.getImages());
         deleteAndPostTags(diaryId, diary.getTags());
 
-        DiaryResponseDTO diaryResponse = myDiaryDAO.getDiary(diaryId);
+        WriteDiaryResponseDTO diaryResponse = myDiaryDAO.getDiary(diaryId);
 
         diaryResponse.setImages(myDiaryDAO.getImages(diaryId));
         diaryResponse.setTags(myDiaryDAO.getTags(diaryId));

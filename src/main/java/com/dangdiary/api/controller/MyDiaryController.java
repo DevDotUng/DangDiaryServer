@@ -26,7 +26,7 @@ import com.dangdiary.api.dto.myDiary.EditCoverColorResponseDTO;
 import com.dangdiary.api.dto.myDiary.EditCoverTitleResponseDTO;
 import com.dangdiary.api.dto.myDiary.EditDiaryDTO;
 import com.dangdiary.api.dto.myDiary.MyDiaryDTO;
-import com.dangdiary.api.dto.writeDiary.DiaryResponseDTO;
+import com.dangdiary.api.dto.writeDiary.WriteDiaryResponseDTO;
 import com.dangdiary.api.service.MyDiaryService;
 
 @RestController
@@ -84,7 +84,7 @@ public class MyDiaryController {
     }
 
     @PutMapping(value = "diary", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<DiaryResponseDTO> editDiary(
+    public ResponseEntity<WriteDiaryResponseDTO> editDiary(
         @RequestParam("diaryId") int diaryId,
         @RequestParam("weather") String weather,
         @RequestParam("feeling") String feeling,
@@ -114,7 +114,7 @@ public class MyDiaryController {
             intIsPublic
         );
 
-        DiaryResponseDTO diaryDTO = myDiaryService.editDiary(diary);
+        WriteDiaryResponseDTO diaryDTO = myDiaryService.editDiary(diary);
         return ResponseEntity.status(HttpStatus.CREATED).body(diaryDTO);
     }
 

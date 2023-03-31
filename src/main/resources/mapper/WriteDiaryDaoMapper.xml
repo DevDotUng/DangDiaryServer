@@ -33,7 +33,7 @@
     VALUES
     (#{diaryId}, #{index}, #{imageOrTag})
   </insert>
-  <select id="getDiary" parameterType="int" resultType="com.dangdiary.api.dto.writeDiary.DiaryResponseDTO">
+  <select id="getDiary" parameterType="int" resultType="com.dangdiary.api.dto.writeDiary.WriteDiaryResponseDTO">
     SELECT d.diary_id diaryId, d.user_id userId, d.challenge_id challengeId, d.title title, u.end_date endDate, d.weather weather, d.feeling feeling, d.content content, d.hit hit, d.is_public isPublic
     FROM diaries d
     LEFT JOIN user_challenges u
@@ -59,5 +59,17 @@
     (user_id, diary_yyyymm)
     VALUES
     (#{userId}, #{yyyymm})
+  </select>
+  <select id="getDogName" parameterType="int" resultType="String">
+    SELECT dog_name dogName
+    FROM dogs
+    WHERE user_id = #{userId}
+    LIMIT 1
+  </select>
+  <select id="getStickerDTO" parameterType="int" resultType="com.dangdiary.api.dto.writeDiary.StickerDTO">
+    SELECT sticker_image stickerImage, sticker_shape stickerShape
+    FROM challenges
+    WHERE challenge_id = #{challengeId}
+    LIMIT 1
   </select>
 </mapper>

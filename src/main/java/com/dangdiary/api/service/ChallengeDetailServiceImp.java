@@ -10,6 +10,7 @@ import com.dangdiary.api.dao.ChallengeDetailDAO;
 import com.dangdiary.api.dto.challengeDetail.ChallengeDetailDTO;
 import com.dangdiary.api.dto.challengeDetail.ChallengeDetailTempDTO;
 import com.dangdiary.api.dto.challengeDetail.OtherChallengeDTO;
+import com.dangdiary.api.dto.challengeDetail.ReasonDTO;
 
 @Service
 public class ChallengeDetailServiceImp implements ChallengeDetailService {
@@ -62,8 +63,8 @@ public class ChallengeDetailServiceImp implements ChallengeDetailService {
         return true;
     }
 
-    @Override
-    public Boolean stopChallenge(int userId, int challengeId) {
+    @Transactional
+    public Boolean stopChallenge(int userId, int challengeId, String reason) {
         String recommendType = challengeDetailDAO.getRecommendType(userId, challengeId);
 
         if (recommendType == null) {
@@ -71,6 +72,8 @@ public class ChallengeDetailServiceImp implements ChallengeDetailService {
         } else {
             challengeDetailDAO.stopUserChallenge(userId, challengeId);
         }
+
+        challengeDetailDAO.submitReason(new ReasonDTO(userId, challengeId, reason));
 
         return false;
     }

@@ -15,7 +15,7 @@ import com.dangdiary.api.dto.myDiary.EditDiaryDTO;
 import com.dangdiary.api.dto.myDiary.MakePublicAllDiariesByCoverResponseDTO;
 import com.dangdiary.api.dto.myDiary.MyDiaryDTO;
 import com.dangdiary.api.dto.myDiary.MyDiaryEachDTO;
-import com.dangdiary.api.dto.writeDiary.DiaryResponseDTO;
+import com.dangdiary.api.dto.writeDiary.WriteDiaryResponseDTO;
 import com.dangdiary.api.dto.writeDiary.ImageOrTagDTO;
 
 @Mapper
@@ -53,7 +53,7 @@ public interface MyDiaryDAO {
     void postImage(ImageOrTagDTO image);
     void deleteTags(int diaryId);
     void postTag(ImageOrTagDTO tag);
-    DiaryResponseDTO getDiary(int diaryId);
+    WriteDiaryResponseDTO getDiary(int diaryId);
     List<String> getImages(int diaryId);
     List<String> getTags(int diaryId);
 

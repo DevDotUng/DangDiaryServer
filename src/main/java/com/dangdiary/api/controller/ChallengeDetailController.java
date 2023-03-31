@@ -30,8 +30,8 @@ public class ChallengeDetailController {
     }
 
     @GetMapping(value = "challengeDetail/stop", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<Boolean> stop(int userId, int challengeId) {
-        Boolean isChallenge = challengeDetailService.stopChallenge(userId, challengeId);
+    public ResponseEntity<Boolean> stop(int userId, int challengeId, String reason) {
+        Boolean isChallenge = challengeDetailService.stopChallenge(userId, challengeId, reason);
         return ResponseEntity.status(HttpStatus.OK).body(isChallenge);
     }
 
