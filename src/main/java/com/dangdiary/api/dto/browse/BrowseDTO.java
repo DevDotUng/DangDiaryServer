@@ -1,7 +1,5 @@
 package com.dangdiary.api.dto.browse;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,6 +8,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class BrowseDTO {
-    List<String> autoCompleteWords;
-    List<ImageDTO> imageDTOs;
+    private int browseId;
+    private String title;
+    private String content;
+    private String image;
+    private String query;
 }

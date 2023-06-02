@@ -68,6 +68,7 @@
     LEFT JOIN challenges c
     ON d.challenge_id = c.challenge_id
     WHERE d.user_id = #{userId}
+    AND d.register_date IS NOT NULL
   </select>
   <select id="getIsPublicAndNumberOfLikeAndIsLike" parameterType="int" resultType="int">
     SELECT is_public isPublic

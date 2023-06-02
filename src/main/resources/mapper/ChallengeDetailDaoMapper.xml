@@ -11,6 +11,13 @@
     AND start_date IS NOT NULL
     AND end_date IS NULL
   </select>
+  <select id="getIsOverdueChallenge" parameterType="int" resultType="int">
+    SELECT COUNT(*)
+    FROM diaries
+    WHERE user_id = #{userId}
+    AND challenge_id = #{challengeId}
+    AND register_date IS NULL
+  </select>
   <select id="getChallengeDetailDTO" parameterType="int" resultType="com.dangdiary.api.dto.challengeDetail.ChallengeDetailTempDTO">
     SELECT image image, title title, content content, authentication_method authenticationMethod, sticker_image stickerImage, sticker_shape stickerShape
     FROM challenges
@@ -84,6 +91,12 @@
     AND start_date IS NOT NULL
     AND end_date IS NULL
   </update>
+  <delete id="deleteOverdueDiary" parameterType="int">
+    DELETE FROM diaries
+    WHERE user_id = #{userId}
+    AND challenge_id = #{challengeId}
+    AND register_date IS NULL
+  </delete>
   <insert id="submitReason" parameterType="com.dangdiary.api.dto.challengeDetail.ReasonDTO">
     INSERT INTO diary_admin(user_id, challenge_id, reason)
     VALUES

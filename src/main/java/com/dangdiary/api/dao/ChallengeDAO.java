@@ -11,4 +11,5 @@ import com.dangdiary.api.dto.challenge.RecommendChallengeDTO;
 public interface ChallengeDAO {
     List<RecommendChallengeDTO> getRecommendChallengeDTOs(int userId);
     List<RecommendChallengeDTO> getInProgressChallengeDTOs(int userId);
+    List<RecommendChallengeDTO> getOverdueChallengeDTOs(int userId);
 }

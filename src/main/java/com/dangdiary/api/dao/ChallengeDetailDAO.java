@@ -12,6 +12,7 @@ import com.dangdiary.api.dto.challengeDetail.ReasonDTO;
 @Mapper
 public interface ChallengeDetailDAO {
     int getIsChallenge(@Param("userId") int userId,@Param("challengeId") int challengeId);
+    int getIsOverdueChallenge(@Param("userId") int userId,@Param("challengeId") int challengeId);
     ChallengeDetailTempDTO getChallengeDetailDTO(int challengeId);
     int getNumberOfComplete(@Param("userId") int userId,@Param("challengeId") int challengeId);
     String getRecommendDate(@Param("userId") int userId,@Param("challengeId") int challengeId);
@@ -24,6 +25,7 @@ public interface ChallengeDetailDAO {
     String getRecommendType(@Param("userId") int userId,@Param("challengeId") int challengeId);
     void deleteUserChallenge(@Param("userId") int userId,@Param("challengeId") int challengeId);
     void stopUserChallenge(@Param("userId") int userId,@Param("challengeId") int challengeId);
+    void deleteOverdueDiary(@Param("userId") int userId,@Param("challengeId") int challengeId);
     void submitReason(ReasonDTO reasonDTO);
 
     void insertEmptyDiary(@Param("userId") int userId,@Param("challengeId") int challengeId);

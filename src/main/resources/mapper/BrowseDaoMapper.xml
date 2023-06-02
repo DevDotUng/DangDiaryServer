@@ -4,30 +4,75 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dangdiary.api.dao.BrowseDAO">
   <select id="getAutoCompleteWords" resultType="String">
-    SELECT title autoCompleteWords FROM challenges
+    SELECT CONCAT('#', hash_tag) autoCompleteWords FROM tags
     UNION
     SELECT breed FROM dogs
     UNION
     SELECT name FROM users
+    UNION
+    SELECT dog_name FROM dogs
   </select>
-  <select id="getImageDTOs" resultType="com.dangdiary.api.dto.browse.ImageDTO">
-    SELECT diary_id diaryId, image1
-    FROM diaries
+  <select id="getBrowseDTOs" resultType="com.dangdiary.api.dto.browse.BrowseDTO">
+    SELECT browse_id browseId, title title, content content, image image, query query
+    FROM browse
   </select>
-  <select id="getImageDTOsByKeyword" parameterType="String" resultType="com.dangdiary.api.dto.browse.ImageDTO">
-    SELECT diary_id diaryId, image1 image1
-    FROM diaries 
-    WHERE diary_id IN
-    (SELECT diary_id
-    FROM
-    (SELECT diary.diary_id, challenge.title, dog.breed, user.name
-    FROM diaries diary
-    LEFT JOIN challenges challenge
-    ON diary.challenge_id = challenge.challenge_id
-    LEFT JOIN dogs dog
-    ON diary.user_id = dog.user_id
-    LEFT JOIN users user
-    ON diary.user_id = user.user_id) j
-    WHERE title LIKE '%${keyword}%' OR breed LIKE '%${keyword}%' OR name LIKE '%${keyword}%')
+
+  <select id="getQuery" parameterType="int" resultType="String">
+    SELECT query
+    FROM browse
+    WHERE browse_id = #{browseId}
+  </select>
+  <select id="getPosts" parameterType="String" resultType="com.dangdiary.api.dto.browse.PostsDTO">
+    ${query}
+  </select>
+
+  <select id="getHashTags" parameterType="String" resultType="String">
+    SELECT DISTINCT hash_tag
+    FROM tags
+    WHERE REPLACE(hash_tag, '_', ' ')
+    LIKE CONCAT('%', #{query}, '%')
+  </select>
+  <select id="getAccounts" parameterType="String" resultType="com.dangdiary.api.dto.browse.AccountDTO">
+    SELECT DISTINCT d.dog_name dogName, u.nickname nickname
+    FROM users u
+    LEFT JOIN dogs d
+    ON u.user_id = d.user_id
+    WHERE u.nickname LIKE CONCAT('%', #{query}, '%')
+    OR d.dog_name LIKE CONCAT('%',#{query},'%')
+  </select>
+  <select id="getBreeds" parameterType="String" resultType="String">
+    SELECT DISTINCT breed
+    FROM dogs
+    WHERE breed
+    LIKE CONCAT('%', #{query}, '%')
+  </select>
+
+  <select id="getAllPosts" resultType="com.dangdiary.api.dto.browse.PostsDTO">
+    SELECT d.profile_image profileImage, d.dog_name dogName, j.userId userId, j.diaryId diaryId, j.challengeId challengeId, j.title title, j.registerDate registerDate, j.weather weather, j.feeling feeling, j.content content, j.stickerImage stickerImage, j.stickerShape stickerShape
+    FROM dogs d
+    RIGHT JOIN
+    (SELECT d.user_id userId , d.diary_id diaryId, c.challenge_id challengeId, d.title title, d.register_date registerDate, d.weather weather, d.feeling feeling, d.content content, c.sticker_image stickerImage, c.sticker_shape stickerShape
+    FROM diaries d
+    LEFT JOIN challenges c
+    ON d.challenge_id = c.challenge_id
+    WHERE d.register_date IS NOT NULL) j
+    ON d.user_id = j.userId
+  </select>
+  <select id="getNickname" parameterType="int" resultType="String">
+    SELECT nickname
+    FROM users
+    WHERE user_id = #{userId}
+  </select>
+  <select id="getBreed" parameterType="int" resultType="String">
+    SELECT breed
+    FROM dogs
+    WHERE user_id = #{userId}
+  </select>
+
+  <select id="getIsChallenge" parameterType="String" resultType="Integer">
+    SELECT challenge_id challengeId
+    FROM challenges
+    WHERE title = #{hashTag}
+    LIMIT 1
   </select>
 </mapper>

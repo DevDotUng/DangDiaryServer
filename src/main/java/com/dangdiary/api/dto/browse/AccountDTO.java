@@ -7,7 +7,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class ImageDTO {
-    int diaryId;
-    String image1;
+public class AccountDTO {
+    private String dogName;
+    private String nickname;
 }

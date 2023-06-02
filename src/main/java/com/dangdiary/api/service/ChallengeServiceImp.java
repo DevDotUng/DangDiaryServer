@@ -19,6 +19,7 @@ public class ChallengeServiceImp implements ChallengeService {
     public ChallengeDTO getChallengeView(int userId) {
         List<RecommendChallengeDTO> recommendChallenges = challengeDAO.getRecommendChallengeDTOs(userId);
         List<RecommendChallengeDTO> inProgressChallenges = challengeDAO.getInProgressChallengeDTOs(userId);
+        List<RecommendChallengeDTO> overdueChallenges = challengeDAO.getOverdueChallengeDTOs(userId);
         
         for (int i = 0; i < recommendChallenges.size(); i++) {
             if (recommendChallenges.get(i).getRecommendType() == "daily") {
@@ -40,7 +41,7 @@ public class ChallengeServiceImp implements ChallengeService {
             }
         }
 
-        ChallengeDTO challengeDTO = new ChallengeDTO(recommendChallenges, inProgressChallenges);
+        ChallengeDTO challengeDTO = new ChallengeDTO(recommendChallenges, inProgressChallenges, overdueChallenges);
 
         return challengeDTO;
     }

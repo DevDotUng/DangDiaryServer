@@ -2,10 +2,14 @@ package com.dangdiary.api.service;
 
 import java.util.List;
 
-import com.dangdiary.api.dto.browse.BrowseDTO;
-import com.dangdiary.api.dto.browse.ImageDTO;
+import com.dangdiary.api.dto.browse.BrowseResponseDTO;
+import com.dangdiary.api.dto.browse.PostsDTO;
+import com.dangdiary.api.dto.browse.SearchResultDTO;
 
 public interface BrowseService {
-    BrowseDTO getSearchView();
-    List<ImageDTO> getSearchView(String keyword);
+    BrowseResponseDTO getBrowseView(int userId);
+    List<PostsDTO> getPosts(int browseId);
+    SearchResultDTO search(String query);
+    List<PostsDTO> searchPosts(String query, String searchType, String dogName, String nickname);
+    Integer getIsChallenge(String hashTag);
 }

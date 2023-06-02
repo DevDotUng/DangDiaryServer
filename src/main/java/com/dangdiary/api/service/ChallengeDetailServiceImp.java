@@ -44,7 +44,8 @@ public class ChallengeDetailServiceImp implements ChallengeDetailService {
 
     Boolean getIsChallenge(int userId, int challengeId) {
         int isChallenge = challengeDetailDAO.getIsChallenge(userId, challengeId);
-        if (isChallenge == 0) {
+        int isOverdueChallenge = challengeDetailDAO.getIsOverdueChallenge(userId, challengeId);
+        if (isChallenge == 0 && isOverdueChallenge == 0) {
             return false;
         }
         return true;
@@ -66,11 +67,16 @@ public class ChallengeDetailServiceImp implements ChallengeDetailService {
     @Transactional
     public Boolean stopChallenge(int userId, int challengeId, String reason) {
         String recommendType = challengeDetailDAO.getRecommendType(userId, challengeId);
+        int isOverdueChallenge = challengeDetailDAO.getIsOverdueChallenge(userId, challengeId);
 
         if (recommendType == null) {
             challengeDetailDAO.deleteUserChallenge(userId, challengeId);
         } else {
             challengeDetailDAO.stopUserChallenge(userId, challengeId);
+        }
+
+        if (isOverdueChallenge != 0) {
+            challengeDetailDAO.deleteOverdueDiary(userId, challengeId);
         }
 
         challengeDetailDAO.submitReason(new ReasonDTO(userId, challengeId, reason));

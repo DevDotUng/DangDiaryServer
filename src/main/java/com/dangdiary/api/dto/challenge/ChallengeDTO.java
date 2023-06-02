@@ -12,4 +12,5 @@ import lombok.Setter;
 public class ChallengeDTO {
     private List<RecommendChallengeDTO> recommendChallenges;
     private List<RecommendChallengeDTO> inProgressChallenges;
+    private List<RecommendChallengeDTO> overdueChallenges;
 }

@@ -9,8 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dangdiary.api.dto.browse.BrowseDTO;
-import com.dangdiary.api.dto.browse.ImageDTO;
+import com.dangdiary.api.dto.browse.BrowseResponseDTO;
+import com.dangdiary.api.dto.browse.PostsDTO;
+import com.dangdiary.api.dto.browse.SearchResultDTO;
 import com.dangdiary.api.service.BrowseService;
 
 @RestController
@@ -21,14 +22,32 @@ public class BrowseController {
     BrowseService browseService;
 
     @GetMapping(value = "browse", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<BrowseDTO> home() {
-        BrowseDTO browseDTO = browseService.getSearchView();
-        return ResponseEntity.status(HttpStatus.OK).body(browseDTO);
+    public ResponseEntity<BrowseResponseDTO> getBrowseView(int userId) {
+        BrowseResponseDTO browseResponse = browseService.getBrowseView(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(browseResponse);
+    }
+
+    @GetMapping(value = "browse/posts", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<List<PostsDTO>> getPosts(int browseId) {
+        List<PostsDTO> posts = browseService.getPosts(browseId);
+        return ResponseEntity.status(HttpStatus.OK).body(posts);
     }
 
     @GetMapping(value = "browse/search", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<List<ImageDTO>> search(String keyword) {
-        List<ImageDTO> searchDTO = browseService.getSearchView(keyword);
-        return ResponseEntity.status(HttpStatus.OK).body(searchDTO);
+    public ResponseEntity<SearchResultDTO> search(String query) {
+        SearchResultDTO searchResult = browseService.search(query);
+        return ResponseEntity.status(HttpStatus.OK).body(searchResult);
+    }
+
+    @GetMapping(value = "browse/posts/search", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<List<PostsDTO>> searchPosts(String query, String searchType, String dogName, String nickname) {
+        List<PostsDTO> searchPosts = browseService.searchPosts(query, searchType, dogName, nickname);
+        return ResponseEntity.status(HttpStatus.OK).body(searchPosts);
+    }
+
+    @GetMapping(value = "browse/posts/challenge", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<Integer> getIsChallenge(String hashTag) {
+        Integer challengeId = browseService.getIsChallenge(hashTag);
+        return ResponseEntity.status(HttpStatus.OK).body(challengeId);
     }
 }

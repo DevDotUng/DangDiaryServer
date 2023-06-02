@@ -9,11 +9,14 @@ public class ImagePathConfig implements WebMvcConfigurer {
     
     @Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+
+		String path = "file:/Users/ung/Documents/Spring/DangDiaryServer/src/main/webapp/upload/";
 		
-		registry.addResourceHandler("/image/diary/**").addResourceLocations("file:/Users/ung/Documents/Spring/DangDiaryServer/src/main/webapp/upload/diary/");
-		registry.addResourceHandler("/image/profile/**").addResourceLocations("file:/Users/ung/Documents/Spring/DangDiaryServer/src/main/webapp/upload/profile/");
-		registry.addResourceHandler("/image/challenge/**").addResourceLocations("file:/Users/ung/Documents/Spring/DangDiaryServer/src/main/webapp/upload/challenge/");
-		registry.addResourceHandler("/image/sticker/**").addResourceLocations("file:/Users/ung/Documents/Spring/DangDiaryServer/src/main/webapp/upload/sticker/");
+		registry.addResourceHandler("/image/diary/**").addResourceLocations(path + "diary/");
+		registry.addResourceHandler("/image/profile/**").addResourceLocations(path + "profile/");
+		registry.addResourceHandler("/image/challenge/**").addResourceLocations(path + "challenge/");
+		registry.addResourceHandler("/image/sticker/**").addResourceLocations(path + "sticker/");
+		registry.addResourceHandler("/image/browse/**").addResourceLocations(path + "browse/");
 
 	}
 }
