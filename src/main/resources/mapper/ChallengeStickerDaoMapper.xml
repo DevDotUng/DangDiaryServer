@@ -2,22 +2,29 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--  칭찬 스티커 상세 정보 화면  -->
 <mapper namespace="com.dangdiary.api.dao.ChallengeStickerDAO">
+<!--  스티커를 획득한 총 횟수를 가져옴  -->
   <select id="getTotalStickers" parameterType="int" resultType="int">
     select count(diaries.challenge_id) from diaries where challenge_id=#{challengeId} and user_id = #{userId};
   </select>
+<!--  스티커 이미지를 가져옴  -->
   <select id="getStickerImage" parameterType="int" resultType="String">
     select sticker_image from challenges where challenge_id = #{challengeId};  
   </select>
+<!--  챌린지 제목을 가져옴  -->
   <select id="getChallengeTitle" parameterType="int" resultType="String">
     SELECT title from challenges where challenge_id = #{challengeId}
   </select>
+<!--  첫 획득 일자(일기를 제출할게요 시점)를 가져옴  -->
   <select id="getFirstDate" parameterType="int" resultType="String">
     select MIN(register_date) from diaries where user_id = #{userId} and challenge_id = #{challengeId};  
   </select>
+<!--  최근 획득 일자(일기를 제출할게요 시점)를 가져옴  -->
   <select id="getRecentDate" parameterType="int" resultType="String">
     select MAX(register_date) from diaries where user_id = #{userId} and challenge_id = #{challengeId};  
   </select>
+<!--  '이 스티커를 받은 일기'를 가져옴  -->
   <select id="getChallengeDiaryDTOs" parameterType="int" resultType="com.dangdiary.api.dto.challengeSticker.ChallengeDiaryDTO">
     select diaries.register_date diaryDate, diaries.title diaryTitle, count(likes.like_id) numOfLike from diaries left outer join likes on diaries.diary_id = likes.diary_id where diaries.user_id = #{userId} and diaries.challenge_id = #{challengeId} group by diaries.diary_id;  
   </select>

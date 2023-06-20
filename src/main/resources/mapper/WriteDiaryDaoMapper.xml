@@ -2,37 +2,45 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--  일기 쓰기 화면  -->
 <mapper namespace="com.dangdiary.api.dao.WriteDiaryDAO">
-  <insert id="postWriteDiary" parameterType="com.dangdiary.api.dto.writeDiary.WriteDiaryDTO">
+<!--  일기 쓰기 완료시 diaries 테이블에 정보 입력 (빈 일기에 정보를 업데이트)  -->
+  <update id="postWriteDiary" parameterType="com.dangdiary.api.dto.writeDiary.WriteDiaryDTO">
     UPDATE diaries
     SET user_id = #{userId}, challenge_id = #{challengeId}, register_date = NOW(), title = #{title}, weather = #{weather}, feeling = #{feeling}, content = #{content}, is_public = #{isPublic}
     WHERE diary_id = #{diaryId}
-  </insert>
+  </update>
+<!--  일기 쓰기 완료시 userChallenge의 endDate를 업데이트  -->
   <update id="updateEndDate" parameterType="com.dangdiary.api.dto.writeDiary.WriteDiaryDTO">
     UPDATE user_challenges
     SET end_date = #{endDate}
     WHERE diary_id = #{diaryId}
   </update>
+<!--  일기를 삭제할때 사진들을 삭제함  -->
   <delete id="deleteImage" parameterType="int">
     DELETE FROM diary_images
     WHERE diary_id = #{diaryId}
   </delete>
+<!--  일기를 삭제할때 해시태그들을 삭제함  -->
   <delete id="deleteTag" parameterType="int">
     DELETE FROM tags
     WHERE diary_id = #{diaryId}
   </delete>
+<!--  일기 쓰기 완료시 사진을 추가  -->
   <insert id="postImage" parameterType="com.dangdiary.api.dto.writeDiary.ImageOrTagDTO">
     INSERT INTO diary_images
     (diary_id, image_index, image)
     VALUES
     (#{diaryId}, #{index}, #{imageOrTag})
   </insert>
+<!--  일기 쓰기 완료시 해시태그를 추가  -->
   <insert id="postTag" parameterType="com.dangdiary.api.dto.writeDiary.ImageOrTagDTO">
     INSERT INTO tags
     (diary_id, tag_index, hash_tag)
     VALUES
     (#{diaryId}, #{index}, #{imageOrTag})
   </insert>
+<!--  일기쓰기 완료 화면(해당 일기 페이지)에서 사용할 일기 정보를 응답으로 주기 위함  -->
   <select id="getDiary" parameterType="int" resultType="com.dangdiary.api.dto.writeDiary.WriteDiaryResponseDTO">
     SELECT d.diary_id diaryId, d.user_id userId, d.challenge_id challengeId, d.title title, u.end_date endDate, d.weather weather, d.feeling feeling, d.content content, d.hit hit, d.is_public isPublic
     FROM diaries d
@@ -40,12 +48,15 @@
     ON d.diary_id = u.diary_id
     WHERE d.diary_id = #{diary_id}
   </select>
+<!--  위 응답에 이미지를 추가  -->
   <select id="getImages" parameterType="int" resultType="String">
     SELECT image FROM diary_images WHERE diary_id = #{diaryId} ORDER BY image_index
   </select>
+<!--  위 응답에 해시태그를 추가  -->
   <select id="getTags" parameterType="int" resultType="String">
     SELECT hash_tag FROM tags WHERE diary_id = #{diaryId} ORDER BY tag_index
   </select>
+<!--  일기를 쓸때 해당 달에 커버가 있으면 커버를 생성해주기 위해 존재여부 확인  -->
   <select id="getIsExistCover" parameterType="int" resultType="int">
     SELECT EXISTS
     (SELECT *
@@ -54,18 +65,21 @@
     AND diary_yyyymm = #{yyyymm}
     LIMIT 1)
   </select>
+<!--  커버가 없을 경우 커버를 생성  -->
   <select id="insertCover" parameterType="int">
     INSERT INTO diary_covers
     (user_id, diary_yyyymm)
     VALUES
     (#{userId}, #{yyyymm})
   </select>
+<!--  응답에 강아지 이름을 추가하기 위함  -->
   <select id="getDogName" parameterType="int" resultType="String">
     SELECT dog_name dogName
     FROM dogs
     WHERE user_id = #{userId}
     LIMIT 1
   </select>
+<!--  응답에 스티커를 추가하기 위함  -->
   <select id="getStickerDTO" parameterType="int" resultType="com.dangdiary.api.dto.writeDiary.StickerDTO">
     SELECT sticker_image stickerImage, sticker_shape stickerShape
     FROM challenges

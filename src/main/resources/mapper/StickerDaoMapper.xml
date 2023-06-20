@@ -2,29 +2,35 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--  칭찬 스티커 화면  -->
 <mapper namespace="com.dangdiary.api.dao.StickerDAO">
+<!--  전체 스티커 개수  -->
   <select id="getNumberOfTotalSticker" resultType="int">
     SELECT count(*)
     FROM challenges
   </select>
+<!--  프로필 사진 가져옴  -->
   <select id="getProfileImage" parameterType="int" resultType="String">
     SELECT profile_image profileImage
     FROM dogs
     WHERE user_id = #{userId}
     LIMIT 1
   </select>
+<!--  일기장 개수 가져옴  -->
   <select id="getNumberOfDiary" parameterType="int" resultType="int">
     SELECT count(*)
     FROM diaries
     WHERE user_id = #{userId}
     AND register_date IS NOT NULL
   </select>
+<!--  밀린 일기 개수 가져옴  -->
   <select id="getNumberOfOverdueDiary" parameterType="int" resultType="int">
     SELECT count(*)
     FROM diaries
     WHERE user_id = #{userId}
     AND register_date IS NULL
   </select>
+<!--  획득한 스티커 가져옴  -->
   <select id="getMyStickerDTO" parameterType="int" resultType="com.dangdiary.api.dto.sticker.MyStickerDTO">
     SELECT d.challengeId challengeId, c.sticker_image stickerImage, c.sticker_shape stickerShape, c.title challengeTitle, d.recentGetDate
     FROM
@@ -35,6 +41,7 @@
     LEFT JOIN challenges c
     ON d.challengeId = c.challenge_id
   </select>
+<!--  획득하지 못한 스티커 가져옴  -->
   <select id="getLockedStickerDTO" parameterType="int" resultType="com.dangdiary.api.dto.sticker.LockedStickerDTO">
     SELECT challenge_id challengeId, sticker_image stickerImage, sticker_shape stickerShape
     FROM challenges
@@ -44,12 +51,14 @@
     WHERE user_id = #{userId} AND register_date IS NOT NULL)
   </select>
 
+<!--  칭찬 스티커 상세 정보 화면  -->
   <select id="getStickerDetail" parameterType="int" resultType="com.dangdiary.api.dto.sticker.StickerDetailResponseDTO">
     SELECT sticker_image stickerImage, sticker_shape stickerShape, title challengeTitle
     FROM challenges
     WHERE challenge_id = #{challengeId}
     LIMIT 1
   </select>
+<!--  칭찬 스티커 획득 개수  -->
   <select id="getNumberOfSticker" parameterType="int" resultType="int">
     SELECT COUNT(*) numberOfSticker
     FROM diaries
@@ -57,6 +66,7 @@
     AND challenge_id = #{challengeId}
     AND register_date IS NOT NULL
   </select>
+<!--  첫 획득 일자(일기를 제출할게요 시점)를 가져옴  -->
   <select id="getFirstGetDate" parameterType="int" resultType="String">
     SELECT end_date firstGetDate
     FROM user_challenges
@@ -66,6 +76,7 @@
     ORDER BY end_date
     LIMIT 1
   </select>
+<!--  최근 획득 일자(일기를 제출할게요 시점)를 가져옴  -->
   <select id="getRecentGetDate" parameterType="int" resultType="String">
     SELECT end_date firstGetDate
     FROM user_challenges
@@ -75,6 +86,7 @@
     ORDER BY end_date DESC
     LIMIT 1
   </select>
+<!--  '이 스티커를 받은 일기'를 가져옴  -->
   <select id="getDiaryBySticker" parameterType="int" resultType="com.dangdiary.api.dto.sticker.DiaryByStickerDTO">
     SELECT d.diary_id diaryId, d.end_date endDate, d.title diaryTitle, IFNULL(l.cnt, 0) numberOfLike
     FROM (SELECT d.diary_id, u.end_date, d.title
@@ -96,6 +108,7 @@
     ON d.diary_id = l.diary_id
     ORDER BY d.end_date DESC
   </select>
+<!--  '이 스티커를 받은 일기'의 커버 색깔을 가져옴  -->
   <select id="getCoverColor" parameterType="int" resultType="String">
     SELECT cover_color coverColor
     FROM diary_covers

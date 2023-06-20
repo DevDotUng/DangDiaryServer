@@ -2,6 +2,7 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--  쓴 일기 화면, 월별 일기장 화면  -->
 <mapper namespace="com.dangdiary.api.dao.MyDiaryDAO">
   <select id="getMyDiaryDTO" parameterType="int" resultType="com.dangdiary.api.dto.myDiary.MyDiaryDTO">
     SELECT dog_name dogName, profile_image profileImage

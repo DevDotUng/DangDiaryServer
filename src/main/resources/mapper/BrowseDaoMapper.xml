@@ -2,7 +2,9 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--  사용 화면: 둘러보기, 검색하기, 검색 결과  -->
 <mapper namespace="com.dangdiary.api.dao.BrowseDAO">
+<!--  검색하기 화면에서 사용하기 위해 둘러보기 화면을 불러올때 같이 불러옴, 해시태그(#을 붙여서 제공), 견종, 유저 닉네임, 강아지 이름 제공  -->
   <select id="getAutoCompleteWords" resultType="String">
     SELECT CONCAT('#', hash_tag) autoCompleteWords FROM tags
     UNION
@@ -12,26 +14,42 @@
     UNION
     SELECT dog_name FROM dogs
   </select>
+<!--  둘러보기 화면에서 DB에 쿼리를 저장하고 쿼리를 사용하여 피드 화면의 게시물을 불러옴(예를 들어 지난 주 가장 인기있는 게시물)  -->
   <select id="getBrowseDTOs" resultType="com.dangdiary.api.dto.browse.BrowseDTO">
     SELECT browse_id browseId, title title, content content, image image, query query
     FROM browse
   </select>
 
+<!--  둘러보기 화면에서 검색 결과 화면으로 넘어갈때 쿼리로 게시물을 불러오기 위해 쿼리를 얻어옴  -->
   <select id="getQuery" parameterType="int" resultType="String">
     SELECT query
     FROM browse
     WHERE browse_id = #{browseId}
   </select>
+<!--  쿼리 사용
+  EX)
+  SELECT d.profile_image profileImage, d.dog_name dogName, j.userId userId, j.diaryId diaryId, j.challengeId challengeId, j.title title, j.registerDate registerDate, j.weather weather, j.feeling feeling, j.content content, j.stickerImage stickerImage, j.stickerShape stickerShape
+  FROM dogs d
+  RIGHT JOIN
+  (SELECT d.user_id userId , d.diary_id diaryId, c.challenge_id challengeId, d.title title, d.register_date registerDate, d.weather weather, d.feeling feeling, d.content content, c.sticker_image stickerImage, c.sticker_shape stickerShape
+  FROM diaries d
+  LEFT JOIN
+  challenges c
+  ON d.challenge_id = c.challenge_id
+  WHERE d.register_date IS NOT NULL) j
+  ON d.user_id = j.userId
+  -->
   <select id="getPosts" parameterType="String" resultType="com.dangdiary.api.dto.browse.PostsDTO">
     ${query}
   </select>
-
+<!--  둘러보기 검색하기-검색완료 화면의 검색 결과 중 해시태그  -->
   <select id="getHashTags" parameterType="String" resultType="String">
     SELECT DISTINCT hash_tag
     FROM tags
     WHERE REPLACE(hash_tag, '_', ' ')
     LIKE CONCAT('%', #{query}, '%')
   </select>
+<!--  둘러보기 검색하기-검색완료 화면의 검색 결과 중 계정(유저 닉네임, 강아지 이름 제공)  -->
   <select id="getAccounts" parameterType="String" resultType="com.dangdiary.api.dto.browse.AccountDTO">
     SELECT DISTINCT d.dog_name dogName, u.nickname nickname
     FROM users u
@@ -40,6 +58,7 @@
     WHERE u.nickname LIKE CONCAT('%', #{query}, '%')
     OR d.dog_name LIKE CONCAT('%',#{query},'%')
   </select>
+<!--  둘러보기 검색하기-검색완료 화면의 검색 결과 중 견종  -->
   <select id="getBreeds" parameterType="String" resultType="String">
     SELECT DISTINCT breed
     FROM dogs
@@ -47,6 +66,7 @@
     LIKE CONCAT('%', #{query}, '%')
   </select>
 
+<!--  게시물을 검색할때 모든 게시물을 불러와 그 중에 해시태그, 계정, 견종으로 필터링해서 제공, 그 중 모든 게시물을 불러오는 기능  -->
   <select id="getAllPosts" resultType="com.dangdiary.api.dto.browse.PostsDTO">
     SELECT d.profile_image profileImage, d.dog_name dogName, j.userId userId, j.diaryId diaryId, j.challengeId challengeId, j.title title, j.registerDate registerDate, j.weather weather, j.feeling feeling, j.content content, j.stickerImage stickerImage, j.stickerShape stickerShape
     FROM dogs d
@@ -58,17 +78,20 @@
     WHERE d.register_date IS NOT NULL) j
     ON d.user_id = j.userId
   </select>
+<!--  계정으로 검색할때 닉네임을 불러오기 위한 기능  -->
   <select id="getNickname" parameterType="int" resultType="String">
     SELECT nickname
     FROM users
     WHERE user_id = #{userId}
   </select>
+<!--  견종으로 검색할때 닉네임을 불러오기 위한 기능  -->
   <select id="getBreed" parameterType="int" resultType="String">
     SELECT breed
     FROM dogs
     WHERE user_id = #{userId}
   </select>
 
+<!--  검색결과 : #한강공원술래잡기 화면에서 '이 챌린지 하러가기' 버튼을 위한 기능  -->
   <select id="getIsChallenge" parameterType="String" resultType="Integer">
     SELECT challenge_id challengeId
     FROM challenges

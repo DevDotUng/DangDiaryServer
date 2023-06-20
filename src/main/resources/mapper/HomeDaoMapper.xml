@@ -2,12 +2,15 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--  메인홈 화면  -->
 <mapper namespace="com.dangdiary.api.dao.HomeDAO">
+<!--  프로필 사진을 가져옴(null 가능)  -->
   <select id="getProfileImage" parameterType="int" resultType="String">
     SELECT profile_image profileImage
     FROM dogs
     WHERE user_id = #{userId}
   </select>
+<!--  배경 사진을 일기 사진 중 랜덤하게 가져옴  -->
   <select id="getBackgroundImage" parameterType="int" resultType="String">
     SELECT image backgroundImage
     FROM diary_images
