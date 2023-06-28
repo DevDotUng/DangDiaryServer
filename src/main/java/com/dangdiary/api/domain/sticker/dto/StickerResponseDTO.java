@@ -1,4 +1,4 @@
-package com.dangdiary.api.dto.sticker;
+package com.dangdiary.api.domain.sticker.dto;
 
 import java.util.List;
 

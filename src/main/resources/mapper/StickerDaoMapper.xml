@@ -31,7 +31,7 @@
     AND register_date IS NULL
   </select>
 <!--  획득한 스티커 가져옴  -->
-  <select id="getMyStickerDTO" parameterType="int" resultType="com.dangdiary.api.dto.sticker.MyStickerDTO">
+  <select id="getMyStickerDTO" parameterType="int" resultType="com.dangdiary.api.domain.sticker.dto.MyStickerDTO">
     SELECT d.challengeId challengeId, c.sticker_image stickerImage, c.sticker_shape stickerShape, c.title challengeTitle, d.recentGetDate
     FROM
     (SELECT challenge_id challengeId, MAX(register_date) recentGetDate
@@ -42,7 +42,7 @@
     ON d.challengeId = c.challenge_id
   </select>
 <!--  획득하지 못한 스티커 가져옴  -->
-  <select id="getLockedStickerDTO" parameterType="int" resultType="com.dangdiary.api.dto.sticker.LockedStickerDTO">
+  <select id="getLockedStickerDTO" parameterType="int" resultType="com.dangdiary.api.domain.sticker.dto.LockedStickerDTO">
     SELECT challenge_id challengeId, sticker_image stickerImage, sticker_shape stickerShape
     FROM challenges
     WHERE challenge_id NOT IN
@@ -52,7 +52,7 @@
   </select>
 
 <!--  칭찬 스티커 상세 정보 화면  -->
-  <select id="getStickerDetail" parameterType="int" resultType="com.dangdiary.api.dto.sticker.StickerDetailResponseDTO">
+  <select id="getStickerDetail" parameterType="int" resultType="com.dangdiary.api.domain.sticker.dto.StickerDetailResponseDTO">
     SELECT sticker_image stickerImage, sticker_shape stickerShape, title challengeTitle
     FROM challenges
     WHERE challenge_id = #{challengeId}
@@ -87,7 +87,7 @@
     LIMIT 1
   </select>
 <!--  '이 스티커를 받은 일기'를 가져옴  -->
-  <select id="getDiaryBySticker" parameterType="int" resultType="com.dangdiary.api.dto.sticker.DiaryByStickerDTO">
+  <select id="getDiaryBySticker" parameterType="int" resultType="com.dangdiary.api.domain.sticker.dto.DiaryByStickerDTO">
     SELECT d.diary_id diaryId, d.end_date endDate, d.title diaryTitle, IFNULL(l.cnt, 0) numberOfLike
     FROM (SELECT d.diary_id, u.end_date, d.title
     FROM diaries d

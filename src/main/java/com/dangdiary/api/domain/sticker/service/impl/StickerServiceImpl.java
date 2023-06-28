@@ -1,22 +1,23 @@
-package com.dangdiary.api.service;
+package com.dangdiary.api.domain.sticker.service.impl;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import com.dangdiary.api.domain.sticker.service.StickerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.dangdiary.api.dao.StickerDAO;
-import com.dangdiary.api.dto.sticker.DiaryByStickerDTO;
-import com.dangdiary.api.dto.sticker.LockedStickerDTO;
-import com.dangdiary.api.dto.sticker.MyStickerDTO;
-import com.dangdiary.api.dto.sticker.StickerDetailResponseDTO;
-import com.dangdiary.api.dto.sticker.StickerResponseDTO;
+import com.dangdiary.api.domain.sticker.dto.DiaryByStickerDTO;
+import com.dangdiary.api.domain.sticker.dto.LockedStickerDTO;
+import com.dangdiary.api.domain.sticker.dto.MyStickerDTO;
+import com.dangdiary.api.domain.sticker.dto.StickerDetailResponseDTO;
+import com.dangdiary.api.domain.sticker.dto.StickerResponseDTO;
 
 @Service
-public class StickerServiceImp implements StickerService {
+public class StickerServiceImpl implements StickerService {
     
     @Autowired
     StickerDAO stickerDAO;

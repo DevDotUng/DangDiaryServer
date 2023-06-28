@@ -1,4 +1,4 @@
-package com.dangdiary.api.controller;
+package com.dangdiary.api.domain.sticker.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dangdiary.api.dto.sticker.StickerDetailResponseDTO;
-import com.dangdiary.api.dto.sticker.StickerResponseDTO;
-import com.dangdiary.api.service.StickerService;
+import com.dangdiary.api.domain.sticker.dto.StickerDetailResponseDTO;
+import com.dangdiary.api.domain.sticker.dto.StickerResponseDTO;
+import com.dangdiary.api.domain.sticker.service.StickerService;
 
 
 @RestController
