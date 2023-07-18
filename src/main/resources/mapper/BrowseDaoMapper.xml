@@ -98,4 +98,22 @@
     WHERE title = #{hashTag}
     LIMIT 1
   </select>
+
+  <select id="getIsLike" parameterType="int" resultType="boolean">
+    SELECT EXISTS
+    (SELECT *
+    FROM likes
+    WHERE diary_id = #{diaryId}
+    AND user_id = #{userId} LIMIT 1)
+  </select>
+  <delete id="dislike" parameterType="int">
+    DELETE FROM likes
+    WHERE diary_id = #{diaryId}
+    AND user_id = #{userId}
+  </delete>
+  <insert id="like" parameterType="int">
+    INSERT INTO likes(diary_id, user_id, like_date)
+    VALUES
+    (#{diaryId}, #{userId}, NOW())
+  </insert>
 </mapper>
