@@ -36,10 +36,10 @@ public class BrowseServiceImp implements BrowseService {
 
         List<PostsDTO> posts = browseDAO.getPosts(query);
 
-        for (PostsDTO post: posts) {
+        for (PostsDTO post : posts) {
             int diaryId = post.getDiaryId();
             List<Integer> isPublicAndNumberOfLikeAndIsLike
-                = myDiaryDAO.getIsPublicAndNumberOfLikeAndIsLike(post.getUserId(), diaryId);
+                    = myDiaryDAO.getIsPublicAndNumberOfLikeAndIsLike(post.getUserId(), diaryId);
             if (isPublicAndNumberOfLikeAndIsLike.get(0) == 1) {
                 post.setIsPublic(true);
             } else {
@@ -62,7 +62,7 @@ public class BrowseServiceImp implements BrowseService {
     public SearchResultDTO search(String query) {
 
         SearchResultDTO searchResult =
-            new SearchResultDTO(browseDAO.getHashTags(query), browseDAO.getAccounts(query), browseDAO.getBreeds(query));
+                new SearchResultDTO(browseDAO.getHashTags(query), browseDAO.getAccounts(query), browseDAO.getBreeds(query));
 
         return searchResult;
     }
@@ -74,10 +74,10 @@ public class BrowseServiceImp implements BrowseService {
         List<PostsDTO> posts = new ArrayList<PostsDTO>();
 
         if (searchType.equals("hashTag")) {
-            for (PostsDTO post: allPosts) {
+            for (PostsDTO post : allPosts) {
                 int diaryId = post.getDiaryId();
                 post.setTags(myDiaryDAO.getDiaryTags(diaryId));
-                for (String tag: post.getTags()) {
+                for (String tag : post.getTags()) {
                     if (tag.equals(query)) {
                         posts.add(post);
                         break;
@@ -85,14 +85,14 @@ public class BrowseServiceImp implements BrowseService {
                 }
             }
         } else if (searchType.equals("account")) {
-            for (PostsDTO post: allPosts) {
+            for (PostsDTO post : allPosts) {
                 int userId = post.getUserId();
                 if (post.getDogName().equals(dogName) && browseDAO.getNickname(userId).equals(nickname)) {
                     posts.add(post);
                 }
             }
         } else if (searchType.equals("breed")) {
-            for (PostsDTO post: allPosts) {
+            for (PostsDTO post : allPosts) {
                 int userId = post.getUserId();
                 if (browseDAO.getBreed(userId).equals(query)) {
                     posts.add(post);
@@ -100,10 +100,10 @@ public class BrowseServiceImp implements BrowseService {
             }
         }
 
-        for (PostsDTO post: posts) {
+        for (PostsDTO post : posts) {
             int diaryId = post.getDiaryId();
             List<Integer> isPublicAndNumberOfLikeAndIsLike
-                = myDiaryDAO.getIsPublicAndNumberOfLikeAndIsLike(post.getUserId(), diaryId);
+                    = myDiaryDAO.getIsPublicAndNumberOfLikeAndIsLike(post.getUserId(), diaryId);
             if (isPublicAndNumberOfLikeAndIsLike.get(0) == 1) {
                 post.setIsPublic(true);
             } else {
@@ -131,5 +131,17 @@ public class BrowseServiceImp implements BrowseService {
 
         return challengeId;
     }
-    
+
+    @Override
+    public void likeDiary(int userId, int diaryId) {
+
+        boolean isLike = browseDAO.getIsLike(userId, diaryId);
+
+        if (isLike) {
+            browseDAO.dislike(userId, diaryId);
+        } else {
+            browseDAO.like(userId, diaryId);
+        }
+    }
+
 }

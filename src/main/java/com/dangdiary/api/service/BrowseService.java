@@ -12,4 +12,5 @@ public interface BrowseService {
     SearchResultDTO search(String query);
     List<PostsDTO> searchPosts(String query, String searchType, String dogName, String nickname);
     Integer getIsChallenge(String hashTag);
+    void likeDiary(int userId, int diaryId);
 }

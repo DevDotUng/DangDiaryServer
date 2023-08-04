@@ -25,4 +25,8 @@ public interface BrowseDAO {
     String getBreed(int userId);
 
     Integer getIsChallenge(String hashTag);
+
+    boolean getIsLike(int userId, int diaryId);
+    void dislike(int userId, int diaryId);
+    void like(int userId, int diaryId);
 }
