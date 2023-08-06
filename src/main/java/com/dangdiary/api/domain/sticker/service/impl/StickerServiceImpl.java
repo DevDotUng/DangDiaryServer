@@ -70,6 +70,7 @@ public class StickerServiceImpl implements StickerService {
                 month = 0;
             }
             int yyyymm = year * 100 + month;
+            diary.setCoverId(stickerDAO.getCoverId(userId, yyyymm));
             diary.setCoverColor(stickerDAO.getCoverColor(userId, yyyymm));
         }
 

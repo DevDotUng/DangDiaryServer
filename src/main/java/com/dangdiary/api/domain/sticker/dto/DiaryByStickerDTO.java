@@ -10,6 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class DiaryByStickerDTO {
+    private int coverId;
     private int diaryId;
     private String endDate;
     private String diaryTitle;
