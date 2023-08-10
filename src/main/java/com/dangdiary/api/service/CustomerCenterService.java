@@ -1,9 +1,15 @@
 package com.dangdiary.api.service;
 
 import com.dangdiary.api.dto.customerCenter.CustomerCenterDTO;
+import com.dangdiary.api.dto.customerCenter.InquiryDTO;
+import com.dangdiary.api.dto.customerCenter.InquiryHistoryDTO;
 import com.dangdiary.api.dto.customerCenter.NoticeDTO;
+
+import java.util.List;
 
 public interface CustomerCenterService {
     CustomerCenterDTO getCustomerCenterDTO();
     NoticeDTO postNotice(String title, String content);
+    void inquiry(InquiryDTO inquiryDTO);
+    List<InquiryHistoryDTO> getInquiryHistoryDTOList(int userId);
 }

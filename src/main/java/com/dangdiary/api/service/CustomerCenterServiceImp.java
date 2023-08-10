@@ -2,13 +2,11 @@ package com.dangdiary.api.service;
 
 import java.util.List;
 
+import com.dangdiary.api.dto.customerCenter.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.dangdiary.api.dao.CustomerCenterDAO;
-import com.dangdiary.api.dto.customerCenter.CustomerCenterDTO;
-import com.dangdiary.api.dto.customerCenter.FAQDTO;
-import com.dangdiary.api.dto.customerCenter.NoticeDTO;
 
 @Service
 public class CustomerCenterServiceImp implements CustomerCenterService {
@@ -34,5 +32,18 @@ public class CustomerCenterServiceImp implements CustomerCenterService {
 
         return notice;
     }
-    
+
+    @Override
+    public void inquiry(InquiryDTO inquiryDTO) {
+        customerCenterDAO.inquiry(inquiryDTO);
+    }
+
+    @Override
+    public List<InquiryHistoryDTO> getInquiryHistoryDTOList(int userId) {
+
+        List<InquiryHistoryDTO> inquiryHistoryDTOList = customerCenterDAO.getInquiryHistoryDTOList(userId);
+
+        return inquiryHistoryDTOList;
+    }
+
 }
