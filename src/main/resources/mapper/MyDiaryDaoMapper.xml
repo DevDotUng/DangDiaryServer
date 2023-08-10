@@ -10,6 +10,14 @@
     WHERE user_id = #{userId}
     LIMIT 1;
   </select>
+  <select id="getAutoCompleteWords" resultType="String">
+    SELECT DISTINCT title FROM diaries WHERE user_id = #{userId} AND register_date IS NOT NULL
+    UNION
+    SELECT title
+    FROM challenges
+    WHERE challenge_id
+              IN (SELECT DISTINCT challenge_id FROM diaries WHERE user_id = #{userId} AND register_date IS NOT NULL)
+  </select>
   <select id="getAdmissionDate" parameterType="int" resultType="String">
     SELECT admission_date admissionDate
     FROM users

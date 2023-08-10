@@ -53,6 +53,7 @@ public class MyDiaryServiceImp implements MyDiaryService {
         }
 
         myDiaryDTO.setDiaries(getMyDiaryByCover(userId, myDiaryEachDTOs));
+        myDiaryDTO.setAutoCompleteWords(myDiaryDAO.getAutoCompleteWords(userId));
 
         return myDiaryDTO;
     }

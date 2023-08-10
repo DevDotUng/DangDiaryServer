@@ -21,6 +21,7 @@ import com.dangdiary.api.dto.writeDiary.ImageOrTagDTO;
 @Mapper
 public interface MyDiaryDAO {
     MyDiaryDTO getMyDiaryDTO(int userId);
+    List<String> getAutoCompleteWords(int userId);
     String getAdmissionDate(int userId);
     int getNumberOfDiary(int userId);
     int getNumberOfOverdueDiary(int userId);

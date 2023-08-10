@@ -18,5 +18,6 @@ public class MyDiaryDTO {
     private int numberOfDiary;
     private int numberOfOverdueDiary;
     private int numberOfSticker;
-    List<MyDiaryByCoverDTO> diaries;
+    private List<MyDiaryByCoverDTO> diaries;
+    private List<String> autoCompleteWords;
 }
