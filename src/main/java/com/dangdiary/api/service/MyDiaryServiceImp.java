@@ -7,23 +7,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import com.dangdiary.api.domain.sticker.dto.DiaryByStickerDTO;
+import com.dangdiary.api.dto.myDiary.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dangdiary.api.dao.MyDiaryDAO;
-import com.dangdiary.api.dto.myDiary.MakePublicAllDiariesByCoverResponseDTO;
-import com.dangdiary.api.dto.myDiary.CoverDTO;
-import com.dangdiary.api.dto.myDiary.CoverIdAndCoverHolderColorDTO;
-import com.dangdiary.api.dto.myDiary.CoverIdAndCoverTitleDTO;
-import com.dangdiary.api.dto.myDiary.DiariesWithCoverDTO;
-import com.dangdiary.api.dto.myDiary.DiaryDTO;
-import com.dangdiary.api.dto.myDiary.EditCoverColorResponseDTO;
-import com.dangdiary.api.dto.myDiary.EditCoverTitleResponseDTO;
-import com.dangdiary.api.dto.myDiary.EditDiaryDTO;
-import com.dangdiary.api.dto.myDiary.MyDiaryByCoverDTO;
-import com.dangdiary.api.dto.myDiary.MyDiaryDTO;
-import com.dangdiary.api.dto.myDiary.MyDiaryEachDTO;
 import com.dangdiary.api.dto.writeDiary.WriteDiaryResponseDTO;
 import com.dangdiary.api.dto.writeDiary.ImageOrTagDTO;
 
@@ -56,6 +46,33 @@ public class MyDiaryServiceImp implements MyDiaryService {
         myDiaryDTO.setAutoCompleteWords(myDiaryDAO.getAutoCompleteWords(userId));
 
         return myDiaryDTO;
+    }
+
+    @Override
+    public List<SearchMyDiaryDTO> searchMyDiary(int userId, String query) {
+        List<SearchMyDiaryDTO> searchMyDiaryDTOs = myDiaryDAO.getDiaryByQuery(new SearchMyDiaryParameterDTO(userId, query));
+
+        for (SearchMyDiaryDTO diary : searchMyDiaryDTOs) {
+            int year;
+            int month;
+            try {
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+                String birth = diary.getEndDate();
+
+                Date birthDate = format.parse(birth);
+
+                year = birthDate.getYear() + 1900;
+                month = birthDate.getMonth() + 1;
+            } catch (ParseException e) {
+                year = 0;
+                month = 0;
+            }
+            int yyyymm = year * 100 + month;
+            diary.setCoverId(myDiaryDAO.getCoverIdAndCoverColor(userId, yyyymm).getCoverId());
+            diary.setCoverColor(myDiaryDAO.getCoverIdAndCoverColor(userId, yyyymm).getCoverColor());
+        }
+        return searchMyDiaryDTOs;
     }
 
     @Override

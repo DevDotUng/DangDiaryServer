@@ -18,6 +18,32 @@
     WHERE challenge_id
               IN (SELECT DISTINCT challenge_id FROM diaries WHERE user_id = #{userId} AND register_date IS NOT NULL)
   </select>
+  <select id="getDiaryByQuery" parameterType="com.dangdiary.api.dto.myDiary.SearchMyDiaryParameterDTO" resultType="com.dangdiary.api.dto.myDiary.SearchMyDiaryDTO">
+    SELECT d.diary_id diaryId, d.end_date endDate, d.title diaryTitle, IFNULL(l.cnt, 0) numberOfLike
+    FROM (SELECT d.diary_id, u.end_date, d.title
+          FROM (SELECT d.diary_id, d.user_id, d.challenge_id, d.title, d.register_date FROM diaries d LEFT JOIN challenges c ON d.challenge_id = c.challenge_id WHERE d.title LIKE CONCAT('%', #{query}, '%') OR c.title LIKE CONCAT('%', #{query}, '%')) d
+                 LEFT JOIN user_challenges u
+                           ON d.diary_id = u.diary_id
+          WHERE d.user_id = #{userId}
+            AND d.register_date IS NOT NULL) d
+           LEFT JOIN (SELECT diary_id, COUNT(*) cnt
+                      FROM likes
+                      WHERE diary_id
+                              IN (SELECT diary_id
+                                  FROM diaries
+                                  WHERE user_id = #{userId}
+                                    AND register_date IS NOT NULL)
+                      GROUP BY diary_id) l
+                     ON d.diary_id = l.diary_id
+    ORDER BY d.end_date DESC
+  </select>
+  <select id="getCoverIdAndCoverColor" parameterType="int" resultType="com.dangdiary.api.dto.myDiary.CoverIdAndCoverColorDTO">
+    SELECT cover_id coverId, cover_color coverColor
+    FROM diary_covers
+    WHERE user_id = #{userId}
+      AND diary_yyyymm = #{yyyymm}
+      LIMIT 1
+  </select>
   <select id="getAdmissionDate" parameterType="int" resultType="String">
     SELECT admission_date admissionDate
     FROM users

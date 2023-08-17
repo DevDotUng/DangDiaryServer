@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import javax.servlet.ServletContext;
 
+import com.dangdiary.api.dto.myDiary.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +21,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.dangdiary.api.dto.myDiary.MakePublicAllDiariesByCoverResponseDTO;
-import com.dangdiary.api.dto.myDiary.DiariesWithCoverDTO;
-import com.dangdiary.api.dto.myDiary.EditCoverColorResponseDTO;
-import com.dangdiary.api.dto.myDiary.EditCoverTitleResponseDTO;
-import com.dangdiary.api.dto.myDiary.EditDiaryDTO;
-import com.dangdiary.api.dto.myDiary.MyDiaryDTO;
 import com.dangdiary.api.dto.writeDiary.WriteDiaryResponseDTO;
 import com.dangdiary.api.service.MyDiaryService;
 
@@ -43,6 +38,12 @@ public class MyDiaryController {
     public ResponseEntity<MyDiaryDTO> home(int userId) {
         MyDiaryDTO myDiaryDTO = myDiaryService.getMyDiaryView(userId);
         return ResponseEntity.status(HttpStatus.OK).body(myDiaryDTO);
+    }
+
+    @GetMapping(value = "myDiary/search", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<List<SearchMyDiaryDTO>> search(int userId, String query) {
+        List<SearchMyDiaryDTO> searchMyDiaryDTO = myDiaryService.searchMyDiary(userId, query);
+        return ResponseEntity.status(HttpStatus.OK).body(searchMyDiaryDTO);
     }
 
     @GetMapping(value = "diaries", produces = "application/json;charset=UTF-8")

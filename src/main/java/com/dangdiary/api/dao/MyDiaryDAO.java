@@ -2,19 +2,10 @@ package com.dangdiary.api.dao;
 
 import java.util.List;
 
+import com.dangdiary.api.dto.myDiary.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import com.dangdiary.api.dto.myDiary.CoverDTO;
-import com.dangdiary.api.dto.myDiary.CoverIdAndCoverHolderColorDTO;
-import com.dangdiary.api.dto.myDiary.CoverIdAndCoverTitleDTO;
-import com.dangdiary.api.dto.myDiary.DiaryDTO;
-import com.dangdiary.api.dto.myDiary.EditCoverColorResponseDTO;
-import com.dangdiary.api.dto.myDiary.EditCoverTitleResponseDTO;
-import com.dangdiary.api.dto.myDiary.EditDiaryDTO;
-import com.dangdiary.api.dto.myDiary.MakePublicAllDiariesByCoverResponseDTO;
-import com.dangdiary.api.dto.myDiary.MyDiaryDTO;
-import com.dangdiary.api.dto.myDiary.MyDiaryEachDTO;
 import com.dangdiary.api.dto.writeDiary.WriteDiaryResponseDTO;
 import com.dangdiary.api.dto.writeDiary.ImageOrTagDTO;
 
@@ -22,6 +13,8 @@ import com.dangdiary.api.dto.writeDiary.ImageOrTagDTO;
 public interface MyDiaryDAO {
     MyDiaryDTO getMyDiaryDTO(int userId);
     List<String> getAutoCompleteWords(int userId);
+    List<SearchMyDiaryDTO> getDiaryByQuery(SearchMyDiaryParameterDTO parameterDTO);
+    CoverIdAndCoverColorDTO getCoverIdAndCoverColor(@Param("userId") int userId, @Param("yyyymm") int yyyymm);
     String getAdmissionDate(int userId);
     int getNumberOfDiary(int userId);
     int getNumberOfOverdueDiary(int userId);
