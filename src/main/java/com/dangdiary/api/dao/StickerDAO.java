@@ -24,5 +24,6 @@ public interface StickerDAO {
     String getFirstGetDate(@Param("userId") int userId, @Param("challengeId") int challengeId);
     String getRecentGetDate(@Param("userId") int userId, @Param("challengeId") int challengeId);
     List<DiaryByStickerDTO> getDiaryBySticker(@Param("userId") int userId, @Param("challengeId") int challengeId);
+    int getCoverId(@Param("userId") int userId, @Param("yyyymm") int yyyymm);
     String getCoverColor(@Param("userId") int userId, @Param("yyyymm") int yyyymm);
 }

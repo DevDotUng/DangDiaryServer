@@ -9,7 +9,8 @@ import com.dangdiary.api.dto.challengeSticker.ChallengeDiaryDTO;
 
 
 @Mapper
-public interface ChallengeStickerDAO {
+public interface
+ChallengeStickerDAO {
 
     int getTotalStickers(@Param("userId") int userId,@Param("challengeId") int challengeId);
     String getStickerImage(int challengeId);

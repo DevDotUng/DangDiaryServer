@@ -108,6 +108,13 @@
     ON d.diary_id = l.diary_id
     ORDER BY d.end_date DESC
   </select>
+  <select id="getCoverId" parameterType="int" resultType="int">
+    SELECT cover_id coverId
+    FROM diary_covers
+    WHERE user_id = #{userId}
+      AND diary_yyyymm = #{yyyymm}
+      LIMIT 1
+  </select>
 <!--  '이 스티커를 받은 일기'의 커버 색깔을 가져옴  -->
   <select id="getCoverColor" parameterType="int" resultType="String">
     SELECT cover_color coverColor
@@ -116,4 +123,5 @@
     AND diary_yyyymm = #{yyyymm}
     LIMIT 1
   </select>
+
 </mapper>
