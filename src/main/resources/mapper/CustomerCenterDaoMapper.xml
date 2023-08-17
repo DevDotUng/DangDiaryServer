@@ -28,4 +28,17 @@
     ORDER BY notice_id DESC
     LIMIT 1
   </select>
+
+  <insert id="inquiry" parameterType="com.dangdiary.api.dto.customerCenter.InquiryDTO">
+    INSERT INTO inquiries(user_id, register_date, type, title, content, progress)
+    VALUES
+      (#{userId}, NOW(), #{type}, #{title}, #{content}, '접수 완료')
+  </insert>
+
+  <select id="getInquiryHistoryDTOList" parameterType="int" resultType="com.dangdiary.api.dto.customerCenter.InquiryHistoryDTO">
+    SELECT inquiry_id inquiryId, register_date registerDate, type type, title title, content content, progress progress, answer answer, answer_date answerDate, is_like isLike
+    FROM inquiries
+    WHERE user_id = #{userId}
+    ORDER BY registerDate;
+  </select>
 </mapper>
