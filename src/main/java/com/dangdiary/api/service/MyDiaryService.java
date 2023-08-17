@@ -17,7 +17,7 @@ public interface MyDiaryService {
     List<MakePublicAllDiariesByCoverResponseDTO> makePublicAllDiariesByCover(List<Integer> diaryIds);
     EditCoverTitleResponseDTO editCoverTitle(int coverId, String title);
     EditCoverColorResponseDTO editCoverColor(int coverId, String coverColor, String holderColor);
-    void deleteAllDiaries(List<Integer> diaryIds);
+    void deleteAllThisMonthDiaries(int coverId, List<Integer> diaryIds);
     MakePublicAllDiariesByCoverResponseDTO changeIsPublicDiary(int diaryId, Boolean isPublic);
     WriteDiaryResponseDTO editDiary(EditDiaryDTO diary);
     void deleteDiary(int diaryId);

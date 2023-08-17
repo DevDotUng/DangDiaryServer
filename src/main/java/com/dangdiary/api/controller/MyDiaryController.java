@@ -71,10 +71,11 @@ public class MyDiaryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(editCoverColorResponse);
     }
 
-    @DeleteMapping(value = "diaries", produces = "application/json;charset=UTF-8")
+    @DeleteMapping(value = "diaries/delete/all", produces = "application/json;charset=UTF-8")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteAllDiaries(@RequestParam List<Integer> diaryIds) {
-        myDiaryService.deleteAllDiaries(diaryIds);
+    public void deleteAllThisMonthDiaries(@RequestParam("coverId") int coverId,
+                                 @RequestParam("diaryIds") List<Integer> diaryIds) {
+        myDiaryService.deleteAllThisMonthDiaries(coverId, diaryIds);
     }
 
     @PutMapping(value = "diary/public", produces = "application/json;charset=UTF-8")

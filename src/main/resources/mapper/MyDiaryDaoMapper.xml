@@ -146,11 +146,51 @@
     WHERE cover_id = #{coverId}
   </select>
 
+  <delete id="deleteCover" parameterType="int">
+    DELETE FROM diary_covers
+    WHERE cover_id = #{coverId}
+  </delete>
   <delete id="deleteAllDiaries" parameterType="int">
     DELETE FROM diaries
     WHERE diary_id IN
     <foreach collection="list" item="diaryId" open="(" close=")" separator=",">
     	#{diaryId}
+    </foreach>
+  </delete>
+  <delete id="deleteAllTags" parameterType="int">
+    DELETE FROM tags
+    WHERE diary_id IN
+    <foreach collection="list" item="diaryId" open="(" close=")" separator=",">
+      #{diaryId}
+    </foreach>
+  </delete>
+  <delete id="deleteAllLikes" parameterType="int">
+    DELETE FROM likes
+    WHERE diary_id IN
+    <foreach collection="list" item="diaryId" open="(" close=")" separator=",">
+      #{diaryId}
+    </foreach>
+  </delete>
+  <delete id="deleteAllUserChallenges" parameterType="int">
+    DELETE FROM user_challenges
+    WHERE diary_id IN
+    <foreach collection="list" item="diaryId" open="(" close=")" separator=",">
+      #{diaryId}
+    </foreach>
+  </delete>
+  <select id="getImageNames" parameterType="int" resultType="String">
+    SELECT image
+    FROM diary_images
+    WHERE diary_id IN
+    <foreach collection="list" item="diaryId" open="(" close=")" separator=",">
+      #{diaryId}
+    </foreach>
+  </select>
+  <delete id="deleteAllImages" parameterType="int">
+    DELETE FROM diary_images
+    WHERE diary_id IN
+    <foreach collection="list" item="diaryId" open="(" close=")" separator=",">
+      #{diaryId}
     </foreach>
   </delete>
 

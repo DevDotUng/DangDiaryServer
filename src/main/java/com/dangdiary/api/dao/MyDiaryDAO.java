@@ -44,7 +44,13 @@ public interface MyDiaryDAO {
     void editCoverColor(CoverIdAndCoverHolderColorDTO coverIdAndCoverHolderColorDTO);
     EditCoverColorResponseDTO getEditCoverColorResponse(int coverId);
 
+    void deleteCover(int coverId);
     void deleteAllDiaries(List<Integer> diaryIds);
+    void deleteAllTags(List<Integer> diaryIds);
+    void deleteAllLikes(List<Integer> diaryIds);
+    void deleteAllUserChallenges(List<Integer> diaryIds);
+    List<String> getImageNames(List<Integer> diaryIds);
+    void deleteAllImages(List<Integer> diaryIds);
 
     void changeIsPublicDiary(@Param("diaryId") int diaryId, @Param("isPublic") int isPublic);
     MakePublicAllDiariesByCoverResponseDTO getIsPublic(int diaryId);

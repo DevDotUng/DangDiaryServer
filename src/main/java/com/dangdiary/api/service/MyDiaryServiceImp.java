@@ -1,11 +1,10 @@
 package com.dangdiary.api.service;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,11 +25,17 @@ import com.dangdiary.api.dto.myDiary.MyDiaryDTO;
 import com.dangdiary.api.dto.myDiary.MyDiaryEachDTO;
 import com.dangdiary.api.dto.writeDiary.WriteDiaryResponseDTO;
 import com.dangdiary.api.dto.writeDiary.ImageOrTagDTO;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.ServletContext;
 
 @Service
 public class MyDiaryServiceImp implements MyDiaryService {
     @Autowired
     MyDiaryDAO myDiaryDAO;
+
+    @Autowired
+    ServletContext ctx;
 
     @Override
     public MyDiaryDTO getMyDiaryView(int userId) {
@@ -116,9 +121,18 @@ public class MyDiaryServiceImp implements MyDiaryService {
         return editCoverColorResponse;
     }
 
-    @Override
-    public void deleteAllDiaries(List<Integer> diaryIds) {
+    @Transactional
+    public void deleteAllThisMonthDiaries(int coverId, List<Integer> diaryIds) {
+        myDiaryDAO.deleteCover(coverId);
         myDiaryDAO.deleteAllDiaries(diaryIds);
+        myDiaryDAO.deleteAllLikes(diaryIds);
+        myDiaryDAO.deleteAllTags(diaryIds);
+        myDiaryDAO.deleteAllUserChallenges(diaryIds);
+
+        List<String> imageNames = myDiaryDAO.getImageNames(diaryIds);
+
+        myDiaryDAO.deleteAllImages(diaryIds);
+        deleteImages(imageNames);
     }
 
     @Override
@@ -298,6 +312,21 @@ public class MyDiaryServiceImp implements MyDiaryService {
             ImageOrTagDTO imageOrTagDTO = new ImageOrTagDTO(diaryId, index, tag);
             myDiaryDAO.postTag(imageOrTagDTO);
             index++;
+        }
+    }
+
+    void deleteImages(List<String> images) {
+        for (String image: images) {
+
+            String webPath = "/upload/diary";
+            String realPath = ctx.getRealPath(webPath);
+
+            realPath += File.separator + image;
+            File deleteFile = new File(realPath);
+
+            if(deleteFile.exists()) {
+                deleteFile.delete();
+            }
         }
     }
 }
