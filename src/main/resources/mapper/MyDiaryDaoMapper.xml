@@ -255,4 +255,25 @@
     DELETE FROM diaries
     WHERE diary_id = #{diaryId}
   </delete>
+  <delete id="deleteLikes" parameterType="int">
+    DELETE FROM likes
+    WHERE diary_id = #{diaryId}
+  </delete>
+  <delete id="deleteUserChallenges" parameterType="int">
+    DELETE FROM user_challenges
+    WHERE diary_id = #{diaryId}
+  </delete>
+  <select id="getYYYYMM" parameterType="int" resultType="int">
+    SELECT diary_yyyymm FROM diary_covers WHERE cover_id = #{coverId}
+  </select>
+  <select id="getIsCoverNotEmpty" parameterType="com.dangdiary.api.dto.myDiary.UserIdAndEndDateDTO" resultType="boolean">
+    SELECT EXISTS
+             (SELECT * FROM user_challenges u
+                              LEFT JOIN diaries d
+                                        ON u.diary_id = d.diary_id
+              WHERE d.register_date IS NOT NULL
+                AND u.user_id = #{userId}
+                AND u.end_date >= #{firstEndDate}
+                AND u.end_date &lt; #{lastEndDate})
+  </select>
 </mapper>
