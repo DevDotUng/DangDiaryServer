@@ -86,7 +86,11 @@ public class ChallengeDetailServiceImp implements ChallengeDetailService {
 
     @Transactional
     public int endChallenge(int userId, int challengeId) {
-        challengeDetailDAO.insertEmptyDiary(userId, challengeId);
+
+        if (!challengeDetailDAO.getIsOverdueDiary(userId, challengeId)) {
+            challengeDetailDAO.insertEmptyDiary(userId, challengeId);
+        }
+
         int diaryId = challengeDetailDAO.getDiaryId(userId, challengeId);
         challengeDetailDAO.updateEndDateAndDiaryId(userId, challengeId, diaryId);
 
