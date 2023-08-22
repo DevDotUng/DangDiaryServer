@@ -2,19 +2,10 @@ package com.dangdiary.api.dao;
 
 import java.util.List;
 
+import com.dangdiary.api.dto.myDiary.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import com.dangdiary.api.dto.myDiary.CoverDTO;
-import com.dangdiary.api.dto.myDiary.CoverIdAndCoverHolderColorDTO;
-import com.dangdiary.api.dto.myDiary.CoverIdAndCoverTitleDTO;
-import com.dangdiary.api.dto.myDiary.DiaryDTO;
-import com.dangdiary.api.dto.myDiary.EditCoverColorResponseDTO;
-import com.dangdiary.api.dto.myDiary.EditCoverTitleResponseDTO;
-import com.dangdiary.api.dto.myDiary.EditDiaryDTO;
-import com.dangdiary.api.dto.myDiary.MakePublicAllDiariesByCoverResponseDTO;
-import com.dangdiary.api.dto.myDiary.MyDiaryDTO;
-import com.dangdiary.api.dto.myDiary.MyDiaryEachDTO;
 import com.dangdiary.api.dto.writeDiary.WriteDiaryResponseDTO;
 import com.dangdiary.api.dto.writeDiary.ImageOrTagDTO;
 
@@ -44,7 +35,13 @@ public interface MyDiaryDAO {
     void editCoverColor(CoverIdAndCoverHolderColorDTO coverIdAndCoverHolderColorDTO);
     EditCoverColorResponseDTO getEditCoverColorResponse(int coverId);
 
+    void deleteCover(int coverId);
     void deleteAllDiaries(List<Integer> diaryIds);
+    void deleteAllTags(List<Integer> diaryIds);
+    void deleteAllLikes(List<Integer> diaryIds);
+    void deleteAllUserChallenges(List<Integer> diaryIds);
+    List<String> getImageNames(List<Integer> diaryIds);
+    void deleteAllImages(List<Integer> diaryIds);
 
     void changeIsPublicDiary(@Param("diaryId") int diaryId, @Param("isPublic") int isPublic);
     MakePublicAllDiariesByCoverResponseDTO getIsPublic(int diaryId);
@@ -59,4 +56,8 @@ public interface MyDiaryDAO {
     List<String> getTags(int diaryId);
 
     void deleteDiary(int diaryId);
+    void deleteLikes(int diaryId);
+    void deleteUserChallenges(int diaryId);
+    int getYYYYMM(int coverId);
+    boolean getIsCoverNotEmpty(UserIdAndEndDateDTO userIdAndEndDateDTO);
 }

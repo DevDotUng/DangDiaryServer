@@ -1,36 +1,30 @@
 package com.dangdiary.api.service;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
+import com.dangdiary.api.dto.myDiary.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dangdiary.api.dao.MyDiaryDAO;
-import com.dangdiary.api.dto.myDiary.MakePublicAllDiariesByCoverResponseDTO;
-import com.dangdiary.api.dto.myDiary.CoverDTO;
-import com.dangdiary.api.dto.myDiary.CoverIdAndCoverHolderColorDTO;
-import com.dangdiary.api.dto.myDiary.CoverIdAndCoverTitleDTO;
-import com.dangdiary.api.dto.myDiary.DiariesWithCoverDTO;
-import com.dangdiary.api.dto.myDiary.DiaryDTO;
-import com.dangdiary.api.dto.myDiary.EditCoverColorResponseDTO;
-import com.dangdiary.api.dto.myDiary.EditCoverTitleResponseDTO;
-import com.dangdiary.api.dto.myDiary.EditDiaryDTO;
-import com.dangdiary.api.dto.myDiary.MyDiaryByCoverDTO;
-import com.dangdiary.api.dto.myDiary.MyDiaryDTO;
-import com.dangdiary.api.dto.myDiary.MyDiaryEachDTO;
 import com.dangdiary.api.dto.writeDiary.WriteDiaryResponseDTO;
 import com.dangdiary.api.dto.writeDiary.ImageOrTagDTO;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.ServletContext;
 
 @Service
 public class MyDiaryServiceImp implements MyDiaryService {
     @Autowired
     MyDiaryDAO myDiaryDAO;
+
+    @Autowired
+    ServletContext ctx;
 
     @Override
     public MyDiaryDTO getMyDiaryView(int userId) {
@@ -116,9 +110,18 @@ public class MyDiaryServiceImp implements MyDiaryService {
         return editCoverColorResponse;
     }
 
-    @Override
-    public void deleteAllDiaries(List<Integer> diaryIds) {
+    @Transactional
+    public void deleteAllThisMonthDiaries(int coverId, List<Integer> diaryIds) {
+        myDiaryDAO.deleteCover(coverId);
         myDiaryDAO.deleteAllDiaries(diaryIds);
+        myDiaryDAO.deleteAllLikes(diaryIds);
+        myDiaryDAO.deleteAllTags(diaryIds);
+        myDiaryDAO.deleteAllUserChallenges(diaryIds);
+
+        List<String> imageNames = myDiaryDAO.getImageNames(diaryIds);
+
+        myDiaryDAO.deleteAllImages(diaryIds);
+        deleteImages(imageNames);
     }
 
     @Override
@@ -153,11 +156,38 @@ public class MyDiaryServiceImp implements MyDiaryService {
     }
 
     @Transactional
-    public void deleteDiary(int diaryId) {
+    public void deleteDiary(int userId, int coverId, int diaryId) throws ParseException {
         
         myDiaryDAO.deleteDiary(diaryId);
-        myDiaryDAO.deleteImages(diaryId);
+        myDiaryDAO.deleteLikes(diaryId);
         myDiaryDAO.deleteTags(diaryId);
+        myDiaryDAO.deleteUserChallenges(diaryId);
+
+        ArrayList<Integer> list = new ArrayList<>();
+        list.add(diaryId);
+
+        List<String> imageNames = myDiaryDAO.getImageNames(list);
+
+        myDiaryDAO.deleteImages(diaryId);
+        deleteImages(imageNames);
+
+        int yyyymm = myDiaryDAO.getYYYYMM(coverId);
+
+        String firstYYYYMMDD = yyyymm + "01";
+        String lastYYYYMMDD = yyyymm + 1 + "01";
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+        SimpleDateFormat newFormat = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
+
+        Date firstFormatDate = format.parse(firstYYYYMMDD);
+        String firstEndDate = newFormat.format(firstFormatDate);
+
+        Date lastFormatDate = format.parse(lastYYYYMMDD);
+        String lastEndDate = newFormat.format(lastFormatDate);
+
+        if (!myDiaryDAO.getIsCoverNotEmpty(new UserIdAndEndDateDTO(userId, firstEndDate, lastEndDate))) {
+            myDiaryDAO.deleteCover(coverId);
+        }
+
     }
 
     int getBirth(int userId) {
@@ -298,6 +328,21 @@ public class MyDiaryServiceImp implements MyDiaryService {
             ImageOrTagDTO imageOrTagDTO = new ImageOrTagDTO(diaryId, index, tag);
             myDiaryDAO.postTag(imageOrTagDTO);
             index++;
+        }
+    }
+
+    void deleteImages(List<String> images) {
+        for (String image: images) {
+
+            String webPath = "/upload/diary";
+            String realPath = ctx.getRealPath(webPath);
+
+            realPath += File.separator + image;
+            File deleteFile = new File(realPath);
+
+            if(deleteFile.exists()) {
+                deleteFile.delete();
+            }
         }
     }
 }

@@ -2,6 +2,7 @@ package com.dangdiary.api.service;
 
 import com.dangdiary.api.dto.myDiary.MakePublicAllDiariesByCoverResponseDTO;
 
+import java.text.ParseException;
 import java.util.List;
 
 import com.dangdiary.api.dto.myDiary.DiariesWithCoverDTO;
@@ -17,8 +18,8 @@ public interface MyDiaryService {
     List<MakePublicAllDiariesByCoverResponseDTO> makePublicAllDiariesByCover(List<Integer> diaryIds);
     EditCoverTitleResponseDTO editCoverTitle(int coverId, String title);
     EditCoverColorResponseDTO editCoverColor(int coverId, String coverColor, String holderColor);
-    void deleteAllDiaries(List<Integer> diaryIds);
+    void deleteAllThisMonthDiaries(int coverId, List<Integer> diaryIds);
     MakePublicAllDiariesByCoverResponseDTO changeIsPublicDiary(int diaryId, Boolean isPublic);
     WriteDiaryResponseDTO editDiary(EditDiaryDTO diary);
-    void deleteDiary(int diaryId);
+    void deleteDiary(int userId, int coverId, int diaryId) throws ParseException;
 }
