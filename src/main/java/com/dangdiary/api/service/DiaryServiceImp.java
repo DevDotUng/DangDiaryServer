@@ -6,20 +6,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-<<<<<<< HEAD:src/main/java/com/dangdiary/api/service/DiaryServiceImp.java
 import com.dangdiary.api.dto.diary.*;
-=======
-import com.dangdiary.api.dto.myDiary.*;
->>>>>>> origin/develop:src/main/java/com/dangdiary/api/service/MyDiaryServiceImp.java
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-<<<<<<< HEAD:src/main/java/com/dangdiary/api/service/DiaryServiceImp.java
 import com.dangdiary.api.dao.DiaryDAO;
-=======
-import com.dangdiary.api.dao.MyDiaryDAO;
->>>>>>> origin/develop:src/main/java/com/dangdiary/api/service/MyDiaryServiceImp.java
 import com.dangdiary.api.dto.writeDiary.WriteDiaryResponseDTO;
 import com.dangdiary.api.dto.writeDiary.ImageOrTagDTO;
 import org.springframework.web.multipart.MultipartFile;
@@ -145,24 +137,18 @@ public class DiaryServiceImp implements DiaryService {
         return editCoverColorResponse;
     }
 
-<<<<<<< HEAD:src/main/java/com/dangdiary/api/service/DiaryServiceImp.java
-    @Override
-    public void deleteAllDiaries(List<Integer> diaryIds) {
-        diaryDAO.deleteAllDiaries(diaryIds);
-=======
     @Transactional
     public void deleteAllThisMonthDiaries(int coverId, List<Integer> diaryIds) {
-        myDiaryDAO.deleteCover(coverId);
-        myDiaryDAO.deleteAllDiaries(diaryIds);
-        myDiaryDAO.deleteAllLikes(diaryIds);
-        myDiaryDAO.deleteAllTags(diaryIds);
-        myDiaryDAO.deleteAllUserChallenges(diaryIds);
+        diaryDAO.deleteCover(coverId);
+        diaryDAO.deleteAllDiaries(diaryIds);
+        diaryDAO.deleteAllLikes(diaryIds);
+        diaryDAO.deleteAllTags(diaryIds);
+        diaryDAO.deleteAllUserChallenges(diaryIds);
 
-        List<String> imageNames = myDiaryDAO.getImageNames(diaryIds);
+        List<String> imageNames = diaryDAO.getImageNames(diaryIds);
 
-        myDiaryDAO.deleteAllImages(diaryIds);
+        diaryDAO.deleteAllImages(diaryIds);
         deleteImages(imageNames);
->>>>>>> origin/develop:src/main/java/com/dangdiary/api/service/MyDiaryServiceImp.java
     }
 
     @Override
@@ -198,26 +184,21 @@ public class DiaryServiceImp implements DiaryService {
 
     @Transactional
     public void deleteDiary(int userId, int coverId, int diaryId) throws ParseException {
-        
-<<<<<<< HEAD:src/main/java/com/dangdiary/api/service/DiaryServiceImp.java
+
         diaryDAO.deleteDiary(diaryId);
-        diaryDAO.deleteImages(diaryId);
+        diaryDAO.deleteLikes(diaryId);
         diaryDAO.deleteTags(diaryId);
-=======
-        myDiaryDAO.deleteDiary(diaryId);
-        myDiaryDAO.deleteLikes(diaryId);
-        myDiaryDAO.deleteTags(diaryId);
-        myDiaryDAO.deleteUserChallenges(diaryId);
+        diaryDAO.deleteUserChallenges(diaryId);
 
         ArrayList<Integer> list = new ArrayList<>();
         list.add(diaryId);
 
-        List<String> imageNames = myDiaryDAO.getImageNames(list);
+        List<String> imageNames = diaryDAO.getImageNames(list);
 
-        myDiaryDAO.deleteImages(diaryId);
+        diaryDAO.deleteImages(diaryId);
         deleteImages(imageNames);
 
-        int yyyymm = myDiaryDAO.getYYYYMM(coverId);
+        int yyyymm = diaryDAO.getYYYYMM(coverId);
 
         String firstYYYYMMDD = yyyymm + "01";
         String lastYYYYMMDD = yyyymm + 1 + "01";
@@ -230,11 +211,9 @@ public class DiaryServiceImp implements DiaryService {
         Date lastFormatDate = format.parse(lastYYYYMMDD);
         String lastEndDate = newFormat.format(lastFormatDate);
 
-        if (!myDiaryDAO.getIsCoverNotEmpty(new UserIdAndEndDateDTO(userId, firstEndDate, lastEndDate))) {
-            myDiaryDAO.deleteCover(coverId);
+        if (!diaryDAO.getIsCoverNotEmpty(new UserIdAndEndDateDTO(userId, firstEndDate, lastEndDate))) {
+            diaryDAO.deleteCover(coverId);
         }
-
->>>>>>> origin/develop:src/main/java/com/dangdiary/api/service/MyDiaryServiceImp.java
     }
 
     int getBirth(int userId) {

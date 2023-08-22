@@ -2,11 +2,7 @@ package com.dangdiary.api.dao;
 
 import java.util.List;
 
-<<<<<<< HEAD:src/main/java/com/dangdiary/api/dao/DiaryDAO.java
 import com.dangdiary.api.dto.diary.*;
-=======
-import com.dangdiary.api.dto.diary.*;
->>>>>>> origin/develop:src/main/java/com/dangdiary/api/dao/DiaryDAO.java
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

@@ -75,14 +75,9 @@ public class DiaryController {
 
     @DeleteMapping(value = "diaries/delete/all", produces = "application/json;charset=UTF-8")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-<<<<<<< HEAD:src/main/java/com/dangdiary/api/controller/DiaryController.java
-    public void deleteAllDiaries(@RequestParam List<Integer> diaryIds) {
-        diaryService.deleteAllDiaries(diaryIds);
-=======
     public void deleteAllThisMonthDiaries(@RequestParam("coverId") int coverId,
                                  @RequestParam("diaryIds") List<Integer> diaryIds) {
-        myDiaryService.deleteAllThisMonthDiaries(coverId, diaryIds);
->>>>>>> origin/develop:src/main/java/com/dangdiary/api/controller/DiaryController.java
+        diaryService.deleteAllThisMonthDiaries(coverId, diaryIds);
     }
 
     @PutMapping(value = "diary/public", produces = "application/json;charset=UTF-8")
@@ -128,13 +123,8 @@ public class DiaryController {
 
     @DeleteMapping(value = "diaries/delete", produces = "application/json;charset=UTF-8")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-<<<<<<< HEAD:src/main/java/com/dangdiary/api/controller/DiaryController.java
-    public void deleteDiary(int diaryId) {
-        diaryService.deleteDiary(diaryId);
-=======
     public void deleteDiary(int userId, int coverId, int diaryId) throws ParseException {
-        myDiaryService.deleteDiary(userId, coverId, diaryId);
->>>>>>> origin/develop:src/main/java/com/dangdiary/api/controller/DiaryController.java
+        diaryService.deleteDiary(userId, coverId, diaryId);
     }
 
     List<String> saveImages(List<MultipartFile> images) throws IllegalStateException, IOException {
