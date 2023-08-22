@@ -1,4 +1,4 @@
-package com.dangdiary.api.dto.myDiary;
+package com.dangdiary.api.dto.diary;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,7 +7,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class EditCoverTitleResponseDTO {
+public class CoverIdAndCoverTitleDTO {
     private int coverId;
-    private String coverTitle;
+    private String coverTitleOrColor;
 }

@@ -1,12 +1,12 @@
 package com.dangdiary.api.service;
 
-import com.dangdiary.api.dto.myDiary.*;
+import com.dangdiary.api.dto.diary.*;
 
 import java.util.List;
 
 import com.dangdiary.api.dto.writeDiary.WriteDiaryResponseDTO;
 
-public interface MyDiaryService {
+public interface DiaryService {
     MyDiaryDTO getMyDiaryView(int userId);
     List<SearchMyDiaryDTO> searchMyDiary(int userId, String query);
     DiariesWithCoverDTO getDiaryView(int coverId);

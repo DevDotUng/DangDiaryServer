@@ -7,33 +7,32 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import com.dangdiary.api.domain.sticker.dto.DiaryByStickerDTO;
-import com.dangdiary.api.dto.myDiary.*;
+import com.dangdiary.api.dto.diary.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.dangdiary.api.dao.MyDiaryDAO;
+import com.dangdiary.api.dao.DiaryDAO;
 import com.dangdiary.api.dto.writeDiary.WriteDiaryResponseDTO;
 import com.dangdiary.api.dto.writeDiary.ImageOrTagDTO;
 
 @Service
-public class MyDiaryServiceImp implements MyDiaryService {
+public class DiaryServiceImp implements DiaryService {
     @Autowired
-    MyDiaryDAO myDiaryDAO;
+    DiaryDAO diaryDAO;
 
     @Override
     public MyDiaryDTO getMyDiaryView(int userId) {
 
-        MyDiaryDTO myDiaryDTO = myDiaryDAO.getMyDiaryDTO(userId);
+        MyDiaryDTO myDiaryDTO = diaryDAO.getMyDiaryDTO(userId);
         myDiaryDTO.setDate(getBirth(userId));
-        myDiaryDTO.setNumberOfDiary(myDiaryDAO.getNumberOfDiary(userId));
-        myDiaryDTO.setNumberOfOverdueDiary(myDiaryDAO.getNumberOfOverdueDiary(userId));
-        myDiaryDTO.setNumberOfSticker(myDiaryDAO.getNumberOfDiary(userId));
-        List<MyDiaryEachDTO> myDiaryEachDTOs = myDiaryDAO.getMyDiaryEachDTO(userId);
+        myDiaryDTO.setNumberOfDiary(diaryDAO.getNumberOfDiary(userId));
+        myDiaryDTO.setNumberOfOverdueDiary(diaryDAO.getNumberOfOverdueDiary(userId));
+        myDiaryDTO.setNumberOfSticker(diaryDAO.getNumberOfDiary(userId));
+        List<MyDiaryEachDTO> myDiaryEachDTOs = diaryDAO.getMyDiaryEachDTO(userId);
         for (MyDiaryEachDTO myDiaryEachDTO: myDiaryEachDTOs) {
             List<Integer> numberOfLikeAndIsLike
-                = myDiaryDAO.getNumberOfLikeAndIsLike(userId, myDiaryEachDTO.getDiaryId());
+                = diaryDAO.getNumberOfLikeAndIsLike(userId, myDiaryEachDTO.getDiaryId());
             myDiaryEachDTO.setNumberOfLike(numberOfLikeAndIsLike.get(0));
             if (numberOfLikeAndIsLike.get(1) == 1) {
                 myDiaryEachDTO.setIsLike(true);
@@ -43,14 +42,14 @@ public class MyDiaryServiceImp implements MyDiaryService {
         }
 
         myDiaryDTO.setDiaries(getMyDiaryByCover(userId, myDiaryEachDTOs));
-        myDiaryDTO.setAutoCompleteWords(myDiaryDAO.getAutoCompleteWords(userId));
+        myDiaryDTO.setAutoCompleteWords(diaryDAO.getAutoCompleteWords(userId));
 
         return myDiaryDTO;
     }
 
     @Override
     public List<SearchMyDiaryDTO> searchMyDiary(int userId, String query) {
-        List<SearchMyDiaryDTO> searchMyDiaryDTOs = myDiaryDAO.getDiaryByQuery(new SearchMyDiaryParameterDTO(userId, query));
+        List<SearchMyDiaryDTO> searchMyDiaryDTOs = diaryDAO.getDiaryByQuery(new SearchMyDiaryParameterDTO(userId, query));
 
         for (SearchMyDiaryDTO diary : searchMyDiaryDTOs) {
             int year;
@@ -69,15 +68,15 @@ public class MyDiaryServiceImp implements MyDiaryService {
                 month = 0;
             }
             int yyyymm = year * 100 + month;
-            diary.setCoverId(myDiaryDAO.getCoverIdAndCoverColor(userId, yyyymm).getCoverId());
-            diary.setCoverColor(myDiaryDAO.getCoverIdAndCoverColor(userId, yyyymm).getCoverColor());
+            diary.setCoverId(diaryDAO.getCoverIdAndCoverColor(userId, yyyymm).getCoverId());
+            diary.setCoverColor(diaryDAO.getCoverIdAndCoverColor(userId, yyyymm).getCoverColor());
         }
         return searchMyDiaryDTOs;
     }
 
     @Override
     public DiariesWithCoverDTO getDiaryView(int coverId) {
-        CoverDTO coverDTO = myDiaryDAO.getCoverDTO(coverId);
+        CoverDTO coverDTO = diaryDAO.getCoverDTO(coverId);
         int coverYear = coverDTO.getYyyymm()/100;
         int coverMonth = coverDTO.getYyyymm()%100;
         String date = new StringBuilder(Integer.toString(coverYear))
@@ -105,8 +104,8 @@ public class MyDiaryServiceImp implements MyDiaryService {
     @Override
     public List<MakePublicAllDiariesByCoverResponseDTO> makePublicAllDiariesByCover(List<Integer> diaryIds) {
 
-        myDiaryDAO.changeAllDiariesByCoverIsPublic(diaryIds);
-        List<MakePublicAllDiariesByCoverResponseDTO> makePublicAllDiariesByCoverResponseDTO = myDiaryDAO.getMakePublicAllDiariesByCoverResponseDTO(diaryIds);
+        diaryDAO.changeAllDiariesByCoverIsPublic(diaryIds);
+        List<MakePublicAllDiariesByCoverResponseDTO> makePublicAllDiariesByCoverResponseDTO = diaryDAO.getMakePublicAllDiariesByCoverResponseDTO(diaryIds);
 
         return makePublicAllDiariesByCoverResponseDTO;
     }
@@ -115,9 +114,9 @@ public class MyDiaryServiceImp implements MyDiaryService {
     public EditCoverTitleResponseDTO editCoverTitle(int coverId, String title) {
 
         CoverIdAndCoverTitleDTO  coverTitleOrColorDTO = new CoverIdAndCoverTitleDTO(coverId, title);
-        myDiaryDAO.editCoverTitle(coverTitleOrColorDTO);
+        diaryDAO.editCoverTitle(coverTitleOrColorDTO);
         
-        EditCoverTitleResponseDTO editCoverTitleResponse = myDiaryDAO.getEditCoverTitleResponse(coverId);
+        EditCoverTitleResponseDTO editCoverTitleResponse = diaryDAO.getEditCoverTitleResponse(coverId);
 
         return editCoverTitleResponse;
     }
@@ -126,16 +125,16 @@ public class MyDiaryServiceImp implements MyDiaryService {
     public EditCoverColorResponseDTO editCoverColor(int coverId, String coverColor, String holderColor) {
 
         CoverIdAndCoverHolderColorDTO coverIdAndCoverHolderColorDTO = new CoverIdAndCoverHolderColorDTO(coverId, coverColor, holderColor);
-        myDiaryDAO.editCoverColor(coverIdAndCoverHolderColorDTO);
+        diaryDAO.editCoverColor(coverIdAndCoverHolderColorDTO);
 
-        EditCoverColorResponseDTO editCoverColorResponse = myDiaryDAO.getEditCoverColorResponse(coverId);
+        EditCoverColorResponseDTO editCoverColorResponse = diaryDAO.getEditCoverColorResponse(coverId);
 
         return editCoverColorResponse;
     }
 
     @Override
     public void deleteAllDiaries(List<Integer> diaryIds) {
-        myDiaryDAO.deleteAllDiaries(diaryIds);
+        diaryDAO.deleteAllDiaries(diaryIds);
     }
 
     @Override
@@ -147,8 +146,8 @@ public class MyDiaryServiceImp implements MyDiaryService {
         } else {
             is_public = 0;
         }
-        myDiaryDAO.changeIsPublicDiary(diaryId, is_public);
-        MakePublicAllDiariesByCoverResponseDTO isPublicResponse = myDiaryDAO.getIsPublic(diaryId);
+        diaryDAO.changeIsPublicDiary(diaryId, is_public);
+        MakePublicAllDiariesByCoverResponseDTO isPublicResponse = diaryDAO.getIsPublic(diaryId);
 
         return isPublicResponse;
     }
@@ -157,14 +156,14 @@ public class MyDiaryServiceImp implements MyDiaryService {
     public WriteDiaryResponseDTO editDiary(EditDiaryDTO diary) {
 
         int diaryId = diary.getDiaryId();
-        myDiaryDAO.editDiary(diary);
+        diaryDAO.editDiary(diary);
         deleteAndPostImages(diaryId, diary.getImages());
         deleteAndPostTags(diaryId, diary.getTags());
 
-        WriteDiaryResponseDTO diaryResponse = myDiaryDAO.getDiary(diaryId);
+        WriteDiaryResponseDTO diaryResponse = diaryDAO.getDiary(diaryId);
 
-        diaryResponse.setImages(myDiaryDAO.getImages(diaryId));
-        diaryResponse.setTags(myDiaryDAO.getTags(diaryId));
+        diaryResponse.setImages(diaryDAO.getImages(diaryId));
+        diaryResponse.setTags(diaryDAO.getTags(diaryId));
 
         return diaryResponse;
     }
@@ -172,9 +171,9 @@ public class MyDiaryServiceImp implements MyDiaryService {
     @Transactional
     public void deleteDiary(int diaryId) {
         
-        myDiaryDAO.deleteDiary(diaryId);
-        myDiaryDAO.deleteImages(diaryId);
-        myDiaryDAO.deleteTags(diaryId);
+        diaryDAO.deleteDiary(diaryId);
+        diaryDAO.deleteImages(diaryId);
+        diaryDAO.deleteTags(diaryId);
     }
 
     int getBirth(int userId) {
@@ -184,7 +183,7 @@ public class MyDiaryServiceImp implements MyDiaryService {
             Calendar calendar = Calendar.getInstance();
 
             String now = format.format(calendar.getTime());
-            String birth = myDiaryDAO.getAdmissionDate(userId);
+            String birth = diaryDAO.getAdmissionDate(userId);
             birth += " 00:00:00";
 
             Date nowDate = format.parse(now);
@@ -199,7 +198,7 @@ public class MyDiaryServiceImp implements MyDiaryService {
 
     List<MyDiaryByCoverDTO> getMyDiaryByCover(int userId, List<MyDiaryEachDTO> myDiaryEachDTOs) {
         List<MyDiaryByCoverDTO> myDiaryByCovers = new ArrayList<MyDiaryByCoverDTO>();
-        List<CoverDTO> coverDTOs = myDiaryDAO.getMyDiaryByCoverDTO(userId);
+        List<CoverDTO> coverDTOs = diaryDAO.getMyDiaryByCoverDTO(userId);
         for (CoverDTO coverDTO: coverDTOs) {
             int coverYear = coverDTO.getYyyymm()/100;
             int coverMonth = coverDTO.getYyyymm()%100;
@@ -245,7 +244,7 @@ public class MyDiaryServiceImp implements MyDiaryService {
 
     List<DiaryDTO> getDiaries(int userId, int coverYear, int coverMonth) {
 
-        List<DiaryDTO> allDiaries = myDiaryDAO.getDiaries(userId);
+        List<DiaryDTO> allDiaries = diaryDAO.getDiaries(userId);
         List<DiaryDTO> diaries = new ArrayList<DiaryDTO>();
         for (DiaryDTO allDiary: allDiaries) {
             int year;
@@ -271,7 +270,7 @@ public class MyDiaryServiceImp implements MyDiaryService {
         for (DiaryDTO diary: diaries) {
             int diaryId = diary.getDiaryId();
             List<Integer> isPublicAndNumberOfLikeAndIsLike
-                = myDiaryDAO.getIsPublicAndNumberOfLikeAndIsLike(userId, diaryId);
+                = diaryDAO.getIsPublicAndNumberOfLikeAndIsLike(userId, diaryId);
             if (isPublicAndNumberOfLikeAndIsLike.get(0) == 1) {
                 diary.setIsPublic(true);
             } else {
@@ -283,8 +282,8 @@ public class MyDiaryServiceImp implements MyDiaryService {
             } else {
                 diary.setIsLike(false);
             }
-            diary.setImages(myDiaryDAO.getDiaryImages(diaryId));
-            diary.setTags(myDiaryDAO.getDiaryTags(diaryId));
+            diary.setImages(diaryDAO.getDiaryImages(diaryId));
+            diary.setTags(diaryDAO.getDiaryTags(diaryId));
         }
 
         return diaries;
@@ -299,21 +298,21 @@ public class MyDiaryServiceImp implements MyDiaryService {
     }
 
     void deleteAndPostImages(int diaryId, List<String> images) {
-        myDiaryDAO.deleteImages(diaryId);
+        diaryDAO.deleteImages(diaryId);
         int index = 0;
         for (String image: images) {
             ImageOrTagDTO imageOrTagDTO = new ImageOrTagDTO(diaryId, index, image);
-            myDiaryDAO.postImage(imageOrTagDTO);
+            diaryDAO.postImage(imageOrTagDTO);
             index++;
         }
     }
 
     void deleteAndPostTags(int diaryId, List<String> tags) {
-        myDiaryDAO.deleteTags(diaryId);
+        diaryDAO.deleteTags(diaryId);
         int index = 0;
         for (String tag: tags) {
             ImageOrTagDTO imageOrTagDTO = new ImageOrTagDTO(diaryId, index, tag);
-            myDiaryDAO.postTag(imageOrTagDTO);
+            diaryDAO.postTag(imageOrTagDTO);
             index++;
         }
     }

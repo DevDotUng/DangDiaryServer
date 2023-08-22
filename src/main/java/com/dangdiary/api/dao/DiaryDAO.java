@@ -2,7 +2,7 @@ package com.dangdiary.api.dao;
 
 import java.util.List;
 
-import com.dangdiary.api.dto.myDiary.*;
+import com.dangdiary.api.dto.diary.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -10,7 +10,7 @@ import com.dangdiary.api.dto.writeDiary.WriteDiaryResponseDTO;
 import com.dangdiary.api.dto.writeDiary.ImageOrTagDTO;
 
 @Mapper
-public interface MyDiaryDAO {
+public interface DiaryDAO {
     MyDiaryDTO getMyDiaryDTO(int userId);
     List<String> getAutoCompleteWords(int userId);
     List<SearchMyDiaryDTO> getDiaryByQuery(SearchMyDiaryParameterDTO parameterDTO);
