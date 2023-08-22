@@ -2,7 +2,11 @@ package com.dangdiary.api.dao;
 
 import java.util.List;
 
+<<<<<<< HEAD:src/main/java/com/dangdiary/api/dao/DiaryDAO.java
 import com.dangdiary.api.dto.diary.*;
+=======
+import com.dangdiary.api.dto.diary.*;
+>>>>>>> origin/develop:src/main/java/com/dangdiary/api/dao/DiaryDAO.java
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -37,7 +41,13 @@ public interface DiaryDAO {
     void editCoverColor(CoverIdAndCoverHolderColorDTO coverIdAndCoverHolderColorDTO);
     EditCoverColorResponseDTO getEditCoverColorResponse(int coverId);
 
+    void deleteCover(int coverId);
     void deleteAllDiaries(List<Integer> diaryIds);
+    void deleteAllTags(List<Integer> diaryIds);
+    void deleteAllLikes(List<Integer> diaryIds);
+    void deleteAllUserChallenges(List<Integer> diaryIds);
+    List<String> getImageNames(List<Integer> diaryIds);
+    void deleteAllImages(List<Integer> diaryIds);
 
     void changeIsPublicDiary(@Param("diaryId") int diaryId, @Param("isPublic") int isPublic);
     MakePublicAllDiariesByCoverResponseDTO getIsPublic(int diaryId);
@@ -52,4 +62,8 @@ public interface DiaryDAO {
     List<String> getTags(int diaryId);
 
     void deleteDiary(int diaryId);
+    void deleteLikes(int diaryId);
+    void deleteUserChallenges(int diaryId);
+    int getYYYYMM(int coverId);
+    boolean getIsCoverNotEmpty(UserIdAndEndDateDTO userIdAndEndDateDTO);
 }

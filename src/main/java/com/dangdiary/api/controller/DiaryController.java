@@ -2,6 +2,7 @@ package com.dangdiary.api.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -72,10 +73,16 @@ public class DiaryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(editCoverColorResponse);
     }
 
-    @DeleteMapping(value = "diaries", produces = "application/json;charset=UTF-8")
+    @DeleteMapping(value = "diaries/delete/all", produces = "application/json;charset=UTF-8")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+<<<<<<< HEAD:src/main/java/com/dangdiary/api/controller/DiaryController.java
     public void deleteAllDiaries(@RequestParam List<Integer> diaryIds) {
         diaryService.deleteAllDiaries(diaryIds);
+=======
+    public void deleteAllThisMonthDiaries(@RequestParam("coverId") int coverId,
+                                 @RequestParam("diaryIds") List<Integer> diaryIds) {
+        myDiaryService.deleteAllThisMonthDiaries(coverId, diaryIds);
+>>>>>>> origin/develop:src/main/java/com/dangdiary/api/controller/DiaryController.java
     }
 
     @PutMapping(value = "diary/public", produces = "application/json;charset=UTF-8")
@@ -119,10 +126,15 @@ public class DiaryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(diaryDTO);
     }
 
-    @DeleteMapping(value = "diary", produces = "application/json;charset=UTF-8")
+    @DeleteMapping(value = "diaries/delete", produces = "application/json;charset=UTF-8")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+<<<<<<< HEAD:src/main/java/com/dangdiary/api/controller/DiaryController.java
     public void deleteDiary(int diaryId) {
         diaryService.deleteDiary(diaryId);
+=======
+    public void deleteDiary(int userId, int coverId, int diaryId) throws ParseException {
+        myDiaryService.deleteDiary(userId, coverId, diaryId);
+>>>>>>> origin/develop:src/main/java/com/dangdiary/api/controller/DiaryController.java
     }
 
     List<String> saveImages(List<MultipartFile> images) throws IllegalStateException, IOException {
