@@ -1,4 +1,4 @@
-package com.dangdiary.api.dto.myDiary;
+package com.dangdiary.api.dto.diary;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

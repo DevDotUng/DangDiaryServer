@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.dangdiary.api.dao.BrowseDAO;
-import com.dangdiary.api.dao.MyDiaryDAO;
+import com.dangdiary.api.dao.DiaryDAO;
 import com.dangdiary.api.dto.browse.BrowseResponseDTO;
 import com.dangdiary.api.dto.browse.PostsDTO;
 import com.dangdiary.api.dto.browse.SearchResultDTO;
@@ -19,7 +19,7 @@ public class BrowseServiceImp implements BrowseService {
     BrowseDAO browseDAO;
 
     @Autowired
-    MyDiaryDAO myDiaryDAO;
+    DiaryDAO myDiaryDAO;
 
     @Override
     public BrowseResponseDTO getBrowseView(int userId) {

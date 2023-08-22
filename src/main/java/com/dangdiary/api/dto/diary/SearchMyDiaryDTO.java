@@ -1,4 +1,4 @@
-package com.dangdiary.api.dto.myDiary;
+package com.dangdiary.api.dto.diary;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,10 +9,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class MyDiaryEachDTO {
+public class SearchMyDiaryDTO {
     private int diaryId;
     private String endDate;
-    private String image;
+    private String diaryTitle;
     private int numberOfLike;
-    private Boolean isLike;
+    private int coverId;
+    private String coverColor;
 }
