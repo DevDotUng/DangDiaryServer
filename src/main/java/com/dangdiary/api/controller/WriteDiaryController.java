@@ -8,9 +8,11 @@ import java.util.UUID;
 
 import javax.servlet.ServletContext;
 
+import com.dangdiary.api.dto.writeDiary.OverdueDiaryRequestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -71,6 +73,41 @@ public class WriteDiaryController {
         WriteDiaryResponseDTO result = writeDiaryService.postWriteDiary(writeDiaryRequestDTO);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    }
+
+    @PostMapping("writeDiary/overdue")
+    public void overdue(
+            @RequestParam("diaryId") int diaryId,
+            @RequestParam("userId") int userId,
+            @RequestParam("challengeId") int challengeId,
+            @RequestParam("endDate") String endDate,
+            @RequestParam("weather") @Nullable String weather,
+            @RequestParam("feeling") @Nullable String feeling,
+            @RequestParam("title") @Nullable String title,
+            @RequestParam("content") @Nullable String content,
+            @RequestParam("isPublic") Boolean isPublic
+    ) throws IllegalStateException {
+
+        int intIsPublic;
+        if (isPublic) {
+            intIsPublic = 1;
+        } else {
+            intIsPublic = 0;
+        }
+
+        OverdueDiaryRequestDTO overdueDiary = new OverdueDiaryRequestDTO(
+                diaryId,
+                userId,
+                challengeId,
+                endDate,
+                weather,
+                feeling,
+                title,
+                content,
+                intIsPublic
+        );
+
+        writeDiaryService.postOverdueDiary(overdueDiary);
     }
 
     List<String> saveImages(List<MultipartFile> images) throws IllegalStateException, IOException {

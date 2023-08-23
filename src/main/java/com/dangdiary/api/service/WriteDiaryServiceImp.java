@@ -4,15 +4,12 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import com.dangdiary.api.dto.writeDiary.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dangdiary.api.dao.WriteDiaryDAO;
-import com.dangdiary.api.dto.writeDiary.WriteDiaryResponseDTO;
-import com.dangdiary.api.dto.writeDiary.ImageOrTagDTO;
-import com.dangdiary.api.dto.writeDiary.StickerDTO;
-import com.dangdiary.api.dto.writeDiary.WriteDiaryDTO;
 
 @Service
 @Transactional
@@ -44,6 +41,12 @@ public class WriteDiaryServiceImp implements WriteDiaryService {
         insertCoverIfIsNotExist(writeDiaryDTO.getUserId(), writeDiaryDTO.getEndDate());
 
         return result;
+    }
+
+    @Transactional
+    public void postOverdueDiary(OverdueDiaryRequestDTO overdueDiary) {
+        writeDiaryDAO.postOverdueDiary(overdueDiary);
+        writeDiaryDAO.updateOverdueDiaryEndDate(overdueDiary);
     }
 
     void postImages(int diaryId, List<String> images) {

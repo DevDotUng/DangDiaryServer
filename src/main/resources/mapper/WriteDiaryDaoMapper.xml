@@ -86,4 +86,15 @@
     WHERE challenge_id = #{challengeId}
     LIMIT 1
   </select>
+
+  <update id="postOverdueDiary" parameterType="com.dangdiary.api.dto.writeDiary.OverdueDiaryRequestDTO">
+    UPDATE diaries
+    SET title = #{title}, weather = #{weather}, feeling = #{feeling}, content = #{content}, is_public = #{isPublic}
+    WHERE diary_id = #{diaryId}
+  </update>
+  <update id="updateOverdueDiaryEndDate" parameterType="com.dangdiary.api.dto.writeDiary.OverdueDiaryRequestDTO">
+    UPDATE user_challenges
+    SET end_date = #{endDate}
+    WHERE diary_id = #{diaryId}
+  </update>
 </mapper>
