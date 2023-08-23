@@ -2,6 +2,7 @@ package com.dangdiary.api.dao;
 
 import java.util.List;
 
+import com.dangdiary.api.dto.challengeDetail.OverdueDiaryDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -32,4 +33,6 @@ public interface ChallengeDetailDAO {
     void insertEmptyDiary(@Param("userId") int userId,@Param("challengeId") int challengeId);
     int getDiaryId(@Param("userId") int userId,@Param("challengeId") int challengeId);
     void updateEndDateAndDiaryId(@Param("userId") int userId,@Param("challengeId") int challengeId,@Param("diaryId") int diaryId);
+    OverdueDiaryDTO getOverdueDiary(int diaryId);
+    List<String> getTags(int diaryId);
 }
