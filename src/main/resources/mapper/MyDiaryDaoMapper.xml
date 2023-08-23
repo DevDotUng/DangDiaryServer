@@ -292,7 +292,7 @@
   <select id="getYYYYMM" parameterType="int" resultType="int">
     SELECT diary_yyyymm FROM diary_covers WHERE cover_id = #{coverId}
   </select>
-  <select id="getIsCoverNotEmpty" parameterType="com.dangdiary.api.dto.myDiary.UserIdAndEndDateDTO" resultType="boolean">
+  <select id="getIsCoverNotEmpty" parameterType="com.dangdiary.api.dto.diary.UserIdAndEndDateDTO" resultType="boolean">
     SELECT EXISTS
              (SELECT * FROM user_challenges u
                               LEFT JOIN diaries d
