@@ -13,6 +13,7 @@ import lombok.Setter;
 @Setter
 public class EditDiaryDTO {
     int diaryId;
+    String endDate;
     String weather;
     String feeling;
     String title;

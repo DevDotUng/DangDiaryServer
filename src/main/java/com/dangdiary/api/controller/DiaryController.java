@@ -89,6 +89,7 @@ public class DiaryController {
     @PutMapping(value = "diary", produces = "application/json;charset=UTF-8")
     public ResponseEntity<WriteDiaryResponseDTO> editDiary(
         @RequestParam("diaryId") int diaryId,
+        @RequestParam("endDate") String endDate,
         @RequestParam("weather") String weather,
         @RequestParam("feeling") String feeling,
         @RequestParam("title") String title,
@@ -108,6 +109,7 @@ public class DiaryController {
 
         EditDiaryDTO diary = new EditDiaryDTO(
             diaryId,
+            endDate,
             weather,
             feeling,
             title,

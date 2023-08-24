@@ -171,6 +171,7 @@ public class DiaryServiceImp implements DiaryService {
 
         int diaryId = diary.getDiaryId();
         diaryDAO.editDiary(diary);
+        diaryDAO.updateEndDate(diary);
         deleteAndPostImages(diaryId, diary.getImages());
         deleteAndPostTags(diaryId, diary.getTags());
 

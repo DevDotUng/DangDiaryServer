@@ -239,6 +239,11 @@
     SET weather = #{weather}, feeling = #{feeling}, title = #{title}, content = #{content}, is_public = #{isPublic}
     WHERE diary_id = #{diaryId}
   </update>
+  <update id="updateEndDate" parameterType="com.dangdiary.api.dto.diary.EditDiaryDTO">
+    UPDATE user_challenges
+    SET end_date = #{endDate}
+    WHERE diary_id = #{diaryId}
+  </update>
   <delete id="deleteImages" parameterType="int">
     DELETE FROM diary_images
     WHERE diary_id = #{diaryId}
