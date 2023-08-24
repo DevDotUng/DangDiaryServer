@@ -292,7 +292,7 @@ public class DiaryServiceImp implements DiaryService {
             try {
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     
-                String birth = allDiary.getRegisterDate();
+                String birth = allDiary.getEndDate();
     
                 Date birthDate = format.parse(birth);
     
