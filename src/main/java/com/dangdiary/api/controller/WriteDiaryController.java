@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import javax.servlet.ServletContext;
 
+import com.dangdiary.api.dto.writeDiary.CoverIdAndDiaryIdDTO;
 import com.dangdiary.api.dto.writeDiary.OverdueDiaryRequestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,7 +35,7 @@ public class WriteDiaryController {
 	ServletContext ctx;
     
     @PostMapping("writeDiary")
-    public ResponseEntity<WriteDiaryResponseDTO> home(
+    public ResponseEntity<CoverIdAndDiaryIdDTO> home(
         @RequestParam("diaryId") int diaryId,
         @RequestParam("userId") int userId,
         @RequestParam("challengeId") int challengeId,
@@ -70,7 +71,7 @@ public class WriteDiaryController {
             intIsPublic
         );
 
-        WriteDiaryResponseDTO result = writeDiaryService.postWriteDiary(writeDiaryRequestDTO);
+        CoverIdAndDiaryIdDTO result = writeDiaryService.postWriteDiary(writeDiaryRequestDTO);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }

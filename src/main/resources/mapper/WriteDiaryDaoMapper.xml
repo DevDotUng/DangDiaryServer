@@ -72,6 +72,13 @@
     VALUES
     (#{userId}, #{yyyymm})
   </select>
+  <select id="getCoverId" parameterType="int" resultType="int">
+    SELECT cover_id coverId
+    FROM diary_covers
+    WHERE user_id = #{userId}
+    AND diary_yyyymm = #{yyyymm}
+    LIMIT 1
+  </select>
 <!--  응답에 강아지 이름을 추가하기 위함  -->
   <select id="getDogName" parameterType="int" resultType="String">
     SELECT dog_name dogName

@@ -19,7 +19,7 @@ public class WriteDiaryServiceImp implements WriteDiaryService {
     WriteDiaryDAO writeDiaryDAO;
 
     @Transactional
-    public WriteDiaryResponseDTO postWriteDiary(WriteDiaryDTO writeDiaryDTO) {
+    public CoverIdAndDiaryIdDTO postWriteDiary(WriteDiaryDTO writeDiaryDTO) {
 
         int diaryId = writeDiaryDTO.getDiaryId();
         
@@ -29,16 +29,9 @@ public class WriteDiaryServiceImp implements WriteDiaryService {
         postImages(diaryId, writeDiaryDTO.getImages());
         postTags(diaryId, writeDiaryDTO.getTags());
 
-        WriteDiaryResponseDTO result = writeDiaryDAO.getDiary(diaryId);
-        StickerDTO stickerDTO = writeDiaryDAO.getStickerDTO(writeDiaryDTO.getChallengeId());
+        int coverId = insertCoverIfIsNotExist(writeDiaryDTO.getUserId(), writeDiaryDTO.getEndDate());
 
-        result.setImages(writeDiaryDAO.getImages(diaryId));
-        result.setTags(writeDiaryDAO.getTags(diaryId));
-        result.setDogName(writeDiaryDAO.getDogName(writeDiaryDTO.getUserId()));
-        result.setStickerImage(stickerDTO.getStickerImage());
-        result.setStickerShape(stickerDTO.getStickerShape());
-
-        insertCoverIfIsNotExist(writeDiaryDTO.getUserId(), writeDiaryDTO.getEndDate());
+        CoverIdAndDiaryIdDTO result = new CoverIdAndDiaryIdDTO(coverId, diaryId);
 
         return result;
     }
@@ -68,7 +61,7 @@ public class WriteDiaryServiceImp implements WriteDiaryService {
         }
     }
 
-    void insertCoverIfIsNotExist(int userId, String endDate) {
+    int insertCoverIfIsNotExist(int userId, String endDate) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDate endDateLocal = LocalDate.parse(endDate, formatter);
 
@@ -77,6 +70,8 @@ public class WriteDiaryServiceImp implements WriteDiaryService {
         if (writeDiaryDAO.getIsExistCover(userId, yyyymm) == 0) {
             writeDiaryDAO.insertCover(userId, yyyymm);
         }
+
+        return writeDiaryDAO.getCoverId(userId, yyyymm);
     }
     
 }

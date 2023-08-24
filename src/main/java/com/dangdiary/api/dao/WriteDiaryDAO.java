@@ -19,6 +19,7 @@ public interface WriteDiaryDAO {
     List<String> getTags(int diaryId);
     int getIsExistCover(@Param("userId") int userId, @Param("yyyymm") int yyyymm);
     void insertCover(@Param("userId") int userId, @Param("yyyymm") int yyyymm);
+    int getCoverId(@Param("userId") int userId, @Param("yyyymm") int yyyymm);
     String getDogName(int userId);
     StickerDTO getStickerDTO(int challengeId);
 
