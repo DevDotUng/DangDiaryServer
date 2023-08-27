@@ -13,8 +13,9 @@ import lombok.Setter;
 @Setter
 public class DiaryDTO {
     private int diaryId;
+    private int challengeId;
     private String title;
-    private String registerDate;
+    private String endDate;
     private String weather;
     private String feeling;
     private String content;

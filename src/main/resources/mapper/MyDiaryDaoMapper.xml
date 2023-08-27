@@ -98,12 +98,15 @@
     WHERE cover_id = #{coverId}
   </select>
   <select id="getDiaries" parameterType="int" resultType="com.dangdiary.api.dto.diary.DiaryDTO">
-    SELECT d.diary_id diaryId, d.title title, d.register_date registerDate, d.weather weather, d.feeling feeling, d.content content, c.sticker_image stickerImage, c.sticker_shape stickerShape
+    SELECT d.diaryId diaryId, d.diaryId challengeId, d.title title, u.end_date endDate, d.weather weather, d.feeling feeling, d.content content, d.stickerImage stickerImage, d.stickerShape stickerShape
+    FROM (SELECT d.diary_id diaryId, d.challenge_id challengeId, d.title title, d.weather weather, d.feeling feeling, d.content content, c.sticker_image stickerImage, c.sticker_shape stickerShape
     FROM diaries d
     LEFT JOIN challenges c
     ON d.challenge_id = c.challenge_id
     WHERE d.user_id = #{userId}
-    AND d.register_date IS NOT NULL
+    AND d.register_date IS NOT NULL) d
+    LEFT JOIN user_challenges u
+    ON d.diaryId = u.diary_id
   </select>
   <select id="getIsPublicAndNumberOfLikeAndIsLike" parameterType="int" resultType="int">
     SELECT is_public isPublic
@@ -234,6 +237,11 @@
   <update id="editDiary" parameterType="com.dangdiary.api.dto.diary.EditDiaryDTO">
     UPDATE diaries
     SET weather = #{weather}, feeling = #{feeling}, title = #{title}, content = #{content}, is_public = #{isPublic}
+    WHERE diary_id = #{diaryId}
+  </update>
+  <update id="updateEndDate" parameterType="com.dangdiary.api.dto.diary.EditDiaryDTO">
+    UPDATE user_challenges
+    SET end_date = #{endDate}
     WHERE diary_id = #{diaryId}
   </update>
   <delete id="deleteImages" parameterType="int">

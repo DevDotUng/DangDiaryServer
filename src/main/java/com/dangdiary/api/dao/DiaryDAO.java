@@ -49,6 +49,7 @@ public interface DiaryDAO {
     MakePublicAllDiariesByCoverResponseDTO getIsPublic(int diaryId);
 
     void editDiary(EditDiaryDTO diary);
+    void updateEndDate(EditDiaryDTO diary);
     void deleteImages(int diaryId);
     void postImage(ImageOrTagDTO image);
     void deleteTags(int diaryId);
