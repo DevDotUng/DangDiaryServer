@@ -35,18 +35,18 @@ public class WriteDiaryController {
 	ServletContext ctx;
     
     @PostMapping("writeDiary")
-    public ResponseEntity<CoverIdAndDiaryIdDTO> home(
-        @RequestParam("diaryId") int diaryId,
-        @RequestParam("userId") int userId,
-        @RequestParam("challengeId") int challengeId,
-        @RequestParam("endDate") String endDate,
-        @RequestParam("weather") String weather,
-        @RequestParam("feeling") String feeling,
-        @RequestParam("title") String title,
-        @RequestParam("content") String content,
-        @RequestParam("images") List<MultipartFile> images,
-        @RequestParam("tags") List<String> tags,
-        @RequestParam("isPublic") Boolean isPublic
+    public ResponseEntity<CoverIdAndDiaryIdDTO> write(
+        @RequestParam(value = "diaryId") int diaryId,
+        @RequestParam(value = "userId") int userId,
+        @RequestParam(value = "challengeId") int challengeId,
+        @RequestParam(value = "endDate") String endDate,
+        @RequestParam(value = "weather") String weather,
+        @RequestParam(value = "feeling") String feeling,
+        @RequestParam(value = "title") String title,
+        @RequestParam(value = "content") String content,
+        @RequestParam(value = "images") List<MultipartFile> images,
+        @RequestParam(value = "tags") List<String> tags,
+        @RequestParam(value = "isPublic", defaultValue = "true") boolean isPublic
     ) throws IllegalStateException, IOException {
         
         List<String> imageList = saveImages(images);
@@ -86,7 +86,7 @@ public class WriteDiaryController {
             @RequestParam("feeling") @Nullable String feeling,
             @RequestParam("title") @Nullable String title,
             @RequestParam("content") @Nullable String content,
-            @RequestParam("isPublic") Boolean isPublic
+            @RequestParam(value = "isPublic", defaultValue = "true") boolean isPublic
     ) throws IllegalStateException {
 
         int intIsPublic;
