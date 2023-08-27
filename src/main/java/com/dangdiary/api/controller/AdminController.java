@@ -7,18 +7,20 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
 @Controller
+@RequestMapping("/api/admin/inquiry")
 public class AdminController {
 
     @Autowired
     AdminService adminService;
 
-    @GetMapping("/admin/inquiry")
+    @GetMapping("")
     public String inquiry(HttpServletRequest request, Model model) {
 
         List<AdminInquiryHistoryDTO> inquiryHistoryList = adminService.getInquiryHistory();
@@ -44,7 +46,7 @@ public class AdminController {
         return "inquiry";
     }
 
-    @GetMapping("/admin/inquiry/receive")
+    @GetMapping("/receive")
     public String receive(HttpServletRequest request, Model model) {
 
         adminService.receiveInquiry(Integer.parseInt(request.getParameter("inquiryId")));
@@ -52,7 +54,7 @@ public class AdminController {
         return inquiry(request, model);
     }
 
-    @PostMapping("/admin/inquiry/answer")
+    @PostMapping("/answer")
     public String answer(HttpServletRequest request, Model model) {
 
         String answer = request.getParameter("answer");
