@@ -1,5 +1,6 @@
 package com.dangdiary.api.controller;
 
+import com.dangdiary.api.dto.challengeDetail.OverdueDiaryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,8 +37,8 @@ public class ChallengeDetailController {
     }
 
     @GetMapping(value = "challengeDetail/end", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<Integer> end(int userId, int challengeId) {
-        int diaryId = challengeDetailService.endChallenge(userId, challengeId);
-        return ResponseEntity.status(HttpStatus.OK).body(diaryId);
+    public ResponseEntity<OverdueDiaryDTO> end(int userId, int challengeId) {
+        OverdueDiaryDTO overdueDiaryDTO = challengeDetailService.endChallenge(userId, challengeId);
+        return ResponseEntity.status(HttpStatus.OK).body(overdueDiaryDTO);
     }
 }

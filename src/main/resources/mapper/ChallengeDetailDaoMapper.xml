@@ -151,4 +151,16 @@
     AND start_date IS NOT NULL
     AND end_date IS NULL
   </update>
+  <select id="getOverdueDiary" parameterType="int" resultType="com.dangdiary.api.dto.challengeDetail.OverdueDiaryDTO">
+    SELECT d.diary_id diaryId, d.user_id userId, d.challenge_id challengeId, u.end_date endDate, d.weather weather, d.feeling feeling, d.title title, d.content content, d.is_public isPublic
+    FROM user_challenges u
+           LEFT JOIN diaries d
+                     ON u.diary_id = d.diary_id
+    WHERE u.diary_id = #{diaryId}
+  </select>
+  <select id="getTags" parameterType="int" resultType="String">
+    SELECT hash_tag
+    FROM tags
+    WHERE diary_id = #{diaryId}
+  </select>
 </mapper>
