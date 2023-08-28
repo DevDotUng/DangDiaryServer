@@ -12,4 +12,5 @@ public interface CustomerCenterService {
     NoticeDTO postNotice(String title, String content);
     void inquiry(InquiryDTO inquiryDTO);
     List<InquiryHistoryDTO> getInquiryHistoryDTOList(int userId);
+    void likeInquiry(int inquiryId, boolean isLike);
 }
