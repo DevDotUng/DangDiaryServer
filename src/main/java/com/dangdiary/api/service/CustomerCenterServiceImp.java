@@ -15,9 +15,13 @@ public class CustomerCenterServiceImp implements CustomerCenterService {
     CustomerCenterDAO customerCenterDAO;
 
     @Override
-    public CustomerCenterDTO getCustomerCenterDTO() {
+    public CustomerCenterDTO getCustomerCenterDTO(int userId) {
         List<NoticeDTO> noticeDTOs = customerCenterDAO.getNoticeDTOs();
         List<FAQDTO> FAQDTOs = customerCenterDAO.getFAQDTOs();
+
+        for (FAQDTO faq: FAQDTOs) {
+            faq.setIsLike(customerCenterDAO.getFAQIsLike(userId, faq.getFAQId()));
+        }
 
         CustomerCenterDTO customerCenterDTO = new CustomerCenterDTO(noticeDTOs, FAQDTOs);
 

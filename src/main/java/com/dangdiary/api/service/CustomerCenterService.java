@@ -8,7 +8,7 @@ import com.dangdiary.api.dto.customerCenter.NoticeDTO;
 import java.util.List;
 
 public interface CustomerCenterService {
-    CustomerCenterDTO getCustomerCenterDTO();
+    CustomerCenterDTO getCustomerCenterDTO(int userId);
     void likeFAQ(int userId, int faqId, boolean isLike);
     NoticeDTO postNotice(String title, String content);
     void inquiry(InquiryDTO inquiryDTO);

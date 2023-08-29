@@ -21,9 +21,9 @@ public class CustomerCenterController {
     CustomerCenterService customerCenterService;
     
     @GetMapping(value = "", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<CustomerCenterDTO> home() {
+    public ResponseEntity<CustomerCenterDTO> home(int userId) {
 
-        CustomerCenterDTO customerCenterDTO = customerCenterService.getCustomerCenterDTO();
+        CustomerCenterDTO customerCenterDTO = customerCenterService.getCustomerCenterDTO(userId);
 
         return ResponseEntity.status(HttpStatus.OK).body(customerCenterDTO);
     }
