@@ -15,6 +15,23 @@
     SELECT FAQ_id FAQId, question, answer FROM FAQs;
   </select>
 
+  <select id="getFAQLikeId" resultType="int">
+    SELECT id
+    FROM FAQ_likes
+    WHERE user_id = #{userId}
+      AND FAQ_id = #{faqId}
+  </select>
+  <insert id="insertFAQLike" parameterType="int">
+    INSERT INTO FAQ_likes(FAQ_id, user_id, is_like)
+    VALUES
+        (#{faqId}, #{userId}, #{isLike});
+  </insert>
+  <update id="updateFAQLike" parameterType="int">
+    UPDATE FAQ_likes
+    SET is_like = #{isLike}
+    WHERE id = #{faqLikeId}
+  </update>
+
 <!--  공지사항 등록하기  -->
   <insert id="postNotice" parameterType="String">
     INSERT INTO notices(title, content, register_date)

@@ -14,6 +14,9 @@ import com.dangdiary.api.dto.customerCenter.NoticeDTO;
 public interface CustomerCenterDAO {
     List<NoticeDTO> getNoticeDTOs();
     List<FAQDTO> getFAQDTOs();
+    Integer getFAQLikeId(int userId, int faqId);
+    void insertFAQLike(int userId, int faqId, int isLike);
+    void updateFAQLike(int faqLikeId, int isLike);
     void postNotice(@Param("title") String title, @Param("content") String content);
     NoticeDTO getNotice();
     void inquiry(InquiryDTO inquiryDTO);

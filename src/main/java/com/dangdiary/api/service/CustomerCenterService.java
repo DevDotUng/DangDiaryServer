@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface CustomerCenterService {
     CustomerCenterDTO getCustomerCenterDTO();
+    void likeFAQ(int userId, int faqId, boolean isLike);
     NoticeDTO postNotice(String title, String content);
     void inquiry(InquiryDTO inquiryDTO);
     List<InquiryHistoryDTO> getInquiryHistoryDTOList(int userId);

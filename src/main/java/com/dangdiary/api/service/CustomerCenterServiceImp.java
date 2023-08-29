@@ -25,6 +25,24 @@ public class CustomerCenterServiceImp implements CustomerCenterService {
     }
 
     @Override
+    public void likeFAQ(int userId, int faqId, boolean isLike) {
+        Integer faqLikeId = customerCenterDAO.getFAQLikeId(userId, faqId);
+
+        int isLikeArgument;
+        if (isLike) {
+            isLikeArgument = 1;
+        } else {
+            isLikeArgument = 0;
+        }
+
+        if (faqLikeId == null) {
+            customerCenterDAO.insertFAQLike(userId, faqId, isLikeArgument);
+        } else {
+            customerCenterDAO.updateFAQLike(faqLikeId, isLikeArgument);
+        }
+    }
+
+    @Override
     public NoticeDTO postNotice(String title, String content) {
 
         customerCenterDAO.postNotice(title, content);
