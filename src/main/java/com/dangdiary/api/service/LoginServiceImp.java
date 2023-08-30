@@ -12,7 +12,10 @@ import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.interfaces.ECPrivateKey;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Base64;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 import java.util.Base64.Decoder;
@@ -73,6 +76,7 @@ public class LoginServiceImp implements LoginService {
                 br.close();
 
                 LoginDTO loginDTO = getJSONFromString(result);
+                loginDTO.setAccessToken(accessToken);
                 loginDTO.setRefreshToken(refreshToken);
 
                 String socialId = loginDTO.getId();
@@ -174,7 +178,7 @@ public class LoginServiceImp implements LoginService {
                     name += givenName;
                 }
 
-                LoginDTO loginDTO = new LoginDTO(0, socialId, name, updatedRefreshToken);
+                LoginDTO loginDTO = new LoginDTO(0, socialId, name, null, updatedRefreshToken);
 
                 if (loginDAO.existId(socialId) == 1) {
                     int userId = loginDAO.getUserId(socialId);
@@ -206,6 +210,12 @@ public class LoginServiceImp implements LoginService {
     @Override
     public int autoLogin(int userId) {
         int responseCode = 401;
+        String loginDate = loginDAO.getLoginDate(userId);
+
+        if (isExpire(loginDate)) {
+            return responseCode;
+        }
+
         if (loginDAO.getLoginType(userId).equals("kakao")) {
 
             String apiKey = "c62730797df0ff3fcc1f7303775a846d";
@@ -309,6 +319,29 @@ public class LoginServiceImp implements LoginService {
         }
 
         return responseCode;
+    }
+
+    boolean isExpire(String loginDate) {
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+            Calendar calendar = Calendar.getInstance();
+
+            String now = format.format(calendar.getTime());
+
+            Date nowDate = format.parse(now);
+            Date birthDate = format.parse(loginDate);
+
+            int date = (int)((nowDate.getTime() - birthDate.getTime()) / (24*60*60*1000) + 1);
+
+            if (date <= 14) {
+                return false;
+            } else {
+                return true;
+            }
+        } catch (ParseException e) {
+            return true;
+        }
     }
 
     LoginDTO getJSONFromString(String str) {

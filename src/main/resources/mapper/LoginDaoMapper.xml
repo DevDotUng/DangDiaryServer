@@ -10,6 +10,11 @@
     FROM users
     WHERE user_id = #{userId};
   </select>
+  <select id="getLoginDate" parameterType="int" resultType="String">
+    SELECT login_date
+    FROM users
+    WHERE user_id = #{userId};
+  </select>
 <!--  아이디가 있다면 로그인을 진행하고 없다면 추가해주기 위해 존재여부 확인  -->
   <select id="existId" parameterType="String" resultType="int">
     SELECT EXISTS
@@ -31,14 +36,14 @@
   </insert>
   <!--  애플 로그인을 했을 때 유저를 추가  -->
   <insert id="addUserWithApple" parameterType="com.dangdiary.api.dto.login.LoginDTO">
-    INSERT INTO users(login_type, social_id, refresh_token, name, admission_date)
+    INSERT INTO users(login_type, social_id, access_token, refresh_token, name, admission_date, login_date)
     VALUES
-    ('apple', #{id}, #{refreshToken}, #{name}, NOW())
+    ('apple', #{id}, #{accessToken}, #{refreshToken}, #{name}, NOW(), NOW())
   </insert>
 <!--  카카오 로그인을 했을 때 유저 정보 업데이트  -->
   <update id="updateUserWithKakao" parameterType="com.dangdiary.api.dto.login.LoginDTO">
     UPDATE users
-    SET social_id = #{id}, refresh_token = #{refreshToken}, name = #{name}
+    SET social_id = #{id}, refresh_token = #{refreshToken}, name = #{name}, login_date = NOW()
     WHERE user_id = #{userId};
   </update>
   <!--  애플 로그인을 했을 때 유저 정보 업데이트  -->

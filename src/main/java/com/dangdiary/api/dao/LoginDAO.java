@@ -9,6 +9,7 @@ import com.dangdiary.api.dto.login.LoginResponseDTO;
 @Mapper
 public interface LoginDAO {
     String getLoginType(int userId);
+    String getLoginDate(int userId);
     int existId(String socialId);
     int getUserId(String socialId);
     void addUserWithKakao(LoginDTO loginDTO);
