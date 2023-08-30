@@ -10,6 +10,7 @@ import com.dangdiary.api.dto.login.LoginResponseDTO;
 public interface LoginDAO {
     String getLoginType(int userId);
     String getLoginDate(int userId);
+    void updateLoginDateNow(int userId);
     int existId(String socialId);
     int getUserId(String socialId);
     void addUserWithKakao(LoginDTO loginDTO);

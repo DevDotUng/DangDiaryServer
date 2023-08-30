@@ -15,6 +15,11 @@
     FROM users
     WHERE user_id = #{userId};
   </select>
+  <update id="updateLoginDateNow" parameterType="int">
+    UPDATE users
+    SET login_date = NOW()
+    WHERE user_id = #{userId};
+  </update>
 <!--  아이디가 있다면 로그인을 진행하고 없다면 추가해주기 위해 존재여부 확인  -->
   <select id="existId" parameterType="String" resultType="int">
     SELECT EXISTS
@@ -49,7 +54,7 @@
   <!--  애플 로그인을 했을 때 유저 정보 업데이트  -->
   <update id="updateUserWithApple" parameterType="com.dangdiary.api.dto.login.LoginDTO">
     UPDATE users
-    SET social_id = #{id}, refresh_token = #{refreshToken}
+    SET social_id = #{id}, refresh_token = #{refreshToken}, login_date = NOW()
     WHERE user_id = #{userId};
   </update>
 <!--  로그인을 할때 댕댕 주민등록증 등록을 했는지 확인하고 안했을 경우 등록 화면으로 가기 위해 dogs테이블에서 확인하여 응답에 같이 포함시켜준다.  -->

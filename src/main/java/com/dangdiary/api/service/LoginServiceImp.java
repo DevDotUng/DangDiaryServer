@@ -308,6 +308,10 @@ public class LoginServiceImp implements LoginService {
                 pw.flush();
     
                 responseCode = conn.getResponseCode();
+
+                if (responseCode == 200) {
+                    loginDAO.updateLoginDateNow(userId);
+                }
     
             } catch (IOException e) {
                 e.printStackTrace();
