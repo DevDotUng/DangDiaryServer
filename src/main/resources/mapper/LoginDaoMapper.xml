@@ -84,6 +84,44 @@
     WHERE user_id = #{userId}
       LIMIT 1
   </select>
+
+  <delete id="deleteDiaryImages" parameterType="int">
+    DELETE FROM diary_images WHERE diary_id IN (SELECT diary_id FROM diaries WHERE user_id = #{userId})
+  </delete>
+  <delete id="deleteTags" parameterType="int">
+    DELETE FROM tags WHERE diary_id IN (SELECT diary_id FROM diaries WHERE user_id = #{userId})
+  </delete>
+  <delete id="deleteDiaries" parameterType="int">
+    DELETE FROM diaries WHERE user_id = #{userId}
+  </delete>
+  <delete id="deleteDiaryAdmin" parameterType="int">
+    DELETE FROM diary_admin WHERE user_id = #{userId}
+  </delete>
+  <delete id="deleteDiaryCovers" parameterType="int">
+    DELETE FROM diary_covers WHERE user_id = #{userId}
+  </delete>
+  <delete id="deleteDogs" parameterType="int">
+    DELETE FROM dogs WHERE user_id = #{userId}
+  </delete>
+  <delete id="deleteFAQLikes" parameterType="int">
+    DELETE FROM FAQ_likes WHERE user_id = #{userId}
+  </delete>
+  <delete id="deleteInquiries" parameterType="int">
+    DELETE FROM inquiries WHERE user_id = #{userId}
+  </delete>
+  <delete id="deleteLikes" parameterType="int">
+    DELETE FROM likes WHERE user_id = #{userId} OR diary_id IN (SELECT diary_id FROM diaries WHERE user_id = #{userId})
+  </delete>
+  <delete id="deleteReport" parameterType="int">
+    DELETE FROM report WHERE user_id = #{userId}
+  </delete>
+  <delete id="deleteUserChallenges" parameterType="int">
+    DELETE FROM user_challenges WHERE user_id = #{userId}
+  </delete>
+  <delete id="deleteUsers" parameterType="int">
+    DELETE FROM users WHERE user_id = #{userId}
+  </delete>
+
 <!--  댕댕 주민등록증 등록  -->
   <insert id="registerDogInfo" parameterType="com.dangdiary.api.dto.login.DogInfoDTO">
     INSERT INTO dogs(user_id, dog_name, profile_image, breed, birth, gender)

@@ -21,6 +21,20 @@ public interface LoginDAO {
     LoginResponseDTO getLoginResponseDTO(String socialId);
     String getRefreshToken(int userId);
     String getAccessToken(int userId);
+
+    void deleteDiaryImages(int userId);
+    void deleteTags(int userId);
+    void deleteDiaries(int userId);
+    void deleteDiaryAdmin(int userId);
+    void deleteDiaryCovers(int userId);
+    void deleteDogs(int userId);
+    void deleteFAQLikes(int userId);
+    void deleteInquiries(int userId);
+    void deleteLikes(int userId);
+    void deleteReport(int userId);
+    void deleteUserChallenges(int userId);
+    void deleteUsers(int userId);
+
     void registerDogInfo(DogInfoDTO dogInfo);
     void registerNickname(DogInfoDTO dogInfo);
     DogInfoDTO getDogInfo(int userId);

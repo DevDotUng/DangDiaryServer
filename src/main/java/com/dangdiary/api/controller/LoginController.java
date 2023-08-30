@@ -10,11 +10,7 @@ import javax.servlet.ServletContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -76,6 +72,11 @@ public class LoginController {
     @GetMapping(value = "user/logout", produces = "application/json;charset=UTF-8")
     public void logout(int userId) {
         loginService.logout(userId);
+    }
+
+    @DeleteMapping(value = "user/delete", produces = "application/json;charset=UTF-8")
+    public void deleteAccount(int userId) {
+        loginService.deleteAccount(userId);
     }
 
     @PostMapping("user/info")

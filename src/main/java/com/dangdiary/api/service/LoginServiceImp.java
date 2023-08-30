@@ -396,6 +396,90 @@ public class LoginServiceImp implements LoginService {
         }
     }
 
+    @Transactional
+    public void deleteAccount(int userId) {
+        String loginType = loginDAO.getLoginType(userId);
+        String accessToken = loginDAO.getAccessToken(userId);
+        String refreshToken = loginDAO.getRefreshToken(userId);
+
+        loginDAO.deleteDiaryImages(userId);
+        loginDAO.deleteTags(userId);
+        loginDAO.deleteDiaryAdmin(userId);
+        loginDAO.deleteDiaryCovers(userId);
+        loginDAO.deleteDogs(userId);
+        loginDAO.deleteFAQLikes(userId);
+        loginDAO.deleteInquiries(userId);
+        loginDAO.deleteLikes(userId);
+        loginDAO.deleteReport(userId);
+        loginDAO.deleteUserChallenges(userId);
+        loginDAO.deleteUsers(userId);
+        loginDAO.deleteDiaries(userId);
+
+        if (loginType.equals("kakao")) {
+
+            String apiKey = "c62730797df0ff3fcc1f7303775a846d";
+            String reqURL = "https://kapi.kakao.com/v1/user/unlink";
+
+            try {
+                URL url = new URL(reqURL);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("content-type", "application/x-www-form-urlencoded");
+                conn.setRequestProperty("Authorization", "Bearer " + accessToken);
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+
+                int responseCode = conn.getResponseCode();
+
+                if (responseCode != 200) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error");
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if (loginType.equals("apple")) {
+
+            String clientId = "com.uniqueone.dangdiary";
+            String reqURL = "https://appleid.apple.com/auth/revoke";
+
+            String teamId = "R2M3DTM6K7";
+            String keyId = "HD987X6833";
+            String keyPath = "apple/AuthKey_HD987X6833.p8";
+            String authURL = "https://appleid.apple.com";
+
+            String clientSecret = createClientSecret(teamId, clientId, keyId, keyPath, authURL);
+
+            try {
+                URL url = new URL(reqURL);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("content-type", "application/x-www-form-urlencoded");
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+
+                StringBuilder usb = new StringBuilder();
+                usb.append("client_id").append("=").append(clientId).append("&");
+                usb.append("client_secret").append("=").append(clientSecret).append("&");
+                usb.append("token").append("=").append(refreshToken).append("&");
+                usb.append("token_type_hint").append("=").append("refresh_token");
+
+                PrintWriter pw = new PrintWriter(new OutputStreamWriter(conn.getOutputStream(), "UTF-8"));
+                pw.write(usb.toString());
+                pw.flush();
+
+                int responseCode = conn.getResponseCode();
+
+                if (responseCode != 200) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error");
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     boolean isExpire(String loginDate) {
         try {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

@@ -9,5 +9,6 @@ public interface LoginService {
     LoginResponseDTO appleLogin(String userIdentifier, String authorizationCode, String identityToken, String familyName, String givenName);
     int autoLogin(int userId);
     void logout(int userId);
+    void deleteAccount(int userId);
     DogInfoDTO registerDogInfo(DogInfoDTO dogInfo);
 }
