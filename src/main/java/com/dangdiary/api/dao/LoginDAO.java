@@ -20,6 +20,7 @@ public interface LoginDAO {
     int existDog(int userId);
     LoginResponseDTO getLoginResponseDTO(String socialId);
     String getRefreshToken(int userId);
+    String getAccessToken(int userId);
     void registerDogInfo(DogInfoDTO dogInfo);
     void registerNickname(DogInfoDTO dogInfo);
     DogInfoDTO getDogInfo(int userId);

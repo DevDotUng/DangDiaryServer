@@ -78,6 +78,12 @@
     WHERE user_id = #{userId}
     LIMIT 1
   </select>
+  <select id="getAccessToken" parameterType="int" resultType="String">
+    SELECT access_token accessToken
+    FROM users
+    WHERE user_id = #{userId}
+      LIMIT 1
+  </select>
 <!--  댕댕 주민등록증 등록  -->
   <insert id="registerDogInfo" parameterType="com.dangdiary.api.dto.login.DogInfoDTO">
     INSERT INTO dogs(user_id, dog_name, profile_image, breed, birth, gender)

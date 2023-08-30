@@ -73,6 +73,11 @@ public class LoginController {
         }
     }
 
+    @GetMapping(value = "user/logout", produces = "application/json;charset=UTF-8")
+    public void logout(int userId) {
+        loginService.logout(userId);
+    }
+
     @PostMapping("user/info")
     public ResponseEntity<DogInfoDTO> registerDogInfo(
         @RequestParam("userId") int userId,
