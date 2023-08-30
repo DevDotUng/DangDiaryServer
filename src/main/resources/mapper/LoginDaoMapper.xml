@@ -30,9 +30,9 @@
   </select>
 <!--  카카오 로그인을 했을 때 유저를 추가  -->
   <insert id="addUserWithKakao" parameterType="com.dangdiary.api.dto.login.LoginDTO">
-    INSERT INTO users(social_id, refresh_token, name, admission_date)
+    INSERT INTO users(login_type, social_id, access_token, refresh_token, name, admission_date)
     VALUES
-    ('kakao', #{id}, #{refreshToken}, #{name}, NOW())
+    ('kakao', #{id}, #{accessToken}, #{refreshToken}, #{name}, NOW())
   </insert>
   <!--  애플 로그인을 했을 때 유저를 추가  -->
   <insert id="addUserWithApple" parameterType="com.dangdiary.api.dto.login.LoginDTO">
@@ -43,7 +43,7 @@
 <!--  카카오 로그인을 했을 때 유저 정보 업데이트  -->
   <update id="updateUserWithKakao" parameterType="com.dangdiary.api.dto.login.LoginDTO">
     UPDATE users
-    SET social_id = #{id}, refresh_token = #{refreshToken}, name = #{name}, login_date = NOW()
+    SET social_id = #{id}, access_token = #{accessToken}, refresh_token = #{refreshToken}, name = #{name}, login_date = NOW()
     WHERE user_id = #{userId};
   </update>
   <!--  애플 로그인을 했을 때 유저 정보 업데이트  -->
