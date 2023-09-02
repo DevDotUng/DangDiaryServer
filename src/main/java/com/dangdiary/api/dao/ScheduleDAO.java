@@ -8,7 +8,10 @@ import java.util.List;
 @Mapper
 public interface ScheduleDAO {
     List<Integer> getDeleteUserChallengeIds();
-    void deleteDailyChallenges(List<Integer> deleteUserChallengeIds);
+    void deleteChallenges(List<Integer> deleteUserChallengeIds);
     List<Integer> getUserIds();
     void insertDailyChallengeByUserId(UserIdAndRecommendDateDTO userIdAndRecommendDateDTO);
+
+    List<Integer> getDeleteWeeklyUserChallengeIds();
+    void insertWeeklyChallengeByUserId(UserIdAndRecommendDateDTO userIdAndRecommendDateDTO);
 }

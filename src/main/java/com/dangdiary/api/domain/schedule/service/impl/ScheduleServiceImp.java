@@ -26,12 +26,30 @@ public class ScheduleServiceImp {
 
         List<Integer> deleteDailyChallengeIds = scheduleDAO.getDeleteUserChallengeIds();
         if (!deleteDailyChallengeIds.isEmpty()) {
-            scheduleDAO.deleteDailyChallenges(deleteDailyChallengeIds);
+            scheduleDAO.deleteChallenges(deleteDailyChallengeIds);
         }
         List<Integer> userIds = scheduleDAO.getUserIds();
 
         for (Integer userId: userIds) {
             scheduleDAO.insertDailyChallengeByUserId(new UserIdAndRecommendDateDTO(userId, date));
+        }
+    }
+
+    public void updateWeeklyChallenges() {
+        Calendar cal = Calendar.getInstance();
+        String format = "yyyy-MM-dd 10:00:00";
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        cal.add(cal.DATE, +7);
+        String date = sdf.format(cal.getTime());
+
+        List<Integer> deleteWeeklyChallengeIds = scheduleDAO.getDeleteWeeklyUserChallengeIds();
+        if (!deleteWeeklyChallengeIds.isEmpty()) {
+            scheduleDAO.deleteChallenges(deleteWeeklyChallengeIds);
+        }
+        List<Integer> userIds = scheduleDAO.getUserIds();
+
+        for (Integer userId: userIds) {
+            scheduleDAO.insertWeeklyChallengeByUserId(new UserIdAndRecommendDateDTO(userId, date));
         }
     }
 }

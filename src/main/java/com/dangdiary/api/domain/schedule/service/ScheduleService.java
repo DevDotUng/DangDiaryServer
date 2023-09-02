@@ -15,4 +15,9 @@ public class ScheduleService {
     public void updateDailyChallenges() {
         scheduleServiceImp.updateDailyChallenges();
     }
+
+    @Scheduled(cron = "0 0 10 * * 1")
+    public void updateWeeklyChallenges() {
+        scheduleServiceImp.updateWeeklyChallenges();
+    }
 }
