@@ -25,7 +25,9 @@ public class ScheduleServiceImp {
         String date = sdf.format(cal.getTime());
 
         List<Integer> deleteDailyChallengeIds = scheduleDAO.getDeleteUserChallengeIds();
-        scheduleDAO.deleteDailyChallenges(deleteDailyChallengeIds);
+        if (!deleteDailyChallengeIds.isEmpty()) {
+            scheduleDAO.deleteDailyChallenges(deleteDailyChallengeIds);
+        }
         List<Integer> userIds = scheduleDAO.getUserIds();
 
         for (Integer userId: userIds) {
