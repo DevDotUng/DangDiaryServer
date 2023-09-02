@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dangdiary.api.dao.ScheduleDAO">
+    <select id="getDeleteUserChallengeIds" resultType="Integer">
+        SELECT u.user_challenge_id
+        FROM user_challenges u
+                 LEFT JOIN diaries d
+                           ON u.diary_id = d.diary_id
+        WHERE u.recommend_type = 'daily'
+          AND d.register_date IS NULL
+          AND recommend_date &lt;= NOW()
+    </select>
+  <delete id="deleteDailyChallenges">
+    DELETE FROM user_challenges
+           WHERE user_challenge_id IN
+      <foreach collection="list" item="deleteUserChallengeId" open="(" close=")" separator=",">
+          #{deleteUserChallengeId}
+      </foreach>
+  </delete>
+  <select id="getUserIds" resultType="Integer">
+    SELECT user_id
+    FROM users
+  </select>
+    <select id="insertDailyChallengeByUserId" parameterType="com.dangdiary.api.domain.schedule.dto.UserIdAndRecommendDateDTO">
+        INSERT INTO user_challenges(user_id, challenge_id, recommend_type, recommend_date)
+        VALUES (#{userId},
+                IFNULL((SELECT challenge_id FROM diaries WHERE user_id = #{userId} GROUP BY challenge_id LIMIT 1), (SELECT challenge_id FROM challenges ORDER BY challenge_id LIMIT 1)),
+            'daily',
+            #{recommendDate})
+    </select>
+</mapper>
