@@ -15,4 +15,5 @@ public class LoginDTO {
     String name;
     String accessToken;
     String refreshToken;
+    String firebaseToken;
 }

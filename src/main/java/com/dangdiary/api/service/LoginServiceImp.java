@@ -53,7 +53,7 @@ public class LoginServiceImp implements LoginService {
     LoginDAO loginDAO;
 
     @Transactional
-    public LoginResponseDTO kakaoLogin(String accessToken, String refreshToken) {
+    public LoginResponseDTO kakaoLogin(String accessToken, String refreshToken, String firebaseToken) {
         String reqURL = "https://kapi.kakao.com/v2/user/me";
         LoginResponseDTO loginResponse = new LoginResponseDTO();
         try {
@@ -80,6 +80,7 @@ public class LoginServiceImp implements LoginService {
                 LoginDTO loginDTO = getJSONFromString(result);
                 loginDTO.setAccessToken(accessToken);
                 loginDTO.setRefreshToken(refreshToken);
+                loginDTO.setFirebaseToken(firebaseToken);
 
                 String socialId = loginDTO.getId();
 
@@ -109,7 +110,7 @@ public class LoginServiceImp implements LoginService {
     }
 
     @Override
-    public LoginResponseDTO appleLogin(String userIdentifier, String authorizationCode, String identityToken, String familyName, String givenName) {
+    public LoginResponseDTO appleLogin(String userIdentifier, String authorizationCode, String identityToken, String familyName, String givenName, String firebaseToken) {
 
         String clientId = "com.uniqueone.dangdiary";
         String reqURL = "https://appleid.apple.com/auth/token";
@@ -180,7 +181,7 @@ public class LoginServiceImp implements LoginService {
                     name += givenName;
                 }
 
-                LoginDTO loginDTO = new LoginDTO(0, socialId, name, null, updatedRefreshToken);
+                LoginDTO loginDTO = new LoginDTO(0, socialId, name, null, updatedRefreshToken, firebaseToken);
 
                 if (loginDAO.existId(socialId) == 1) {
                     int userId = loginDAO.getUserId(socialId);
@@ -210,7 +211,7 @@ public class LoginServiceImp implements LoginService {
     }
 
     @Override
-    public int autoLogin(int userId) {
+    public int autoLogin(int userId, String firebaseToken) {
         int responseCode = 401;
         String loginDate = loginDAO.getLoginDate(userId);
 
@@ -270,7 +271,7 @@ public class LoginServiceImp implements LoginService {
                         e.printStackTrace();
                     }
 
-                    kakaoLogin(updatedAccessToken, updatedRefreshToken);
+                    kakaoLogin(updatedAccessToken, updatedRefreshToken, firebaseToken);
 
                     br.close();
                 }
@@ -313,6 +314,8 @@ public class LoginServiceImp implements LoginService {
 
                 if (responseCode == 200) {
                     loginDAO.updateLoginDateNow(userId);
+                    LoginDTO loginDTO = new LoginDTO(userId, null, null, null, null, firebaseToken);
+                    loginDAO.updateFirebaseToken(loginDTO);
                 }
     
             } catch (IOException e) {
