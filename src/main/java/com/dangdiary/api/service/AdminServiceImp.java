@@ -3,9 +3,19 @@ package com.dangdiary.api.service;
 import com.dangdiary.api.dao.AdminDAO;
 import com.dangdiary.api.dto.admin.AdminInquiryHistoryDTO;
 import com.dangdiary.api.dto.admin.InquiryAnswerDTO;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingException;
+import com.google.firebase.messaging.Message;
+import com.google.firebase.messaging.Notification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 
 @Service

@@ -2,6 +2,7 @@ package com.dangdiary.api.controller;
 
 import com.dangdiary.api.dto.admin.AdminInquiryHistoryDTO;
 import com.dangdiary.api.service.AdminService;
+import com.dangdiary.api.service.FirebaseCloudMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +21,9 @@ public class AdminController {
 
     @Autowired
     AdminService adminService;
+
+    @Autowired
+    FirebaseCloudMessageService firebaseCloudMessageService;
 
     @GetMapping("")
     public String inquiry(HttpServletRequest request, Model model) {

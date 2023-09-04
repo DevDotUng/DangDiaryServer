@@ -19,8 +19,8 @@
           #{deleteUserChallengeId}
         </foreach>
     </delete>
-    <select id="getUserIds" resultType="Integer">
-        SELECT user_id
+    <select id="getUserIdAndFirebaseTokens" resultType="com.dangdiary.api.domain.schedule.dto.UserIdAndFirebaseTokenDTO">
+        SELECT user_id, firebase_token
         FROM users
     </select>
     <insert id="insertDailyChallengeByUserId" parameterType="com.dangdiary.api.domain.schedule.dto.UserIdAndRecommendDateDTO">

@@ -1,11 +1,14 @@
 package com.dangdiary.api.domain.schedule.service.impl;
 
 import com.dangdiary.api.dao.ScheduleDAO;
+import com.dangdiary.api.domain.schedule.dto.UserIdAndFirebaseTokenDTO;
 import com.dangdiary.api.domain.schedule.dto.UserIdAndRecommendDateDTO;
+import com.dangdiary.api.service.FirebaseCloudMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -16,8 +19,11 @@ public class ScheduleServiceImp {
     @Autowired
     ScheduleDAO scheduleDAO;
 
+    @Autowired
+    FirebaseCloudMessageService firebaseCloudMessageService;
+
     @Transactional
-    public void updateDailyChallenges() {
+    public void updateDailyChallenges() throws IOException {
         Calendar cal = Calendar.getInstance();
         String format = "yyyy-MM-dd 10:00:00";
         SimpleDateFormat sdf = new SimpleDateFormat(format);
@@ -28,14 +34,17 @@ public class ScheduleServiceImp {
         if (!deleteDailyChallengeIds.isEmpty()) {
             scheduleDAO.deleteChallenges(deleteDailyChallengeIds);
         }
-        List<Integer> userIds = scheduleDAO.getUserIds();
+        List<UserIdAndFirebaseTokenDTO> userIdAndFirebaseTokens = scheduleDAO.getUserIdAndFirebaseTokens();
 
-        for (Integer userId: userIds) {
-            scheduleDAO.insertDailyChallengeByUserId(new UserIdAndRecommendDateDTO(userId, date));
+        for (UserIdAndFirebaseTokenDTO userIdAndFirebaseToken: userIdAndFirebaseTokens) {
+            scheduleDAO.insertDailyChallengeByUserId(new UserIdAndRecommendDateDTO(userIdAndFirebaseToken.getUserId(), date));
+            if (userIdAndFirebaseToken.getFirebaseToken() != null) {
+                firebaseCloudMessageService.sendMessageTo(userIdAndFirebaseToken.getFirebaseToken(), "일일 챌린지 도착!", "일일 챌린지가 업데이트 되었어요! 지금 확인해보세요!!");
+            }
         }
     }
 
-    public void updateWeeklyChallenges() {
+    public void updateWeeklyChallenges() throws IOException {
         Calendar cal = Calendar.getInstance();
         String format = "yyyy-MM-dd 10:00:00";
         SimpleDateFormat sdf = new SimpleDateFormat(format);
@@ -46,10 +55,13 @@ public class ScheduleServiceImp {
         if (!deleteWeeklyChallengeIds.isEmpty()) {
             scheduleDAO.deleteChallenges(deleteWeeklyChallengeIds);
         }
-        List<Integer> userIds = scheduleDAO.getUserIds();
+        List<UserIdAndFirebaseTokenDTO> userIdAndFirebaseTokens = scheduleDAO.getUserIdAndFirebaseTokens();
 
-        for (Integer userId: userIds) {
-            scheduleDAO.insertWeeklyChallengeByUserId(new UserIdAndRecommendDateDTO(userId, date));
+        for (UserIdAndFirebaseTokenDTO userIdAndFirebaseToken: userIdAndFirebaseTokens) {
+            scheduleDAO.insertWeeklyChallengeByUserId(new UserIdAndRecommendDateDTO(userIdAndFirebaseToken.getUserId(), date));
+            if (userIdAndFirebaseToken.getFirebaseToken() != null) {
+                firebaseCloudMessageService.sendMessageTo(userIdAndFirebaseToken.getFirebaseToken(), "주간 챌린지 도착!", "주간 챌린지가 업데이트 되었어요! 지금 확인해보세요!!");
+            }
         }
     }
 }

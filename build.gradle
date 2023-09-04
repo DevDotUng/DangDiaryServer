@@ -6,7 +6,7 @@ plugins {
 
 group = 'com.dangdiary'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '8'
+sourceCompatibility = "1.9"
 
 repositories {
 	mavenCentral()
@@ -33,9 +33,12 @@ dependencies {
 	implementation "org.apache.tomcat.embed:tomcat-embed-jasper"
 	// https://mvnrepository.com/artifact/javax.servlet/jstl
 	implementation group: 'javax.servlet', name: 'jstl', version: '1.2'
+	implementation 'com.google.firebase:firebase-admin:9.2.0'
+
 
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
 }
+targetCompatibility = JavaVersion.VERSION_1_9
