@@ -21,11 +21,17 @@ public class CustomerCenterController {
     CustomerCenterService customerCenterService;
     
     @GetMapping(value = "", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<CustomerCenterDTO> home() {
+    public ResponseEntity<CustomerCenterDTO> home(int userId) {
 
-        CustomerCenterDTO customerCenterDTO = customerCenterService.getCustomerCenterDTO();
+        CustomerCenterDTO customerCenterDTO = customerCenterService.getCustomerCenterDTO(userId);
 
         return ResponseEntity.status(HttpStatus.OK).body(customerCenterDTO);
+    }
+
+    @PutMapping(value = "like", produces = "application/json;charset=UTF-8")
+    public void likeFAQ(int userId, int faqId, boolean isLike) {
+
+        customerCenterService.likeFAQ(userId, faqId, isLike);
     }
 
     @PostMapping(value = "/notice", produces = "application/json;charset=UTF-8")
