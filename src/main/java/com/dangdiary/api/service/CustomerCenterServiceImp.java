@@ -46,4 +46,15 @@ public class CustomerCenterServiceImp implements CustomerCenterService {
         return inquiryHistoryDTOList;
     }
 
+    @Override
+    public void likeInquiry(int inquiryId, boolean isLike) {
+        int isLikeArgument;
+        if (isLike) {
+            isLikeArgument = 1;
+        } else {
+            isLikeArgument = 0;
+        }
+        customerCenterDAO.likeInquiry(inquiryId, isLikeArgument);
+    }
+
 }

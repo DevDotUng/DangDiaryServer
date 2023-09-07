@@ -41,4 +41,9 @@
     WHERE user_id = #{userId}
     ORDER BY registerDate;
   </select>
+  <update id="likeInquiry" parameterType="int">
+    UPDATE inquiries
+    SET is_like = #{isLike}
+    WHERE inquiry_id = #{inquiryId}
+  </update>
 </mapper>

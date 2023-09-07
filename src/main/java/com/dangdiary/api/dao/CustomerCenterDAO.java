@@ -18,4 +18,5 @@ public interface CustomerCenterDAO {
     NoticeDTO getNotice();
     void inquiry(InquiryDTO inquiryDTO);
     List<InquiryHistoryDTO> getInquiryHistoryDTOList(int userId);
+    void likeInquiry(int inquiryId, int isLike);
 }
