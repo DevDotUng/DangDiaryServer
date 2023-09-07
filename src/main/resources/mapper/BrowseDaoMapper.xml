@@ -116,4 +116,11 @@
     VALUES
     (#{diaryId}, #{userId}, NOW())
   </insert>
+  <select id="getFirebaseTokenByDiaryId" parameterType="int" resultType="String">
+    SELECT u.firebase_token
+    FROM diaries d
+        LEFT JOIN users u
+            ON d.user_id = u.user_id
+    WHERE d.diary_id = #{diaryId}
+  </select>
 </mapper>

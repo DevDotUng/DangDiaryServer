@@ -29,4 +29,5 @@ public interface BrowseDAO {
     boolean getIsLike(int userId, int diaryId);
     void dislike(int userId, int diaryId);
     void like(int userId, int diaryId);
+    String getFirebaseTokenByDiaryId(int diaryId);
 }
