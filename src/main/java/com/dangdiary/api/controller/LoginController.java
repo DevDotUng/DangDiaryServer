@@ -10,11 +10,7 @@ import javax.servlet.ServletContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -37,25 +33,25 @@ public class LoginController {
 	ServletContext ctx;
 
     @GetMapping(value = "user/kakao", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<LoginResponseDTO> loginKakao(String accessToken, String refreshToken) {
+    public ResponseEntity<LoginResponseDTO> loginKakao(String accessToken, String refreshToken, String firebaseToken) {
 
-        LoginResponseDTO loginResponse = loginService.kakaoLogin(accessToken, refreshToken);
+        LoginResponseDTO loginResponse = loginService.kakaoLogin(accessToken, refreshToken, firebaseToken);
 
         return ResponseEntity.status(HttpStatus.OK).body(loginResponse);
     }
 
     @GetMapping(value = "user/apple", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<LoginResponseDTO> loginApple(String userIdentifier, String authorizationCode, String identityToken, String familyName, String givenName) {
+    public ResponseEntity<LoginResponseDTO> loginApple(String userIdentifier, String authorizationCode, String identityToken, String familyName, String givenName, String firebaseToken) {
 
-        LoginResponseDTO loginResponse = loginService.appleLogin(userIdentifier, authorizationCode, identityToken, familyName, givenName);
+        LoginResponseDTO loginResponse = loginService.appleLogin(userIdentifier, authorizationCode, identityToken, familyName, givenName, firebaseToken);
 
         return ResponseEntity.status(HttpStatus.OK).body(loginResponse);
     }
 
     @GetMapping(value = "user", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<Boolean> login(int userId) {
+    public ResponseEntity<Boolean> login(int userId, String firebaseToken) {
 
-        int responseCode = loginService.autoLogin(userId);
+        int responseCode = loginService.autoLogin(userId, firebaseToken);
 
         boolean existDog;
         if (loginDAO.existDog(userId) == 0) {
@@ -71,6 +67,16 @@ public class LoginController {
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(existDog);
         }
+    }
+
+    @GetMapping(value = "user/logout", produces = "application/json;charset=UTF-8")
+    public void logout(int userId) {
+        loginService.logout(userId);
+    }
+
+    @DeleteMapping(value = "user/delete", produces = "application/json;charset=UTF-8")
+    public void deleteAccount(int userId) {
+        loginService.deleteAccount(userId);
     }
 
     @PostMapping("user/info")

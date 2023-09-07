@@ -10,6 +10,21 @@
     FROM users
     WHERE user_id = #{userId};
   </select>
+  <select id="getLoginDate" parameterType="int" resultType="String">
+    SELECT login_date
+    FROM users
+    WHERE user_id = #{userId};
+  </select>
+  <update id="updateLoginDateNow" parameterType="int">
+    UPDATE users
+    SET login_date = NOW()
+    WHERE user_id = #{userId};
+  </update>
+  <update id="updateFirebaseToken" parameterType="com.dangdiary.api.dto.login.LoginDTO">
+    UPDATE users
+    SET firebase_token = #{firebaseToken}
+    WHERE user_id = #{userId};
+  </update>
 <!--  아이디가 있다면 로그인을 진행하고 없다면 추가해주기 위해 존재여부 확인  -->
   <select id="existId" parameterType="String" resultType="int">
     SELECT EXISTS
@@ -25,26 +40,26 @@
   </select>
 <!--  카카오 로그인을 했을 때 유저를 추가  -->
   <insert id="addUserWithKakao" parameterType="com.dangdiary.api.dto.login.LoginDTO">
-    INSERT INTO users(social_id, refresh_token, name, admission_date)
+    INSERT INTO users(login_type, social_id, access_token, refresh_token, name, admission_date, login_date, firebase_token)
     VALUES
-    ('kakao', #{id}, #{refreshToken}, #{name}, NOW())
+    ('kakao', #{id}, #{accessToken}, #{refreshToken}, #{name}, NOW(), NOW(), #{firebaseToken})
   </insert>
   <!--  애플 로그인을 했을 때 유저를 추가  -->
   <insert id="addUserWithApple" parameterType="com.dangdiary.api.dto.login.LoginDTO">
-    INSERT INTO users(login_type, social_id, refresh_token, name, admission_date)
+    INSERT INTO users(login_type, social_id, access_token, refresh_token, name, admission_date, login_date, firebase_token)
     VALUES
-    ('apple', #{id}, #{refreshToken}, #{name}, NOW())
+    ('apple', #{id}, #{accessToken}, #{refreshToken}, #{name}, NOW(), NOW(), #{firebaseToken})
   </insert>
 <!--  카카오 로그인을 했을 때 유저 정보 업데이트  -->
   <update id="updateUserWithKakao" parameterType="com.dangdiary.api.dto.login.LoginDTO">
     UPDATE users
-    SET social_id = #{id}, refresh_token = #{refreshToken}, name = #{name}
+    SET social_id = #{id}, access_token = #{accessToken}, refresh_token = #{refreshToken}, name = #{name}, login_date = NOW(), firebase_token = #{firebaseToken}
     WHERE user_id = #{userId};
   </update>
   <!--  애플 로그인을 했을 때 유저 정보 업데이트  -->
   <update id="updateUserWithApple" parameterType="com.dangdiary.api.dto.login.LoginDTO">
     UPDATE users
-    SET social_id = #{id}, refresh_token = #{refreshToken}
+    SET social_id = #{id}, refresh_token = #{refreshToken}, login_date = NOW(), firebase_token = #{firebaseToken}
     WHERE user_id = #{userId};
   </update>
 <!--  로그인을 할때 댕댕 주민등록증 등록을 했는지 확인하고 안했을 경우 등록 화면으로 가기 위해 dogs테이블에서 확인하여 응답에 같이 포함시켜준다.  -->
@@ -68,6 +83,50 @@
     WHERE user_id = #{userId}
     LIMIT 1
   </select>
+  <select id="getAccessToken" parameterType="int" resultType="String">
+    SELECT access_token accessToken
+    FROM users
+    WHERE user_id = #{userId}
+      LIMIT 1
+  </select>
+
+  <delete id="deleteDiaryImages" parameterType="int">
+    DELETE FROM diary_images WHERE diary_id IN (SELECT diary_id FROM diaries WHERE user_id = #{userId})
+  </delete>
+  <delete id="deleteTags" parameterType="int">
+    DELETE FROM tags WHERE diary_id IN (SELECT diary_id FROM diaries WHERE user_id = #{userId})
+  </delete>
+  <delete id="deleteDiaries" parameterType="int">
+    DELETE FROM diaries WHERE user_id = #{userId}
+  </delete>
+  <delete id="deleteDiaryAdmin" parameterType="int">
+    DELETE FROM diary_admin WHERE user_id = #{userId}
+  </delete>
+  <delete id="deleteDiaryCovers" parameterType="int">
+    DELETE FROM diary_covers WHERE user_id = #{userId}
+  </delete>
+  <delete id="deleteDogs" parameterType="int">
+    DELETE FROM dogs WHERE user_id = #{userId}
+  </delete>
+  <delete id="deleteFAQLikes" parameterType="int">
+    DELETE FROM FAQ_likes WHERE user_id = #{userId}
+  </delete>
+  <delete id="deleteInquiries" parameterType="int">
+    DELETE FROM inquiries WHERE user_id = #{userId}
+  </delete>
+  <delete id="deleteLikes" parameterType="int">
+    DELETE FROM likes WHERE user_id = #{userId} OR diary_id IN (SELECT diary_id FROM diaries WHERE user_id = #{userId})
+  </delete>
+  <delete id="deleteReport" parameterType="int">
+    DELETE FROM report WHERE user_id = #{userId}
+  </delete>
+  <delete id="deleteUserChallenges" parameterType="int">
+    DELETE FROM user_challenges WHERE user_id = #{userId}
+  </delete>
+  <delete id="deleteUsers" parameterType="int">
+    DELETE FROM users WHERE user_id = #{userId}
+  </delete>
+
 <!--  댕댕 주민등록증 등록  -->
   <insert id="registerDogInfo" parameterType="com.dangdiary.api.dto.login.DogInfoDTO">
     INSERT INTO dogs(user_id, dog_name, profile_image, breed, birth, gender)

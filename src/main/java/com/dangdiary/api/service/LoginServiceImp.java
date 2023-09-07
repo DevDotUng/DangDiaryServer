@@ -12,7 +12,10 @@ import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.interfaces.ECPrivateKey;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Base64;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 import java.util.Base64.Decoder;
@@ -22,6 +25,7 @@ import org.bouncycastle.util.io.pem.PemReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +44,7 @@ import com.nimbusds.jose.JWSSigner;
 import com.nimbusds.jose.crypto.ECDSASigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class LoginServiceImp implements LoginService {
@@ -48,7 +53,7 @@ public class LoginServiceImp implements LoginService {
     LoginDAO loginDAO;
 
     @Transactional
-    public LoginResponseDTO kakaoLogin(String accessToken, String refreshToken) {
+    public LoginResponseDTO kakaoLogin(String accessToken, String refreshToken, String firebaseToken) {
         String reqURL = "https://kapi.kakao.com/v2/user/me";
         LoginResponseDTO loginResponse = new LoginResponseDTO();
         try {
@@ -73,7 +78,9 @@ public class LoginServiceImp implements LoginService {
                 br.close();
 
                 LoginDTO loginDTO = getJSONFromString(result);
+                loginDTO.setAccessToken(accessToken);
                 loginDTO.setRefreshToken(refreshToken);
+                loginDTO.setFirebaseToken(firebaseToken);
 
                 String socialId = loginDTO.getId();
 
@@ -103,7 +110,7 @@ public class LoginServiceImp implements LoginService {
     }
 
     @Override
-    public LoginResponseDTO appleLogin(String userIdentifier, String authorizationCode, String identityToken, String familyName, String givenName) {
+    public LoginResponseDTO appleLogin(String userIdentifier, String authorizationCode, String identityToken, String familyName, String givenName, String firebaseToken) {
 
         String clientId = "com.uniqueone.dangdiary";
         String reqURL = "https://appleid.apple.com/auth/token";
@@ -174,7 +181,7 @@ public class LoginServiceImp implements LoginService {
                     name += givenName;
                 }
 
-                LoginDTO loginDTO = new LoginDTO(0, socialId, name, updatedRefreshToken);
+                LoginDTO loginDTO = new LoginDTO(0, socialId, name, null, updatedRefreshToken, firebaseToken);
 
                 if (loginDAO.existId(socialId) == 1) {
                     int userId = loginDAO.getUserId(socialId);
@@ -204,8 +211,14 @@ public class LoginServiceImp implements LoginService {
     }
 
     @Override
-    public int autoLogin(int userId) {
+    public int autoLogin(int userId, String firebaseToken) {
         int responseCode = 401;
+        String loginDate = loginDAO.getLoginDate(userId);
+
+        if (isExpire(loginDate)) {
+            return responseCode;
+        }
+
         if (loginDAO.getLoginType(userId).equals("kakao")) {
 
             String apiKey = "c62730797df0ff3fcc1f7303775a846d";
@@ -258,7 +271,7 @@ public class LoginServiceImp implements LoginService {
                         e.printStackTrace();
                     }
 
-                    kakaoLogin(updatedAccessToken, updatedRefreshToken);
+                    kakaoLogin(updatedAccessToken, updatedRefreshToken, firebaseToken);
 
                     br.close();
                 }
@@ -298,6 +311,12 @@ public class LoginServiceImp implements LoginService {
                 pw.flush();
     
                 responseCode = conn.getResponseCode();
+
+                if (responseCode == 200) {
+                    loginDAO.updateLoginDateNow(userId);
+                    LoginDTO loginDTO = new LoginDTO(userId, null, null, null, null, firebaseToken);
+                    loginDAO.updateFirebaseToken(loginDTO);
+                }
     
             } catch (IOException e) {
                 e.printStackTrace();
@@ -309,6 +328,182 @@ public class LoginServiceImp implements LoginService {
         }
 
         return responseCode;
+    }
+
+    @Override
+    public void logout(int userId) {
+        if (loginDAO.getLoginType(userId).equals("kakao")) {
+
+            String apiKey = "c62730797df0ff3fcc1f7303775a846d";
+            String reqURL = "https://kapi.kakao.com/v1/user/logout";
+            String accessToken = loginDAO.getAccessToken(userId);
+
+            try {
+                URL url = new URL(reqURL);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("content-type", "application/x-www-form-urlencoded");
+                conn.setRequestProperty("Authorization", "Bearer " + accessToken);
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+
+                int responseCode = conn.getResponseCode();
+
+                if (responseCode != 200) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error");
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if (loginDAO.getLoginType(userId).equals("apple")) {
+            String refreshToken = loginDAO.getRefreshToken(userId);
+
+            String clientId = "com.uniqueone.dangdiary";
+            String reqURL = "https://appleid.apple.com/auth/revoke";
+
+            String teamId = "R2M3DTM6K7";
+            String keyId = "HD987X6833";
+            String keyPath = "apple/AuthKey_HD987X6833.p8";
+            String authURL = "https://appleid.apple.com";
+
+            String clientSecret = createClientSecret(teamId, clientId, keyId, keyPath, authURL);
+
+            try {
+                URL url = new URL(reqURL);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("content-type", "application/x-www-form-urlencoded");
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+
+                StringBuilder usb = new StringBuilder();
+                usb.append("client_id").append("=").append(clientId).append("&");
+                usb.append("client_secret").append("=").append(clientSecret).append("&");
+                usb.append("token").append("=").append(refreshToken).append("&");
+                usb.append("token_type_hint").append("=").append("refresh_token");
+
+                PrintWriter pw = new PrintWriter(new OutputStreamWriter(conn.getOutputStream(), "UTF-8"));
+                pw.write(usb.toString());
+                pw.flush();
+
+                int responseCode = conn.getResponseCode();
+
+                if (responseCode != 200) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error");
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Transactional
+    public void deleteAccount(int userId) {
+        String loginType = loginDAO.getLoginType(userId);
+        String accessToken = loginDAO.getAccessToken(userId);
+        String refreshToken = loginDAO.getRefreshToken(userId);
+
+        loginDAO.deleteDiaryImages(userId);
+        loginDAO.deleteTags(userId);
+        loginDAO.deleteDiaryAdmin(userId);
+        loginDAO.deleteDiaryCovers(userId);
+        loginDAO.deleteDogs(userId);
+        loginDAO.deleteFAQLikes(userId);
+        loginDAO.deleteInquiries(userId);
+        loginDAO.deleteLikes(userId);
+        loginDAO.deleteReport(userId);
+        loginDAO.deleteUserChallenges(userId);
+        loginDAO.deleteUsers(userId);
+        loginDAO.deleteDiaries(userId);
+
+        if (loginType.equals("kakao")) {
+
+            String apiKey = "c62730797df0ff3fcc1f7303775a846d";
+            String reqURL = "https://kapi.kakao.com/v1/user/unlink";
+
+            try {
+                URL url = new URL(reqURL);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("content-type", "application/x-www-form-urlencoded");
+                conn.setRequestProperty("Authorization", "Bearer " + accessToken);
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+
+                int responseCode = conn.getResponseCode();
+
+                if (responseCode != 200) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error");
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if (loginType.equals("apple")) {
+
+            String clientId = "com.uniqueone.dangdiary";
+            String reqURL = "https://appleid.apple.com/auth/revoke";
+
+            String teamId = "R2M3DTM6K7";
+            String keyId = "HD987X6833";
+            String keyPath = "apple/AuthKey_HD987X6833.p8";
+            String authURL = "https://appleid.apple.com";
+
+            String clientSecret = createClientSecret(teamId, clientId, keyId, keyPath, authURL);
+
+            try {
+                URL url = new URL(reqURL);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("content-type", "application/x-www-form-urlencoded");
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+
+                StringBuilder usb = new StringBuilder();
+                usb.append("client_id").append("=").append(clientId).append("&");
+                usb.append("client_secret").append("=").append(clientSecret).append("&");
+                usb.append("token").append("=").append(refreshToken).append("&");
+                usb.append("token_type_hint").append("=").append("refresh_token");
+
+                PrintWriter pw = new PrintWriter(new OutputStreamWriter(conn.getOutputStream(), "UTF-8"));
+                pw.write(usb.toString());
+                pw.flush();
+
+                int responseCode = conn.getResponseCode();
+
+                if (responseCode != 200) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error");
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    boolean isExpire(String loginDate) {
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+            Calendar calendar = Calendar.getInstance();
+
+            String now = format.format(calendar.getTime());
+
+            Date nowDate = format.parse(now);
+            Date birthDate = format.parse(loginDate);
+
+            int date = (int)((nowDate.getTime() - birthDate.getTime()) / (24*60*60*1000) + 1);
+
+            if (date <= 14) {
+                return false;
+            } else {
+                return true;
+            }
+        } catch (ParseException e) {
+            return true;
+        }
     }
 
     LoginDTO getJSONFromString(String str) {
