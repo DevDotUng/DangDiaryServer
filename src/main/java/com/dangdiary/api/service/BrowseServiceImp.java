@@ -1,5 +1,6 @@
 package com.dangdiary.api.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +21,9 @@ public class BrowseServiceImp implements BrowseService {
 
     @Autowired
     DiaryDAO myDiaryDAO;
+
+    @Autowired
+    FirebaseCloudMessageService firebaseCloudMessageService;
 
     @Override
     public BrowseResponseDTO getBrowseView(int userId) {
@@ -133,14 +137,18 @@ public class BrowseServiceImp implements BrowseService {
     }
 
     @Override
-    public void likeDiary(int userId, int diaryId) {
+    public void likeDiary(int userId, int diaryId) throws IOException {
 
         boolean isLike = browseDAO.getIsLike(userId, diaryId);
+        String firebaseToken = browseDAO.getFirebaseTokenByDiaryId(diaryId);
 
         if (isLike) {
             browseDAO.dislike(userId, diaryId);
         } else {
             browseDAO.like(userId, diaryId);
+            if (firebaseToken != null) {
+                firebaseCloudMessageService.sendMessageTo(firebaseToken, "좋아요!", "누군가 회원님의 게시물에 좋아요를 눌렀어요!");
+            }
         }
     }
 

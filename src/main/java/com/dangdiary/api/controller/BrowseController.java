@@ -1,5 +1,6 @@
 package com.dangdiary.api.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +54,7 @@ public class BrowseController {
     }
 
     @PutMapping(value = "/posts/like", produces = "application/json;charset=UTF-8")
-    public void likeDiary(int userId, int diaryId) {
+    public void likeDiary(int userId, int diaryId) throws IOException {
         browseService.likeDiary(userId, diaryId);
     }
 }
