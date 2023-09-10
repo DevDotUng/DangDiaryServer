@@ -210,7 +210,7 @@ public class LoginServiceImp implements LoginService {
         int responseCode = 401;
         String loginDate = loginDAO.getLoginDate(userId);
 
-        if (isExpire(loginDate)) {
+        if (loginDate == null || isExpire(loginDate)) {
             return responseCode;
         }
 
