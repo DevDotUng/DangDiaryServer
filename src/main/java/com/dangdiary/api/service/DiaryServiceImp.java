@@ -172,7 +172,6 @@ public class DiaryServiceImp implements DiaryService {
         int diaryId = diary.getDiaryId();
         diaryDAO.editDiary(diary);
         diaryDAO.updateEndDate(diary);
-        deleteAndPostImages(diaryId, diary.getImages());
         deleteAndPostTags(diaryId, diary.getTags());
 
         WriteDiaryResponseDTO diaryResponse = diaryDAO.getDiary(diaryId);
@@ -336,16 +335,6 @@ public class DiaryServiceImp implements DiaryService {
             numberOfLike += diary.getNumberOfLike();
         }
         return numberOfLike;
-    }
-
-    void deleteAndPostImages(int diaryId, List<String> images) {
-        diaryDAO.deleteImages(diaryId);
-        int index = 0;
-        for (String image: images) {
-            ImageOrTagDTO imageOrTagDTO = new ImageOrTagDTO(diaryId, index, image);
-            diaryDAO.postImage(imageOrTagDTO);
-            index++;
-        }
     }
 
     void deleteAndPostTags(int diaryId, List<String> tags) {

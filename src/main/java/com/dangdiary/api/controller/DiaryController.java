@@ -94,12 +94,10 @@ public class DiaryController {
         @RequestParam("feeling") String feeling,
         @RequestParam("title") String title,
         @RequestParam("content") String content,
-        @RequestParam("images") List<MultipartFile> images,
         @RequestParam("tags") List<String> tags,
         @RequestParam("isPublic") Boolean isPublic
     ) throws IllegalStateException, IOException {
 
-        List<String> imageList = saveImages(images);
         int intIsPublic;
         if (isPublic) {
             intIsPublic = 1;
@@ -114,7 +112,6 @@ public class DiaryController {
             feeling,
             title,
             content,
-            imageList,
             tags,
             intIsPublic
         );
@@ -127,33 +124,5 @@ public class DiaryController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteDiary(int userId, int coverId, int diaryId) throws ParseException {
         diaryService.deleteDiary(userId, coverId, diaryId);
-    }
-
-    List<String> saveImages(List<MultipartFile> images) throws IllegalStateException, IOException {
-        
-        List<String> imageList = new ArrayList<String>();
-        int index = 0;
-        for (MultipartFile image: images) {
-            String uuid = UUID.randomUUID().toString();
-		
-            String fileName = uuid + image.getOriginalFilename();
-
-            String webPath = "/upload/diary";
-            String realPath = ctx.getRealPath(webPath);
-            
-            File savePath = new File(realPath);
-            if (!savePath.exists())
-                savePath.mkdirs();
-            
-            realPath += File.separator + fileName;
-            File saveFile = new File(realPath);
-            
-            image.transferTo(saveFile);
-
-            imageList.add(index, fileName);
-            index++;
-        }
-
-        return imageList;
     }
 }
