@@ -37,9 +37,11 @@ public class ScheduleServiceImp {
         List<UserIdAndFirebaseTokenDTO> userIdAndFirebaseTokens = scheduleDAO.getUserIdAndFirebaseTokens();
 
         for (UserIdAndFirebaseTokenDTO userIdAndFirebaseToken: userIdAndFirebaseTokens) {
-            scheduleDAO.insertDailyChallengeByUserId(new UserIdAndRecommendDateDTO(userIdAndFirebaseToken.getUserId(), date));
-            if (userIdAndFirebaseToken.getFirebaseToken() != null) {
-                firebaseCloudMessageService.sendMessageTo(userIdAndFirebaseToken.getFirebaseToken(), "일일 챌린지 도착!", "일일 챌린지가 업데이트 되었어요! 지금 확인해보세요!!");
+            if (scheduleDAO.getNumberOfNotInProgressChallenge(userIdAndFirebaseToken.getUserId()) != 0) {
+                scheduleDAO.insertDailyChallengeByUserId(new UserIdAndRecommendDateDTO(userIdAndFirebaseToken.getUserId(), date));
+                if (userIdAndFirebaseToken.getFirebaseToken() != null) {
+                    firebaseCloudMessageService.sendMessageTo(userIdAndFirebaseToken.getFirebaseToken(), "일일 챌린지 도착!", "일일 챌린지가 업데이트 되었어요! 지금 확인해보세요!!");
+                }
             }
         }
     }
@@ -58,9 +60,11 @@ public class ScheduleServiceImp {
         List<UserIdAndFirebaseTokenDTO> userIdAndFirebaseTokens = scheduleDAO.getUserIdAndFirebaseTokens();
 
         for (UserIdAndFirebaseTokenDTO userIdAndFirebaseToken: userIdAndFirebaseTokens) {
-            scheduleDAO.insertWeeklyChallengeByUserId(new UserIdAndRecommendDateDTO(userIdAndFirebaseToken.getUserId(), date));
-            if (userIdAndFirebaseToken.getFirebaseToken() != null) {
-                firebaseCloudMessageService.sendMessageTo(userIdAndFirebaseToken.getFirebaseToken(), "주간 챌린지 도착!", "주간 챌린지가 업데이트 되었어요! 지금 확인해보세요!!");
+            if (scheduleDAO.getNumberOfNotInProgressChallenge(userIdAndFirebaseToken.getUserId()) != 0) {
+                scheduleDAO.insertWeeklyChallengeByUserId(new UserIdAndRecommendDateDTO(userIdAndFirebaseToken.getUserId(), date));
+                if (userIdAndFirebaseToken.getFirebaseToken() != null) {
+                    firebaseCloudMessageService.sendMessageTo(userIdAndFirebaseToken.getFirebaseToken(), "주간 챌린지 도착!", "주간 챌린지가 업데이트 되었어요! 지금 확인해보세요!!");
+                }
             }
         }
     }
