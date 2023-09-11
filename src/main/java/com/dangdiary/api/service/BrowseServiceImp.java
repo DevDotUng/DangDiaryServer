@@ -39,7 +39,7 @@ public class BrowseServiceImp implements BrowseService {
     }
 
     @Override
-    public List<PostsDTO> getPosts(int browseId) {
+    public List<PostsDTO> getPosts(int userId, int browseId) {
 
         String query = browseDAO.getQuery(browseId);
 
@@ -48,7 +48,7 @@ public class BrowseServiceImp implements BrowseService {
         for (PostsDTO post : posts) {
             int diaryId = post.getDiaryId();
             List<Integer> isPublicAndNumberOfLikeAndIsLike
-                    = myDiaryDAO.getIsPublicAndNumberOfLikeAndIsLike(post.getUserId(), diaryId);
+                    = myDiaryDAO.getIsPublicAndNumberOfLikeAndIsLike(userId, diaryId);
             if (isPublicAndNumberOfLikeAndIsLike.get(0) == 1) {
                 post.setIsPublic(true);
             } else {

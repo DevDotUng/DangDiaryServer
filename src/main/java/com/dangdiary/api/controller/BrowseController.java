@@ -31,8 +31,8 @@ public class BrowseController {
     }
 
     @GetMapping(value = "/posts", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<List<PostsDTO>> getPosts(int browseId) {
-        List<PostsDTO> posts = browseService.getPosts(browseId);
+    public ResponseEntity<List<PostsDTO>> getPosts(int userId, int browseId) {
+        List<PostsDTO> posts = browseService.getPosts(userId, browseId);
         return ResponseEntity.status(HttpStatus.OK).body(posts);
     }
 
