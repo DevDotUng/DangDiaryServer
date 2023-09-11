@@ -1,17 +1,19 @@
 package com.dangdiary.api.service;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import com.dangdiary.api.dto.browse.*;
+import com.dangdiary.api.dto.notification.NotificationDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.dangdiary.api.dao.BrowseDAO;
 import com.dangdiary.api.dao.DiaryDAO;
-import com.dangdiary.api.dto.browse.BrowseResponseDTO;
-import com.dangdiary.api.dto.browse.PostsDTO;
-import com.dangdiary.api.dto.browse.SearchResultDTO;
 
 @Service
 public class BrowseServiceImp implements BrowseService {
@@ -21,6 +23,9 @@ public class BrowseServiceImp implements BrowseService {
 
     @Autowired
     DiaryDAO myDiaryDAO;
+
+    @Autowired
+    NotificationService notificationService;
 
     @Autowired
     FirebaseCloudMessageService firebaseCloudMessageService;
@@ -137,19 +142,50 @@ public class BrowseServiceImp implements BrowseService {
     }
 
     @Override
-    public void likeDiary(int userId, int diaryId) throws IOException {
+    public void likeDiary(int userId, int diaryId) throws IOException, ParseException {
 
         boolean isLike = browseDAO.getIsLike(userId, diaryId);
-        String firebaseToken = browseDAO.getFirebaseTokenByDiaryId(diaryId);
+
+        UserIdAndEndDateDTO userIdAndEndDate = browseDAO.getUserIdAndEndDate(diaryId);
+
+        int yyyymm = getYYYYMM(userIdAndEndDate.getEndDate());
+
+        CoverIdAndFirebaseTokenDTO coverIdAndFirebaseToken = browseDAO.getCoverIdAndFirebaseToken(userIdAndEndDate.getUserId(), yyyymm);
+
+        String likeUserNickname = browseDAO.getNickname(userId);
+        String diaryUserNickname = browseDAO.getNickname(userIdAndEndDate.getUserId());
+
+        String notificationBody = likeUserNickname + "님이 " + diaryUserNickname + "님의 " + getFormattedEndDate(userIdAndEndDate.getEndDate()) + " 일기에 좋아요를 남겼어요.";
 
         if (isLike) {
             browseDAO.dislike(userId, diaryId);
         } else {
             browseDAO.like(userId, diaryId);
-            if (firebaseToken != null) {
-                firebaseCloudMessageService.sendMessageTo(firebaseToken, "좋아요!", "누군가 회원님의 게시물에 좋아요를 눌렀어요!");
+            if (coverIdAndFirebaseToken.getFirebaseToken() != null) {
+                firebaseCloudMessageService.sendMessageTo(coverIdAndFirebaseToken.getFirebaseToken(), "좋아요!", notificationBody);
+                notificationService.insertNotification(new NotificationDTO(0, userIdAndEndDate.getUserId(), null, "like",
+                        notificationBody, coverIdAndFirebaseToken.getCoverId(), diaryId));
             }
         }
+    }
+
+    int getYYYYMM(String endDate) throws ParseException {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date endDateDate = format.parse(endDate);
+
+        int yyyymm = (1900 + endDateDate.getYear()) * 100 + (1 + endDateDate.getMonth());
+
+        return yyyymm;
+    }
+
+    String getFormattedEndDate(String endDate) throws ParseException {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat newFormat = new SimpleDateFormat("yyyy년 MM월 dd일");
+
+        Date endDateDate = format.parse(endDate);
+        String formattedEndDate = newFormat.format(endDateDate);
+
+        return formattedEndDate;
     }
 
 }

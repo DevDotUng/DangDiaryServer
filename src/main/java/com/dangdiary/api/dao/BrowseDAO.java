@@ -2,11 +2,9 @@ package com.dangdiary.api.dao;
 
 import java.util.List;
 
+import com.dangdiary.api.dto.browse.*;
 import org.apache.ibatis.annotations.Mapper;
-
-import com.dangdiary.api.dto.browse.AccountDTO;
-import com.dangdiary.api.dto.browse.BrowseDTO;
-import com.dangdiary.api.dto.browse.PostsDTO;
+import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface BrowseDAO {
@@ -29,5 +27,6 @@ public interface BrowseDAO {
     boolean getIsLike(int userId, int diaryId);
     void dislike(int userId, int diaryId);
     void like(int userId, int diaryId);
-    String getFirebaseTokenByDiaryId(int diaryId);
+    UserIdAndEndDateDTO getUserIdAndEndDate(int diaryId);
+    CoverIdAndFirebaseTokenDTO getCoverIdAndFirebaseToken(@Param("userId") int userId, @Param("yyyymm") int yyyymm);
 }

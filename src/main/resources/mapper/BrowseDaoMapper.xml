@@ -116,11 +116,17 @@
     VALUES
     (#{diaryId}, #{userId}, NOW())
   </insert>
-  <select id="getFirebaseTokenByDiaryId" parameterType="int" resultType="String">
-    SELECT u.firebase_token
-    FROM diaries d
+  <select id="getUserIdAndEndDate" parameterType="int" resultType="com.dangdiary.api.dto.browse.UserIdAndEndDateDTO">
+    SELECT user_id userId, end_date endDate
+    FROM user_challenges
+    WHERE diary_id = #{diaryId}
+  </select>
+  <select id="getCoverIdAndFirebaseToken" parameterType="int" resultType="com.dangdiary.api.dto.browse.CoverIdAndFirebaseTokenDTO">
+    SELECT c.cover_id coverId, u.firebase_token firebaseToken
+    FROM diary_covers c
         LEFT JOIN users u
-            ON d.user_id = u.user_id
-    WHERE d.diary_id = #{diaryId}
+            ON c.user_id = u.user_id
+    WHERE c.user_id = #{userId}
+      AND c.diary_yyyymm = #{yyyymm}
   </select>
 </mapper>
