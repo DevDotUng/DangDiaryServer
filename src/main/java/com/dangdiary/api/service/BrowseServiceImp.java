@@ -161,7 +161,7 @@ public class BrowseServiceImp implements BrowseService {
             browseDAO.dislike(userId, diaryId);
         } else {
             browseDAO.like(userId, diaryId);
-            if (coverIdAndFirebaseToken.getFirebaseToken() != null) {
+            if (coverIdAndFirebaseToken.getFirebaseToken() != null && userId != userIdAndEndDate.getUserId()) {
                 firebaseCloudMessageService.sendMessageTo(coverIdAndFirebaseToken.getFirebaseToken(), "좋아요!", notificationBody);
                 notificationService.insertNotification(new NotificationDTO(0, userIdAndEndDate.getUserId(), null, "like",
                         notificationBody, coverIdAndFirebaseToken.getCoverId(), diaryId));
