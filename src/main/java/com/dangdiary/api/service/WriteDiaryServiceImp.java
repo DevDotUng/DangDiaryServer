@@ -48,7 +48,6 @@ public class WriteDiaryServiceImp implements WriteDiaryService {
             ImageOrTagDTO imageOrTagDTO = new ImageOrTagDTO(diaryId, index, image);
             writeDiaryDAO.postImage(imageOrTagDTO);
             index++;
-            System.out.print(image);
         }
     }
 
