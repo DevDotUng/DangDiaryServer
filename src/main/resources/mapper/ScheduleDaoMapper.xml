@@ -23,10 +23,22 @@
         SELECT user_id, firebase_token
         FROM users
     </select>
+    <select id="getNumberOfNotInProgressChallenge" parameterType="int" resultType="int">
+        SELECT COUNT(*)
+        FROM challenges
+        WHERE challenge_id NOT IN
+              (SELECT u.challenge_id
+               FROM user_challenges u
+                   LEFT JOIN diaries d
+                       ON u.diary_id = d.diary_id
+               WHERE d.register_date IS NULL
+                 AND u.user_id = #{userId}
+               )
+    </select>
     <insert id="insertDailyChallengeByUserId" parameterType="com.dangdiary.api.domain.schedule.dto.UserIdAndRecommendDateDTO">
         INSERT INTO user_challenges(user_id, challenge_id, recommend_type, recommend_date)
         VALUES (#{userId},
-                IFNULL((SELECT challenge_id FROM diaries WHERE user_id = #{userId} AND challenge_id NOT IN (SELECT DISTINCT u.challenge_id FROM user_challenges u LEFT JOIN diaries d ON u.diary_id = d.diary_id WHERE u.user_id = #{userId} AND d.register_date IS NULL) GROUP BY challenge_id LIMIT 1), (SELECT challenge_id FROM challenges ORDER BY challenge_id LIMIT 1)),
+                (SELECT challenge_id FROM (SELECT c.challenge_id, IFNULL(u.count, 0) count FROM challenges c LEFT JOIN (SELECT challenge_id, COUNT(challenge_id) count FROM (SELECT u.challenge_id FROM user_challenges u LEFT JOIN challenges c ON u.challenge_id = c.challenge_id LEFT JOIN diaries d ON u.diary_id = d.diary_id WHERE u.user_id = #{userId} AND d.register_date IS NOT NULL) a GROUP BY challenge_id ORDER BY COUNT(challenge_id)) u ON c.challenge_id = u.challenge_id WHERE c.challenge_id NOT IN (SELECT u.challenge_id FROM user_challenges u LEFT JOIN diaries d ON u.diary_id = d.diary_id WHERE d.register_date IS NULL AND u.user_id = #{userId}) ORDER BY count LIMIT 1) a),
             'daily',
             #{recommendDate})
     </insert>
@@ -43,7 +55,7 @@
     <insert id="insertWeeklyChallengeByUserId" parameterType="com.dangdiary.api.domain.schedule.dto.UserIdAndRecommendDateDTO">
         INSERT INTO user_challenges(user_id, challenge_id, recommend_type, recommend_date)
         VALUES (#{userId},
-                IFNULL((SELECT challenge_id FROM diaries WHERE user_id = #{userId} AND challenge_id NOT IN (SELECT DISTINCT u.challenge_id FROM user_challenges u LEFT JOIN diaries d ON u.diary_id = d.diary_id WHERE u.user_id = #{userId} AND d.register_date IS NULL) GROUP BY challenge_id LIMIT 1), (SELECT challenge_id FROM challenges ORDER BY challenge_id LIMIT 1)),
+                (SELECT challenge_id FROM (SELECT c.challenge_id, IFNULL(u.count, 0) count FROM challenges c LEFT JOIN (SELECT challenge_id, COUNT(challenge_id) count FROM (SELECT u.challenge_id FROM user_challenges u LEFT JOIN challenges c ON u.challenge_id = c.challenge_id LEFT JOIN diaries d ON u.diary_id = d.diary_id WHERE u.user_id = #{userId} AND d.register_date IS NOT NULL) a GROUP BY challenge_id ORDER BY COUNT(challenge_id)) u ON c.challenge_id = u.challenge_id WHERE c.challenge_id NOT IN (SELECT u.challenge_id FROM user_challenges u LEFT JOIN diaries d ON u.diary_id = d.diary_id WHERE d.register_date IS NULL AND u.user_id = #{userId}) ORDER BY count LIMIT 1) a),
                 'weekly',
                 #{recommendDate})
     </insert>

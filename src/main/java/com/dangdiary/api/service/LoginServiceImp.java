@@ -1,11 +1,6 @@
 package com.dangdiary.api.service;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.InvalidKeyException;
@@ -215,7 +210,7 @@ public class LoginServiceImp implements LoginService {
         int responseCode = 401;
         String loginDate = loginDAO.getLoginDate(userId);
 
-        if (isExpire(loginDate)) {
+        if (loginDate == null || isExpire(loginDate)) {
             return responseCode;
         }
 
@@ -558,12 +553,12 @@ public class LoginServiceImp implements LoginService {
         return jwt.serialize();
     }
 
-    private byte[] readPrivateKey(String keyPath) {
+    private byte[] readPrivateKey(String keyPath) throws IOException {
 
-        Resource resource = new ClassPathResource(keyPath);
+        File file = convertInputStreamToFile(new ClassPathResource(keyPath).getInputStream());
         byte[] content = null;
 
-        try (FileReader keyReader = new FileReader(resource.getFile());
+        try (FileReader keyReader = new FileReader(file);
              PemReader pemReader = new PemReader(keyReader)) {
             {
                 PemObject pemObject = pemReader.readPemObject();
@@ -574,6 +569,30 @@ public class LoginServiceImp implements LoginService {
         }
 
         return content;
+    }
+
+    public static File convertInputStreamToFile(InputStream inputStream) throws IOException {
+
+        File tempFile = File.createTempFile(String.valueOf(inputStream.hashCode()), ".tmp");
+        tempFile.deleteOnExit();
+
+        copyInputStreamToFile(inputStream, tempFile);
+
+        return tempFile;
+    }
+
+    private static void copyInputStreamToFile(InputStream inputStream, File file) {
+
+        try (FileOutputStream outputStream = new FileOutputStream(file)) {
+            int read;
+            byte[] bytes = new byte[1024];
+
+            while ((read = inputStream.read(bytes)) != -1) {
+                outputStream.write(bytes, 0, read);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     String getSocialIdApple(String payload) {

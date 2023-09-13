@@ -11,6 +11,7 @@ public interface ScheduleDAO {
     List<Integer> getDeleteUserChallengeIds();
     void deleteChallenges(List<Integer> deleteUserChallengeIds);
     List<UserIdAndFirebaseTokenDTO> getUserIdAndFirebaseTokens();
+    int getNumberOfNotInProgressChallenge(int userId);
     void insertDailyChallengeByUserId(UserIdAndRecommendDateDTO userIdAndRecommendDateDTO);
 
     List<Integer> getDeleteWeeklyUserChallengeIds();

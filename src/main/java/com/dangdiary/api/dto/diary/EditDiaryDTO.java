@@ -18,7 +18,6 @@ public class EditDiaryDTO {
     String feeling;
     String title;
     String content;
-    List<String> images;
     List<String> tags;
     int isPublic;
 }

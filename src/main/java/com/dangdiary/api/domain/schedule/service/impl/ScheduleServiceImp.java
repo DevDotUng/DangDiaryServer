@@ -3,7 +3,9 @@ package com.dangdiary.api.domain.schedule.service.impl;
 import com.dangdiary.api.dao.ScheduleDAO;
 import com.dangdiary.api.domain.schedule.dto.UserIdAndFirebaseTokenDTO;
 import com.dangdiary.api.domain.schedule.dto.UserIdAndRecommendDateDTO;
+import com.dangdiary.api.dto.notification.NotificationDTO;
 import com.dangdiary.api.service.FirebaseCloudMessageService;
+import com.dangdiary.api.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +20,9 @@ public class ScheduleServiceImp {
 
     @Autowired
     ScheduleDAO scheduleDAO;
+
+    @Autowired
+    NotificationService notificationService;
 
     @Autowired
     FirebaseCloudMessageService firebaseCloudMessageService;
@@ -37,9 +42,13 @@ public class ScheduleServiceImp {
         List<UserIdAndFirebaseTokenDTO> userIdAndFirebaseTokens = scheduleDAO.getUserIdAndFirebaseTokens();
 
         for (UserIdAndFirebaseTokenDTO userIdAndFirebaseToken: userIdAndFirebaseTokens) {
-            scheduleDAO.insertDailyChallengeByUserId(new UserIdAndRecommendDateDTO(userIdAndFirebaseToken.getUserId(), date));
-            if (userIdAndFirebaseToken.getFirebaseToken() != null) {
-                firebaseCloudMessageService.sendMessageTo(userIdAndFirebaseToken.getFirebaseToken(), "일일 챌린지 도착!", "일일 챌린지가 업데이트 되었어요! 지금 확인해보세요!!");
+            if (scheduleDAO.getNumberOfNotInProgressChallenge(userIdAndFirebaseToken.getUserId()) != 0) {
+                scheduleDAO.insertDailyChallengeByUserId(new UserIdAndRecommendDateDTO(userIdAndFirebaseToken.getUserId(), date));
+                if (userIdAndFirebaseToken.getFirebaseToken() != null) {
+                    firebaseCloudMessageService.sendMessageTo(userIdAndFirebaseToken.getFirebaseToken(), "일일 챌린지 도착!", "일일 챌린지가 업데이트 되었어요! 지금 확인해보세요!!");
+                    notificationService.insertNotification(new NotificationDTO(0, userIdAndFirebaseToken.getUserId(), null, "challenge",
+                            "일일 챌린지가 업데이트 되었어요! 지금 확인해보세요!!", null, null));
+                }
             }
         }
     }
@@ -58,9 +67,13 @@ public class ScheduleServiceImp {
         List<UserIdAndFirebaseTokenDTO> userIdAndFirebaseTokens = scheduleDAO.getUserIdAndFirebaseTokens();
 
         for (UserIdAndFirebaseTokenDTO userIdAndFirebaseToken: userIdAndFirebaseTokens) {
-            scheduleDAO.insertWeeklyChallengeByUserId(new UserIdAndRecommendDateDTO(userIdAndFirebaseToken.getUserId(), date));
-            if (userIdAndFirebaseToken.getFirebaseToken() != null) {
-                firebaseCloudMessageService.sendMessageTo(userIdAndFirebaseToken.getFirebaseToken(), "주간 챌린지 도착!", "주간 챌린지가 업데이트 되었어요! 지금 확인해보세요!!");
+            if (scheduleDAO.getNumberOfNotInProgressChallenge(userIdAndFirebaseToken.getUserId()) != 0) {
+                scheduleDAO.insertWeeklyChallengeByUserId(new UserIdAndRecommendDateDTO(userIdAndFirebaseToken.getUserId(), date));
+                if (userIdAndFirebaseToken.getFirebaseToken() != null) {
+                    firebaseCloudMessageService.sendMessageTo(userIdAndFirebaseToken.getFirebaseToken(), "주간 챌린지 도착!", "주간 챌린지가 업데이트 되었어요! 지금 확인해보세요!!");
+                    notificationService.insertNotification(new NotificationDTO(0, userIdAndFirebaseToken.getUserId(), null, "challenge",
+                            "주간 챌린지가 업데이트 되었어요! 지금 확인해보세요!!", null, null));
+                }
             }
         }
     }
