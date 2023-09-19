@@ -1,7 +1,7 @@
 package com.dangdiary.api.domain.schedule.service.impl;
 
 import com.dangdiary.api.dao.ScheduleDAO;
-import com.dangdiary.api.domain.schedule.dto.UserIdAndFirebaseTokenDTO;
+import com.dangdiary.api.domain.schedule.dto.FirebaseTokenInfoDTO;
 import com.dangdiary.api.domain.schedule.dto.UserIdAndRecommendDateDTO;
 import com.dangdiary.api.dto.notification.NotificationDTO;
 import com.dangdiary.api.service.FirebaseCloudMessageService;
@@ -39,14 +39,14 @@ public class ScheduleServiceImp {
         if (!deleteDailyChallengeIds.isEmpty()) {
             scheduleDAO.deleteChallenges(deleteDailyChallengeIds);
         }
-        List<UserIdAndFirebaseTokenDTO> userIdAndFirebaseTokens = scheduleDAO.getUserIdAndFirebaseTokens();
+        List<FirebaseTokenInfoDTO> firebaseTokenInfos = scheduleDAO.getFirebaseTokenInfos();
 
-        for (UserIdAndFirebaseTokenDTO userIdAndFirebaseToken: userIdAndFirebaseTokens) {
-            if (scheduleDAO.getNumberOfNotInProgressChallenge(userIdAndFirebaseToken.getUserId()) != 0) {
-                scheduleDAO.insertDailyChallengeByUserId(new UserIdAndRecommendDateDTO(userIdAndFirebaseToken.getUserId(), date));
-                if (userIdAndFirebaseToken.getFirebaseToken() != null) {
-                    firebaseCloudMessageService.sendMessageTo(userIdAndFirebaseToken.getFirebaseToken(), "일일 챌린지 도착!", "일일 챌린지가 업데이트 되었어요! 지금 확인해보세요!!");
-                    notificationService.insertNotification(new NotificationDTO(0, userIdAndFirebaseToken.getUserId(), null, "challenge",
+        for (FirebaseTokenInfoDTO firebaseTokenInfo: firebaseTokenInfos) {
+            if (scheduleDAO.getNumberOfNotInProgressChallenge(firebaseTokenInfo.getUserId()) != 0) {
+                scheduleDAO.insertDailyChallengeByUserId(new UserIdAndRecommendDateDTO(firebaseTokenInfo.getUserId(), date));
+                if (firebaseTokenInfo.getFirebaseToken() != null && firebaseTokenInfo.isAgreeChallengeNotification()) {
+                    firebaseCloudMessageService.sendMessageTo(firebaseTokenInfo.getFirebaseToken(), "일일 챌린지 도착!", "일일 챌린지가 업데이트 되었어요! 지금 확인해보세요!!");
+                    notificationService.insertNotification(new NotificationDTO(0, firebaseTokenInfo.getUserId(), null, "challenge",
                             "일일 챌린지가 업데이트 되었어요! 지금 확인해보세요!!", null, null));
                 }
             }
@@ -64,9 +64,9 @@ public class ScheduleServiceImp {
         if (!deleteWeeklyChallengeIds.isEmpty()) {
             scheduleDAO.deleteChallenges(deleteWeeklyChallengeIds);
         }
-        List<UserIdAndFirebaseTokenDTO> userIdAndFirebaseTokens = scheduleDAO.getUserIdAndFirebaseTokens();
+        List<FirebaseTokenInfoDTO> userIdAndFirebaseTokens = scheduleDAO.getFirebaseTokenInfos();
 
-        for (UserIdAndFirebaseTokenDTO userIdAndFirebaseToken: userIdAndFirebaseTokens) {
+        for (FirebaseTokenInfoDTO userIdAndFirebaseToken: userIdAndFirebaseTokens) {
             if (scheduleDAO.getNumberOfNotInProgressChallenge(userIdAndFirebaseToken.getUserId()) != 0) {
                 scheduleDAO.insertWeeklyChallengeByUserId(new UserIdAndRecommendDateDTO(userIdAndFirebaseToken.getUserId(), date));
                 if (userIdAndFirebaseToken.getFirebaseToken() != null) {

@@ -7,7 +7,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class UserIdAndFirebaseTokenDTO {
+public class FirebaseTokenInfoDTO {
     private int userId;
     private String firebaseToken;
+    private boolean agreeChallengeNotification;
 }
