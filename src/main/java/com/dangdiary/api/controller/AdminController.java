@@ -1,6 +1,7 @@
 package com.dangdiary.api.controller;
 
 import com.dangdiary.api.dto.admin.AdminInquiryHistoryDTO;
+import com.dangdiary.api.dto.admin.FAQDTO;
 import com.dangdiary.api.service.AdminService;
 import com.dangdiary.api.service.FirebaseCloudMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-@RequestMapping("/api/admin/inquiry")
+@RequestMapping("/api/admin")
 public class AdminController {
 
     @Autowired
@@ -25,7 +26,7 @@ public class AdminController {
     @Autowired
     FirebaseCloudMessageService firebaseCloudMessageService;
 
-    @GetMapping("")
+    @GetMapping("/inquiry")
     public String inquiry(HttpServletRequest request, Model model) {
 
         List<AdminInquiryHistoryDTO> inquiryHistoryList = adminService.getInquiryHistory();
@@ -51,7 +52,7 @@ public class AdminController {
         return "inquiry";
     }
 
-    @GetMapping("/receive")
+    @GetMapping("/inquiry/receive")
     public String receive(HttpServletRequest request, Model model) {
 
         adminService.receiveInquiry(Integer.parseInt(request.getParameter("inquiryId")));
@@ -59,7 +60,7 @@ public class AdminController {
         return inquiry(request, model);
     }
 
-    @PostMapping("/answer")
+    @PostMapping("/inquiry/answer")
     public String answer(HttpServletRequest request, Model model) {
 
         String answer = request.getParameter("answer");
@@ -68,5 +69,36 @@ public class AdminController {
         }
 
         return inquiry(request, model);
+    }
+
+    @GetMapping("/faq")
+    public String faq(HttpServletRequest request, Model model) {
+
+        List<FAQDTO> faqs = adminService.getFAQs();
+
+        model.addAttribute("faqs", faqs);
+
+        return "faq";
+    }
+
+    @PostMapping("/faq/register")
+    public String register(HttpServletRequest request, Model model) {
+
+        String question = request.getParameter("question");
+        String answer = request.getParameter("answer");
+        if (!question.isEmpty() && !answer.isEmpty()) {
+            adminService.postFAQ(question, answer);
+        }
+
+        return faq(request, model);
+    }
+
+    @GetMapping("/faq/delete")
+    public String deleteFAQ(HttpServletRequest request, Model model) {
+
+        int faqId = Integer.parseInt(request.getParameter("faqId"));
+        adminService.deleteFAQ(faqId);
+
+        return faq(request, model);
     }
 }

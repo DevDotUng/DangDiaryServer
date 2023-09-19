@@ -19,4 +19,17 @@
     SET progress = '답변 완료', answer = #{answer}, answer_date = NOW()
     WHERE inquiry_id = #{inquiryId}
   </update>
+  <select id="getFAQs" resultType="com.dangdiary.api.dto.admin.FAQDTO">
+    SELECT FAQ_id FAQId, question question, answer answer
+    FROM FAQs
+  </select>
+  <insert id="postFAQ" parameterType="String">
+    INSERT INTO FAQs(question, answer)
+    VALUES
+        (#{question}, #{answer})
+  </insert>
+  <delete id="deleteFAQ" parameterType="int">
+    DELETE FROM FAQs
+    WHERE FAQ_id = #{faqId}
+  </delete>
 </mapper>
