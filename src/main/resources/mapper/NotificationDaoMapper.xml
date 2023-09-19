@@ -11,6 +11,6 @@
   <select id="getNotifications" parameterType="int" resultType="com.dangdiary.api.dto.notification.NotificationDTO">
     SELECT id id, user_id userId, register_date registerDate, type type, content content, cover_id coverId, diary_id diaryId
     FROM notifications
-    WHERE user_id = #{userId}
+    WHERE user_id = #{userId} ORDER BY registerDate DESC
   </select>
 </mapper>
