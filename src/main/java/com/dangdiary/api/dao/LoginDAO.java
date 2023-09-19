@@ -35,6 +35,7 @@ public interface LoginDAO {
     void deleteReport(int userId);
     void deleteUserChallenges(int userId);
     void deleteUsers(int userId);
+    void deleteNotifications(int userId);
 
     void registerDogInfo(DogInfoDTO dogInfo);
     void registerNickname(DogInfoDTO dogInfo);

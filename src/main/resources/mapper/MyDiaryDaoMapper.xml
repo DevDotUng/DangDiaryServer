@@ -207,6 +207,13 @@
       #{diaryId}
     </foreach>
   </delete>
+  <delete id="deleteAllNotifications" parameterType="int">
+    DELETE FROM notifications
+    WHERE diary_id IN
+    <foreach collection="list" item="diaryId" open="(" close=")" separator=",">
+      #{diaryId}
+    </foreach>
+  </delete>
   <select id="getImageNames" parameterType="int" resultType="String">
     SELECT image
     FROM diary_images
@@ -295,6 +302,10 @@
   </delete>
   <delete id="deleteUserChallenges" parameterType="int">
     DELETE FROM user_challenges
+    WHERE diary_id = #{diaryId}
+  </delete>
+  <delete id="deleteNotifications" parameterType="int">
+    DELETE FROM notifications
     WHERE diary_id = #{diaryId}
   </delete>
   <select id="getYYYYMM" parameterType="int" resultType="int">
