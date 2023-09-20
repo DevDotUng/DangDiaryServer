@@ -9,4 +9,14 @@
     VALUES
       (#{userId}, #{diaryId}, #{status},#{reason},now())
   </insert>
+
+  <delete id="deleteReport" parameterType="int">
+    DELETE FROM report WHERE id = #{reportId}
+  </delete>
+
+  <update id="updateReport" parameterType="com.dangdiary.api.dto.report.ReportRequest">
+    UPDATE report
+    SET status = #{status}, reason = #{reason}
+    WHERE id = #{reportId}
+  </update>
 </mapper>
