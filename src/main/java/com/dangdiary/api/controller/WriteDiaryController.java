@@ -6,11 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import javax.servlet.ServletContext;
-
 import com.dangdiary.api.dto.writeDiary.CoverIdAndDiaryIdDTO;
 import com.dangdiary.api.dto.writeDiary.OverdueDiaryRequestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.dangdiary.api.dto.writeDiary.WriteDiaryResponseDTO;
 import com.dangdiary.api.dto.writeDiary.WriteDiaryDTO;
 import com.dangdiary.api.service.WriteDiaryService;
 
@@ -32,7 +30,7 @@ public class WriteDiaryController {
     WriteDiaryService writeDiaryService;
 
     @Autowired
-	ServletContext ctx;
+    private Environment env;
     
     @PostMapping("writeDiary")
     public ResponseEntity<CoverIdAndDiaryIdDTO> write(
@@ -120,9 +118,8 @@ public class WriteDiaryController {
                 String uuid = UUID.randomUUID().toString();
             
                 String fileName = uuid + image.getOriginalFilename();
-    
-                String webPath = "/upload/diary";
-                String realPath = ctx.getRealPath(webPath);
+
+                String realPath = env.getProperty("image.save.path") + "diary";
                 
                 File savePath = new File(realPath);
                 if (!savePath.exists())
