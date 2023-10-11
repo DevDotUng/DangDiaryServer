@@ -17,4 +17,14 @@ public class ReportServiceImpl implements ReportService {
         reportDAO.report(request);
         return null;
     }
+
+    @Override
+    public boolean deleteReport(Long reportId) {
+        return reportDAO.deleteReport(reportId);
+    }
+
+    @Override
+    public boolean updateReport(ReportRequest request) {
+        return reportDAO.updateReport(request);
+    }
 }
