@@ -144,6 +144,7 @@ public class DiaryServiceImp implements DiaryService {
         diaryDAO.deleteAllLikes(diaryIds);
         diaryDAO.deleteAllTags(diaryIds);
         diaryDAO.deleteAllUserChallenges(diaryIds);
+        diaryDAO.deleteAllNotifications(diaryIds);
 
         List<String> imageNames = diaryDAO.getImageNames(diaryIds);
 
@@ -189,6 +190,7 @@ public class DiaryServiceImp implements DiaryService {
         diaryDAO.deleteLikes(diaryId);
         diaryDAO.deleteTags(diaryId);
         diaryDAO.deleteUserChallenges(diaryId);
+        diaryDAO.deleteNotifications(diaryId);
 
         ArrayList<Integer> list = new ArrayList<>();
         list.add(diaryId);

@@ -42,6 +42,7 @@ public interface DiaryDAO {
     void deleteAllTags(List<Integer> diaryIds);
     void deleteAllLikes(List<Integer> diaryIds);
     void deleteAllUserChallenges(List<Integer> diaryIds);
+    void deleteAllNotifications(List<Integer> diaryIds);
     List<String> getImageNames(List<Integer> diaryIds);
     void deleteAllImages(List<Integer> diaryIds);
 
@@ -61,6 +62,7 @@ public interface DiaryDAO {
     void deleteDiary(int diaryId);
     void deleteLikes(int diaryId);
     void deleteUserChallenges(int diaryId);
+    void deleteNotifications(int diaryId);
     int getYYYYMM(int coverId);
     boolean getIsCoverNotEmpty(UserIdAndEndDateDTO userIdAndEndDateDTO);
 }

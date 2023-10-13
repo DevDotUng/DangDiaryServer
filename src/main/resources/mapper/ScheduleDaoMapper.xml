@@ -19,8 +19,8 @@
           #{deleteUserChallengeId}
         </foreach>
     </delete>
-    <select id="getUserIdAndFirebaseTokens" resultType="com.dangdiary.api.domain.schedule.dto.UserIdAndFirebaseTokenDTO">
-        SELECT user_id, firebase_token
+    <select id="getFirebaseTokenInfos" resultType="com.dangdiary.api.domain.schedule.dto.FirebaseTokenInfoDTO">
+        SELECT user_id userId, firebase_token firebaseToken, agree_challenge_notification agreeChallengeNotification
         FROM users
     </select>
     <select id="getNumberOfNotInProgressChallenge" parameterType="int" resultType="int">

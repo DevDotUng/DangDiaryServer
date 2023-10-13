@@ -12,11 +12,13 @@ import lombok.Setter;
 public class MypageDTO {
     private String nickname;
     private String loginType;
+    private String email;
     private String dogName;
     private String profileImage;
     private String breed;
     private String age;
     private String gender;
     private String birth;
-    
+    private boolean agreeLikeNotification;
+    private boolean agreeChallengeNotification;
 }

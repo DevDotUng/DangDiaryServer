@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import javax.servlet.ServletContext;
 
+import com.dangdiary.api.dto.mypage.AgreeDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -64,6 +65,12 @@ public class MypageController {
         DogInfoDTO dogInfo = mypageService.editDogInfo(dogInfoRequest);
 
         return ResponseEntity.status(HttpStatus.OK).body(dogInfo);
+    }
+
+    @GetMapping(value="mypage/agree", produces="application/json;charset=UTF-8")
+    public ResponseEntity<AgreeDTO> editAgree(String type, int userId) {
+        AgreeDTO agree = mypageService.editAgree(type, userId);
+        return ResponseEntity.status(HttpStatus.OK).body(agree);
     }
 
     String saveProfileImage(MultipartFile profileImage) {

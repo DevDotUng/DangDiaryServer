@@ -121,8 +121,8 @@
     FROM user_challenges
     WHERE diary_id = #{diaryId}
   </select>
-  <select id="getCoverIdAndFirebaseToken" parameterType="int" resultType="com.dangdiary.api.dto.browse.CoverIdAndFirebaseTokenDTO">
-    SELECT c.cover_id coverId, u.firebase_token firebaseToken
+  <select id="getCoverIdAndFirebaseTokenAndAgree" parameterType="int" resultType="com.dangdiary.api.dto.browse.CoverIdAndFirebaseTokenAndAgreeDTO">
+    SELECT c.cover_id coverId, u.firebase_token firebaseToken, u.agree_like_notification agreeLikeNotification
     FROM diary_covers c
         LEFT JOIN users u
             ON c.user_id = u.user_id

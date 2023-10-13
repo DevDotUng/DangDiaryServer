@@ -6,7 +6,7 @@
 <mapper namespace="com.dangdiary.api.dao.MypageDAO">
 <!--  강아지 정보와 로그인 타입을 같이 제공(로그인 타입은 로그아웃 버튼을 카카오로 할지 애플로 할지 정하기 위함)  -->
   <select id="getMypageDTO" parameterType="int" resultType="com.dangdiary.api.dto.mypage.MypageDTO">
-    SELECT u.nickname, u.login_type loginType, d.dog_name dogName, d.profile_image profileImage, d.breed breed, floor((TO_DAYS(NOW()) - (TO_DAYS(d.birth))) / 365) age, d.gender gender, d.birth birth
+    SELECT u.nickname, u.login_type loginType, u.email email, d.dog_name dogName, d.profile_image profileImage, d.breed breed, floor((TO_DAYS(NOW()) - (TO_DAYS(d.birth))) / 365) age, d.gender gender, d.birth birth, u.agree_like_notification agreeLikeNotification, u.agree_challenge_notification agreeChallengeNotification
     FROM users u
     LEFT JOIN dogs d
     ON u.user_id = d.user_id
@@ -33,4 +33,15 @@
     ON u.user_id = d.user_id
     WHERE u.user_id = #{userId}
   </select>
+
+  <select id="getAgree" parameterType="int" resultType="com.dangdiary.api.dto.mypage.AgreeDTO">
+    SELECT user_id userId, agree_like_notification agreeLikeNotification, agree_challenge_notification agreeChallengeNotification
+    FROM users
+    WHERE user_id = #{userId}
+  </select>
+  <update id="editAgree" parameterType="com.dangdiary.api.dto.mypage.AgreeDTO">
+    UPDATE users SET agree_like_notification = #{agreeLikeNotification}, agree_challenge_notification = #{agreeChallengeNotification}
+    WHERE user_id = #{userId}
+  </update>
+
 </mapper>
