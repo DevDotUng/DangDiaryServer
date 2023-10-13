@@ -2,6 +2,7 @@ package com.dangdiary.api.service.report.impl;
 
 import com.dangdiary.api.dao.ReportDAO;
 import com.dangdiary.api.dto.report.ReportDTO;
+import com.dangdiary.api.dto.report.ReportHistoryDTO;
 import com.dangdiary.api.dto.report.ReportRequest;
 import com.dangdiary.api.service.report.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,5 +27,11 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public boolean updateReport(ReportRequest request) {
         return reportDAO.updateReport(request);
+    }
+
+    @Override
+    public ReportHistoryDTO getReportHistory(int userId) {
+        ReportHistoryDTO reportHistory = reportDAO.getReportHistory(userId);
+        return reportHistory;
     }
 }

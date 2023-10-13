@@ -19,4 +19,12 @@
     SET status = #{status}, reason = #{reason}
     WHERE id = #{reportId}
   </update>
+  <select id="getReportHistory" parameterType="int" resultType="com.dangdiary.api.dto.report.ReportHistoryDTO">
+    SELECT r.id reportId, r.user_id userId, r.diary_id diaryId, r.status status, CONCAT(d.title, ' 일기를 신고했어요.') AS title, r.reason reason, r.answer answer, r.create_date createDate, r.modify_date modifyDate
+    FROM report r
+        LEFT JOIN diaries d
+            ON r.diary_id = d.diary_id
+    WHERE r.user_id = #{userId}
+    ORDER BY r.create_date;
+  </select>
 </mapper>

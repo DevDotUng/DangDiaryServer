@@ -1,5 +1,6 @@
 package com.dangdiary.api.controller;
 
+import com.dangdiary.api.dto.report.ReportHistoryDTO;
 import com.dangdiary.api.dto.report.ReportRequest;
 import com.dangdiary.api.service.report.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,5 +40,11 @@ public class ReportController {
     ) throws IllegalStateException {
         reportService.updateReport(reportRequest);
         return ResponseEntity.status(HttpStatus.OK).body(true);
+    }
+
+    @GetMapping(value = "/history", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<ReportHistoryDTO> getReportHistory(int userId) {
+        ReportHistoryDTO reportHistory = reportService.getReportHistory(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(reportHistory);
     }
 }
