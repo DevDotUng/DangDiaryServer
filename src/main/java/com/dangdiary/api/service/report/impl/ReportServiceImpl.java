@@ -8,6 +8,8 @@ import com.dangdiary.api.service.report.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ReportServiceImpl implements ReportService {
 
@@ -30,8 +32,8 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public ReportHistoryDTO getReportHistory(int userId) {
-        ReportHistoryDTO reportHistory = reportDAO.getReportHistory(userId);
+    public List<ReportHistoryDTO> getReportHistory(int userId) {
+        List<ReportHistoryDTO> reportHistory = reportDAO.getReportHistory(userId);
         return reportHistory;
     }
 }
