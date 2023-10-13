@@ -2,6 +2,7 @@ package com.dangdiary.api.service;
 
 import com.dangdiary.api.dao.AdminDAO;
 import com.dangdiary.api.dto.admin.AdminInquiryHistoryDTO;
+import com.dangdiary.api.dto.admin.FAQDTO;
 import com.dangdiary.api.dto.admin.InquiryAnswerDTO;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
@@ -38,5 +39,20 @@ public class AdminServiceImp implements AdminService {
     @Override
     public void answerInquiry(int inquiryId, String answer) {
         adminDAO.answerInquiry(new InquiryAnswerDTO(inquiryId, answer));
+    }
+
+    @Override
+    public List<FAQDTO> getFAQs() {
+        return adminDAO.getFAQs();
+    }
+
+    @Override
+    public void postFAQ(String question, String answer) {
+        adminDAO.postFAQ(question, answer);
+    }
+
+    @Override
+    public void deleteFAQ(int faqId) {
+        adminDAO.deleteFAQ(faqId);
     }
 }

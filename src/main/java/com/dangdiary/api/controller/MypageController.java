@@ -65,6 +65,12 @@ public class MypageController {
         return ResponseEntity.status(HttpStatus.OK).body(dogInfo);
     }
 
+    @GetMapping(value="mypage/agree", produces="application/json;charset=UTF-8")
+    public ResponseEntity<AgreeDTO> editAgree(String type, int userId) {
+        AgreeDTO agree = mypageService.editAgree(type, userId);
+        return ResponseEntity.status(HttpStatus.OK).body(agree);
+    }
+
     String saveProfileImage(MultipartFile profileImage) {
         
         try {

@@ -8,6 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ReportRequest {
+    private Long reportId;
     private String diaryId;
     private String userId;
     private ReportStatusType status;

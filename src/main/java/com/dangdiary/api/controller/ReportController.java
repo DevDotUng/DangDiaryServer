@@ -23,4 +23,21 @@ public class ReportController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(true);
     }
+
+    @DeleteMapping()
+    public ResponseEntity deleteReport(
+            @RequestParam("reportId") Long reportId
+    ) throws IllegalStateException {
+
+        reportService.deleteReport(reportId);
+        return ResponseEntity.status(HttpStatus.OK).body(true);
+    }
+
+    @PatchMapping()
+    public ResponseEntity updateReport(
+            @RequestBody ReportRequest reportRequest
+    ) throws IllegalStateException {
+        reportService.updateReport(reportRequest);
+        return ResponseEntity.status(HttpStatus.OK).body(true);
+    }
 }

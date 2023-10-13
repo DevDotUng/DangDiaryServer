@@ -28,5 +28,5 @@ public interface BrowseDAO {
     void dislike(int userId, int diaryId);
     void like(int userId, int diaryId);
     UserIdAndEndDateDTO getUserIdAndEndDate(int diaryId);
-    CoverIdAndFirebaseTokenDTO getCoverIdAndFirebaseToken(@Param("userId") int userId, @Param("yyyymm") int yyyymm);
+    CoverIdAndFirebaseTokenAndAgreeDTO getCoverIdAndFirebaseTokenAndAgree(@Param("userId") int userId, @Param("yyyymm") int yyyymm);
 }

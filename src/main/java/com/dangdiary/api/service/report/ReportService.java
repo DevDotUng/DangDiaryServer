@@ -5,4 +5,7 @@ import com.dangdiary.api.dto.report.ReportRequest;
 
 public interface ReportService {
      ReportDTO report(ReportRequest request);
+     boolean deleteReport(Long reportId);
+     boolean updateReport(ReportRequest request);
+
 }

@@ -412,6 +412,7 @@ public class LoginServiceImp implements LoginService {
         loginDAO.deleteUserChallenges(userId);
         loginDAO.deleteUsers(userId);
         loginDAO.deleteDiaries(userId);
+        loginDAO.deleteNotifications(userId);
 
         if (loginType.equals("kakao")) {
 

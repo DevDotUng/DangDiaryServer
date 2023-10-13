@@ -126,6 +126,9 @@
   <delete id="deleteUsers" parameterType="int">
     DELETE FROM users WHERE user_id = #{userId}
   </delete>
+  <delete id="deleteNotifications" parameterType="int">
+    DELETE FROM notifications WHERE user_id = #{userId}
+  </delete>
 
 <!--  댕댕 주민등록증 등록  -->
   <insert id="registerDogInfo" parameterType="com.dangdiary.api.dto.login.DogInfoDTO">
