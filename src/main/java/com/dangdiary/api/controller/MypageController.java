@@ -5,10 +5,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.UUID;
 
-import javax.servlet.ServletContext;
-
-import com.dangdiary.api.dto.mypage.AgreeDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,7 +30,7 @@ public class MypageController {
     MypageService mypageService;
 
     @Autowired
-	ServletContext ctx;
+    private Environment env;
 
     @GetMapping(value="mypage", produces="application/json;charset=UTF-8")
     public ResponseEntity<MypageDTO> getMypageView(int userId) {
@@ -80,8 +78,7 @@ public class MypageController {
             
             String fileName = uuid + profileImage.getOriginalFilename();
 
-            String webPath = "/upload/profile";
-            String realPath = ctx.getRealPath(webPath);
+            String realPath = env.getProperty("image.save.path") + "profile";
             
             File savePath = new File(realPath);
             if (!savePath.exists())

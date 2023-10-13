@@ -1,22 +1,19 @@
 package com.dangdiary.api.service;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 import com.dangdiary.api.dto.diary.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dangdiary.api.dao.DiaryDAO;
 import com.dangdiary.api.dto.writeDiary.WriteDiaryResponseDTO;
 import com.dangdiary.api.dto.writeDiary.ImageOrTagDTO;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.ServletContext;
 
 @Service
 public class DiaryServiceImp implements DiaryService {
@@ -24,7 +21,7 @@ public class DiaryServiceImp implements DiaryService {
     DiaryDAO diaryDAO;
 
     @Autowired
-    ServletContext ctx;
+    private Environment env;
 
     @Override
     public MyDiaryDTO getMyDiaryView(int userId) {
@@ -352,8 +349,7 @@ public class DiaryServiceImp implements DiaryService {
     void deleteImages(List<String> images) {
         for (String image: images) {
 
-            String webPath = "/upload/diary";
-            String realPath = ctx.getRealPath(webPath);
+            String realPath = env.getProperty("image.save.path") + "diary";
 
             realPath += File.separator + image;
             File deleteFile = new File(realPath);
