@@ -20,7 +20,23 @@
     WHERE id = #{reportId}
   </update>
   <select id="getReportHistory" parameterType="int" resultType="com.dangdiary.api.dto.report.ReportHistoryDTO">
-    SELECT r.id reportId, r.user_id userId, r.diary_id diaryId, r.status status, CONCAT(d.title, ' 일기를 신고했어요.') AS title, r.reason reason, r.answer answer, r.create_date createDate, r.modify_date modifyDate
+    SELECT r.id reportId, r.user_id userId, r.diary_id diaryId,
+           CASE
+               WHEN (r.status = 'IN_PROGRESS') THEN '신고 처리중'
+               WHEN (r.status = 'READY') THEN '접수 완료'
+               WHEN (r.status = 'COMPLETED') THEN '처리 완료'
+               ELSE r.status
+           END AS status,
+           CONCAT(d.title, ' 일기를 신고했어요.') AS title,
+           CASE
+             WHEN (r.reason = 'VIOLENCE') THEN '학대가 의심돼요.'
+             WHEN (r.reason = 'UNRELATED') THEN '일기가 챌린지와 무관해요.'
+             WHEN (r.reason = 'AD') THEN '상업적 광고가 포함되어 있어요.'
+             WHEN (r.reason = 'UNPLEASANT') THEN '불쾌한 내용이 포함되어 있어요.'
+             WHEN (r.reason = 'ILLEGAL') THEN '불법적인 게시글이에요.(펫 분양/약물 등)'
+             ELSE r.reason
+             END AS reason,
+           r.answer answer, r.create_date createDate, r.modify_date modifyDate
     FROM report r
         LEFT JOIN diaries d
             ON r.diary_id = d.diary_id
