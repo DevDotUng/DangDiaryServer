@@ -1,6 +1,7 @@
 package com.dangdiary.api.controller;
 
 import com.dangdiary.api.dto.admin.AdminInquiryHistoryDTO;
+import com.dangdiary.api.dto.admin.ChallengeDTO;
 import com.dangdiary.api.dto.admin.FAQDTO;
 import com.dangdiary.api.service.AdminService;
 import com.dangdiary.api.service.FirebaseCloudMessageService;
@@ -100,5 +101,15 @@ public class AdminController {
         adminService.deleteFAQ(faqId);
 
         return faq(request, model);
+    }
+
+    @GetMapping("/challenge")
+    public String challenge(HttpServletRequest request, Model model) {
+
+        List<ChallengeDTO> challenges = adminService.getChallenges();
+
+        model.addAttribute("challenges", challenges);
+
+        return "challenge";
     }
 }

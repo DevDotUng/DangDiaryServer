@@ -1,6 +1,7 @@
 package com.dangdiary.api.service;
 
 import com.dangdiary.api.dto.admin.AdminInquiryHistoryDTO;
+import com.dangdiary.api.dto.admin.ChallengeDTO;
 import com.dangdiary.api.dto.admin.FAQDTO;
 
 import java.io.FileNotFoundException;
@@ -14,4 +15,5 @@ public interface AdminService {
     List<FAQDTO> getFAQs();
     void postFAQ(String question, String answer);
     void deleteFAQ(int faqId);
+    List<ChallengeDTO> getChallenges();
 }

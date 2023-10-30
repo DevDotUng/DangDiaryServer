@@ -32,4 +32,9 @@
     DELETE FROM FAQs
     WHERE FAQ_id = #{faqId}
   </delete>
+
+  <select id="getChallenges" resultType="com.dangdiary.api.dto.admin.ChallengeDTO">
+    SELECT challenge_id challengeId, CONCAT('http://localhost:8080/image/challenge/', image) image, title title, content content, authentication_method authenticationMethod, CONCAT('http://localhost:8080/image/sticker/', sticker_image) stickerImage, sticker_shape stickerShape
+    FROM challenges
+  </select>
 </mapper>

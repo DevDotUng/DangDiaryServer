@@ -1,6 +1,7 @@
 package com.dangdiary.api.dao;
 
 import com.dangdiary.api.dto.admin.AdminInquiryHistoryDTO;
+import com.dangdiary.api.dto.admin.ChallengeDTO;
 import com.dangdiary.api.dto.admin.FAQDTO;
 import com.dangdiary.api.dto.admin.InquiryAnswerDTO;
 import org.apache.ibatis.annotations.Mapper;
@@ -15,4 +16,5 @@ public interface AdminDAO {
     List<FAQDTO> getFAQs();
     void postFAQ(String question, String answer);
     void deleteFAQ(int faqId);
+    List<ChallengeDTO> getChallenges();
 }

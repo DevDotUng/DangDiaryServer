@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin Inquiry</title>
+</head>
+<body>
+<h1>챌린지</h1>
+<table border="1">
+    <th>챌린지 id</th>
+    <th>이미지</th>
+    <th>제목</th>
+    <th>내용</th>
+    <th>인증 방법</th>
+    <th>스티커 이미지</th>
+    <th>스티커 모양</th>
+    <th>삭제</th>
+        <tr th:each="challenge : ${challenges}">
+            <td th:text="${challenge.challengeId}"></td>
+            <td>
+                <img th:src="${challenge.image}" width="100" height="100">
+            </td>
+            <td th:text="${challenge.title}"></td>
+            <td th:text="${challenge.content}"></td>
+            <td th:text="${challenge.authenticationMethod}"></td>
+            <td>
+                <img th:src="${challenge.stickerImage}" width="100" height="100">
+            </td>
+            <td th:text="${challenge.stickerShape}"></td>
+            <td>
+                <form action="/api/admin/inquiry/receive" method="get">
+                    <input type="text" name="inquiryId" th:value="${challenge.challengeId}" style="width:50px;" readonly/>
+                    <input type="submit" value="삭제">
+                </form>
+            </td>
+        </tr>
+</table>
+</body>
+</html>
