@@ -4,6 +4,19 @@
     <title>Admin Inquiry</title>
 </head>
 <body>
+<h1>FAQ</h1>
+<p>왼쪽에 FAQ 오른쪽에 답변 적으시면 됩니당</p>
+<form action="/api/admin/challenge/register" method="post" enctype="multipart/form-data">
+    <textarea name="title" style="width:300px;height:200px;"></textarea>
+    <textarea name="content" style="width:300px;height:200px;"></textarea>
+    <textarea name="authenticationMethod" style="width:300px;height:200px;"></textarea>
+    <textarea name="stickerShape" style="width:300px;height:200px;"></textarea>
+    <br>
+    챌린지 image : <input type="file" name="image" accept="image/*">
+    스티커 image : <input type="file" name="stickerImage" accept="image/*">
+    <input type="submit" value="등록하기">
+</form>
+<br><br>
 <h1>챌린지</h1>
 <table border="1">
     <th>챌린지 id</th>

@@ -62,4 +62,9 @@ public class AdminServiceImp implements AdminService {
         List<ChallengeDTO> challenges = adminDAO.getChallenges();
         return challenges;
     }
+
+    @Override
+    public void registerChallenge(ChallengeDTO challenge) {
+        adminDAO.registerChallenge(challenge);
+    }
 }

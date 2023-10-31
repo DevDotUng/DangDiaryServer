@@ -37,4 +37,9 @@
     SELECT challenge_id challengeId, CONCAT('http://localhost:8080/image/challenge/', image) image, title title, content content, authentication_method authenticationMethod, CONCAT('http://localhost:8080/image/sticker/', sticker_image) stickerImage, sticker_shape stickerShape
     FROM challenges
   </select>
+  <insert id="registerChallenge" parameterType="com.dangdiary.api.dto.admin.ChallengeDTO">
+    INSERT INTO challenges(image, title, content, authentication_method, sticker_image, sticker_shape)
+    VALUES
+      (#{image}, #{title}, #{content}, #{authenticationMethod}, #{stickerImage}, #{stickerShape})
+  </insert>
 </mapper>
