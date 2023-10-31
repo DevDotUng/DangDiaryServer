@@ -40,8 +40,8 @@
             </td>
             <td th:text="${challenge.stickerShape}"></td>
             <td>
-                <form action="/api/admin/inquiry/receive" method="get">
-                    <input type="text" name="inquiryId" th:value="${challenge.challengeId}" style="width:50px;" readonly/>
+                <form action="/api/admin/challenge/delete" method="get">
+                    <input type="text" name="challengeId" th:value="${challenge.challengeId}" style="width:50px;" readonly/>
                     <input type="submit" value="삭제">
                 </form>
             </td>

@@ -42,4 +42,8 @@
     VALUES
       (#{image}, #{title}, #{content}, #{authenticationMethod}, #{stickerImage}, #{stickerShape})
   </insert>
+  <delete id="deleteChallenge" parameterType="int">
+    DELETE FROM challenges
+    WHERE challenge_id = #{challengeId}
+  </delete>
 </mapper>

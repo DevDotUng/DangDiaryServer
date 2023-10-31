@@ -67,4 +67,9 @@ public class AdminServiceImp implements AdminService {
     public void registerChallenge(ChallengeDTO challenge) {
         adminDAO.registerChallenge(challenge);
     }
+
+    @Override
+    public void deleteChallenge(int challengeId) {
+        adminDAO.deleteChallenge(challengeId);
+    }
 }

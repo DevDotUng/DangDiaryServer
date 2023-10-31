@@ -143,6 +143,15 @@ public class AdminController {
         return challenge(request, model);
     }
 
+    @GetMapping("/challenge/delete")
+    public String deleteChallenge(HttpServletRequest request, Model model) {
+
+        int challengeId = Integer.parseInt(request.getParameter("challengeId"));
+        adminService.deleteChallenge(challengeId);
+
+        return challenge(request, model);
+    }
+
     String saveImage(MultipartFile image, String path) {
 
         try {

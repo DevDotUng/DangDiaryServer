@@ -18,4 +18,5 @@ public interface AdminDAO {
     void deleteFAQ(int faqId);
     List<ChallengeDTO> getChallenges();
     void registerChallenge(ChallengeDTO challenge);
+    void deleteChallenge(int challengeId);
 }
