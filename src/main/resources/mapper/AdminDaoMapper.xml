@@ -46,4 +46,9 @@
     DELETE FROM challenges
     WHERE challenge_id = #{challengeId}
   </delete>
+  <select id="getChallengeImage" parameterType="int" resultType="com.dangdiary.api.dto.admin.ChallengeImageDTO">
+    SELECT image image, sticker_image stickerImage
+    FROM challenges
+    WHERE challenge_id = #{challengeId}
+  </select>
 </mapper>
