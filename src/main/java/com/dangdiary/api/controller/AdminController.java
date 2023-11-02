@@ -1,20 +1,26 @@
 package com.dangdiary.api.controller;
 
 import com.dangdiary.api.dto.admin.AdminInquiryHistoryDTO;
+import com.dangdiary.api.dto.admin.ChallengeDTO;
 import com.dangdiary.api.dto.admin.FAQDTO;
 import com.dangdiary.api.service.AdminService;
 import com.dangdiary.api.service.FirebaseCloudMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/api/admin")
@@ -22,6 +28,9 @@ public class AdminController {
 
     @Autowired
     AdminService adminService;
+
+    @Autowired
+    private Environment env;
 
     @Autowired
     FirebaseCloudMessageService firebaseCloudMessageService;
@@ -100,5 +109,74 @@ public class AdminController {
         adminService.deleteFAQ(faqId);
 
         return faq(request, model);
+    }
+
+    @GetMapping("/challenge")
+    public String challenge(HttpServletRequest request, Model model) {
+
+        List<ChallengeDTO> challenges = adminService.getChallenges();
+
+        model.addAttribute("challenges", challenges);
+
+        return "challenge";
+    }
+
+    @PostMapping("/challenge/register")
+    public String registerChallenge(
+        HttpServletRequest request,
+        Model model,
+        @RequestParam("title") String title,
+        @RequestParam("content") String content,
+        @RequestParam("authenticationMethod") String authenticationMethod,
+        @RequestParam("stickerShape") String stickerShape,
+        @RequestParam("image") MultipartFile image,
+        @RequestParam("stickerImage") MultipartFile stickerImage
+    ) {
+
+        if (!title.isEmpty() && !content.isEmpty() && !authenticationMethod.isEmpty() && !stickerShape.isEmpty()) {
+            String imagePath = saveImage(image, "challenge");
+            String stickerImagePath = saveImage(stickerImage, "sticker");
+            ChallengeDTO challenge = new ChallengeDTO(0, imagePath, title, content, authenticationMethod, stickerImagePath, stickerShape);
+            adminService.registerChallenge(challenge);
+        }
+
+        return challenge(request, model);
+    }
+
+    @GetMapping("/challenge/delete")
+    public String deleteChallenge(HttpServletRequest request, Model model) {
+
+        int challengeId = Integer.parseInt(request.getParameter("challengeId"));
+        adminService.deleteChallenge(challengeId);
+
+        return challenge(request, model);
+    }
+
+    String saveImage(MultipartFile image, String path) {
+
+        try {
+            String uuid = UUID.randomUUID().toString();
+
+            String fileName = uuid + image.getOriginalFilename();
+
+            String realPath = env.getProperty("image.save.path") + path;
+
+            File savePath = new File(realPath);
+            if (!savePath.exists())
+                savePath.mkdirs();
+
+            realPath += File.separator + fileName;
+            File saveFile = new File(realPath);
+
+            image.transferTo(saveFile);
+
+            return fileName;
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return "";
     }
 }

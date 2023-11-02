@@ -1,8 +1,6 @@
 package com.dangdiary.api.dao;
 
-import com.dangdiary.api.dto.admin.AdminInquiryHistoryDTO;
-import com.dangdiary.api.dto.admin.FAQDTO;
-import com.dangdiary.api.dto.admin.InquiryAnswerDTO;
+import com.dangdiary.api.dto.admin.*;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -15,4 +13,8 @@ public interface AdminDAO {
     List<FAQDTO> getFAQs();
     void postFAQ(String question, String answer);
     void deleteFAQ(int faqId);
+    List<ChallengeDTO> getChallenges();
+    void registerChallenge(ChallengeDTO challenge);
+    void deleteChallenge(int challengeId);
+    ChallengeImageDTO getChallengeImage(int challengeId);
 }
