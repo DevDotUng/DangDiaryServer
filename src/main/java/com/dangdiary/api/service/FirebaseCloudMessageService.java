@@ -38,6 +38,8 @@ public class FirebaseCloudMessageService {
         PrintWriter pw = new PrintWriter(new OutputStreamWriter(conn.getOutputStream(), "UTF-8"));
         pw.write(message);
         pw.flush();
+
+        conn.getResponseCode();
     }
 
     private String makeMessage(String targetToken, String title, String body) throws JsonParseException, JsonProcessingException {
