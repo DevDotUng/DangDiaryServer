@@ -13,7 +13,7 @@ public interface AdminDAO {
     List<FAQDTO> getFAQs();
     void postFAQ(String question, String answer);
     void deleteFAQ(int faqId);
-    List<ChallengeDTO> getChallenges();
+    List<ChallengeDTO> getChallenges(String domain);
     void registerChallenge(ChallengeDTO challenge);
     void deleteChallenge(int challengeId);
     ChallengeImageDTO getChallengeImage(int challengeId);
