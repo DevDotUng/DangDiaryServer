@@ -61,7 +61,7 @@ public class AdminServiceImp implements AdminService {
 
     @Override
     public List<ChallengeDTO> getChallenges() {
-        List<ChallengeDTO> challenges = adminDAO.getChallenges();
+        List<ChallengeDTO> challenges = adminDAO.getChallenges(env.getProperty("domain"));
         return challenges;
     }
 
