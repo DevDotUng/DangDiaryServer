@@ -5,6 +5,11 @@ import com.dangdiary.api.dto.admin.ChallengeDTO;
 import com.dangdiary.api.dto.admin.FAQDTO;
 import com.dangdiary.api.service.AdminService;
 import com.dangdiary.api.service.FirebaseCloudMessageService;
+import org.apache.poi.ss.usermodel.PictureData;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
@@ -17,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -136,9 +142,58 @@ public class AdminController {
         if (!title.isEmpty() && !content.isEmpty() && !authenticationMethod.isEmpty() && !stickerShape.isEmpty()) {
             String imagePath = saveImage(image, "challenge");
             String stickerImagePath = saveImage(stickerImage, "sticker");
-            ChallengeDTO challenge = new ChallengeDTO(0, imagePath, title, content, authenticationMethod, stickerImagePath, stickerShape);
+            ChallengeDTO challenge = new ChallengeDTO(0, imagePath, title, content, "", authenticationMethod, stickerImagePath, stickerShape);
             adminService.registerChallenge(challenge);
         }
+
+        return challenge(request, model);
+    }
+
+    @PostMapping("/challenge/excel")
+    public String registerChallengeWithExcel(
+            HttpServletRequest request,
+            Model model,
+            @RequestParam("excelFile") MultipartFile excelFile
+    ) throws IOException {
+        List<ChallengeDTO> challengeList = new ArrayList<>();
+
+        Workbook workbook = new XSSFWorkbook(excelFile.getInputStream());
+
+        Sheet worksheet = workbook.getSheetAt(0);
+        List pictures = workbook.getAllPictures();
+
+        for (int i = 0; i < worksheet.getPhysicalNumberOfRows(); i++) {
+
+            PictureData challengePicture = (PictureData) pictures.get(i * 2);
+
+            String challengeExt = challengePicture.suggestFileExtension();
+            byte[] challengeData = challengePicture.getData();
+
+            PictureData stickerPicture = (PictureData) pictures.get(i * 2 + 1);
+
+            String stickerExt = stickerPicture.suggestFileExtension();
+            byte[] stickerData = stickerPicture.getData();
+
+            String challengeImage = saveExcelImage(challengeExt, challengeData, "challenge");
+            String stickerImage = saveExcelImage(stickerExt, stickerData, "sticker");
+
+            Row row = worksheet.getRow(i);
+
+            ChallengeDTO challenge = new ChallengeDTO(
+                    0,
+                    challengeImage,
+                    row.getCell(0).getStringCellValue(),
+                    row.getCell(2).getStringCellValue(),
+                    row.getCell(1).getStringCellValue(),
+                    row.getCell(3).getStringCellValue(),
+                    stickerImage,
+                    "circle"
+            );
+
+            challengeList.add(challenge);
+        }
+
+        adminService.registerChallengeWithExcel(challengeList);
 
         return challenge(request, model);
     }
@@ -178,5 +233,26 @@ public class AdminController {
         }
 
         return "";
+    }
+
+    String saveExcelImage(String extension, byte[] data, String path) throws IOException {
+        String uuid = UUID.randomUUID().toString();
+
+        String fileName = uuid + "." + extension;
+
+        String realPath = env.getProperty("image.save.path") + path;
+
+        File savePath = new File(realPath);
+        if (!savePath.exists())
+            savePath.mkdirs();
+
+        realPath += File.separator + fileName;
+        File saveFile = new File(realPath);
+
+        FileOutputStream out = new FileOutputStream(saveFile);
+        out.write(data);
+        out.close();
+
+        return fileName;
     }
 }

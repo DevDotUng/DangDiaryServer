@@ -71,6 +71,13 @@ public class AdminServiceImp implements AdminService {
     }
 
     @Override
+    public void registerChallengeWithExcel(List<ChallengeDTO> challenges) {
+        for (ChallengeDTO challenge: challenges) {
+            adminDAO.registerChallenge(challenge);
+        }
+    }
+
+    @Override
     public void deleteChallenge(int challengeId) {
         ChallengeImageDTO challengeImage = adminDAO.getChallengeImage(challengeId);
 

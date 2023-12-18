@@ -34,13 +34,13 @@
   </delete>
 
   <select id="getChallenges" resultType="com.dangdiary.api.dto.admin.ChallengeDTO">
-    SELECT challenge_id challengeId, CONCAT('http://', #{domain}, ':8080/image/challenge/', image) image, title title, content content, authentication_method authenticationMethod, CONCAT('http://localhost:8080/image/sticker/', sticker_image) stickerImage, sticker_shape stickerShape
+    SELECT challenge_id challengeId, CONCAT('http://', #{domain}, ':8080/image/challenge/', image) image, title title, content content, content_summary contentSummary, authentication_method authenticationMethod, CONCAT('http://localhost:8080/image/sticker/', sticker_image) stickerImage, sticker_shape stickerShape
     FROM challenges
   </select>
   <insert id="registerChallenge" parameterType="com.dangdiary.api.dto.admin.ChallengeDTO">
-    INSERT INTO challenges(image, title, content, authentication_method, sticker_image, sticker_shape)
+    INSERT INTO challenges(image, title, content, content_summary, authentication_method, sticker_image, sticker_shape)
     VALUES
-      (#{image}, #{title}, #{content}, #{authenticationMethod}, #{stickerImage}, #{stickerShape})
+      (#{image}, #{title}, #{content}, #{contentSummary}, #{authenticationMethod}, #{stickerImage}, #{stickerShape})
   </insert>
   <delete id="deleteChallenge" parameterType="int">
     DELETE FROM challenges
