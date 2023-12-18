@@ -17,12 +17,18 @@
     <input type="submit" value="등록하기">
 </form>
 <br><br>
+<form th:action="@{/api/admin/challenge/excel}" method="POST" enctype="multipart/form-data">
+    <input type="file" th:name="excelFile">
+    <input th:type="submit" value="제출" />
+</form>
+<br><br>
 <h1>챌린지</h1>
 <table border="1">
     <th>챌린지 id</th>
     <th>이미지</th>
     <th>제목</th>
     <th>내용</th>
+    <th>내용 요약</th>
     <th>인증 방법</th>
     <th>스티커 이미지</th>
     <th>스티커 모양</th>
@@ -34,6 +40,7 @@
             </td>
             <td th:text="${challenge.title}"></td>
             <td th:text="${challenge.content}"></td>
+            <td th:text="${challenge.contentSummary}"></td>
             <td th:text="${challenge.authenticationMethod}"></td>
             <td>
                 <img th:src="${challenge.stickerImage}" width="100" height="100">

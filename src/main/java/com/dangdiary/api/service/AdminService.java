@@ -17,5 +17,6 @@ public interface AdminService {
     void deleteFAQ(int faqId);
     List<ChallengeDTO> getChallenges();
     void registerChallenge(ChallengeDTO challenge);
+    void registerChallengeWithExcel(List<ChallengeDTO> challenges);
     void deleteChallenge(int challengeId);
 }

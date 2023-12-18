@@ -10,7 +10,7 @@ import lombok.Setter;
 public class RecommendChallengeDTO {
     private int challengeId;
     private String title;
-    private String content;
+    private String contentSummary;
     private String image;
     private String recommendDate;
     private String recommendType;
