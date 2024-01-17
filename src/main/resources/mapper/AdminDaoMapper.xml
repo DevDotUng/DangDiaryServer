@@ -34,7 +34,7 @@
   </delete>
 
   <select id="getChallenges" resultType="com.dangdiary.api.dto.admin.ChallengeDTO">
-    SELECT challenge_id challengeId, CONCAT('http://', #{domain}, ':8080/image/challenge/', image) image, title title, content content, content_summary contentSummary, authentication_method authenticationMethod, CONCAT('http://localhost:8080/image/sticker/', sticker_image) stickerImage, sticker_shape stickerShape
+    SELECT challenge_id challengeId, CONCAT('http://', #{domain}, ':8080/image/challenge/', image) image, title title, content content, content_summary contentSummary, authentication_method authenticationMethod, CONCAT('http://', #{domain}, ':8080/image/sticker/', sticker_image) stickerImage, sticker_shape stickerShape
     FROM challenges
   </select>
   <insert id="registerChallenge" parameterType="com.dangdiary.api.dto.admin.ChallengeDTO">
