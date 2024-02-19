@@ -15,6 +15,8 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Base64.Decoder;
 
+import com.dangdiary.api.dao.ScheduleDAO;
+import com.dangdiary.api.domain.schedule.dto.UserIdAndRecommendDateDTO;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemReader;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +48,9 @@ public class LoginServiceImp implements LoginService {
 
     @Autowired
     LoginDAO loginDAO;
+
+    @Autowired
+    ScheduleDAO scheduleDAO;
 
     @Transactional
     public LoginResponseDTO kakaoLogin(String accessToken, String refreshToken, String firebaseToken) {
@@ -85,6 +90,9 @@ public class LoginServiceImp implements LoginService {
                     loginDAO.updateUserWithKakao(loginDTO);
                 } else {
                     loginDAO.addUserWithKakao(loginDTO);
+                    int userId = loginDAO.getUserId(socialId);
+                    loginDTO.setUserId(userId);
+                    addChallenges(userId);
                 }
 
                 loginResponse = loginDAO.getLoginResponseDTO(socialId);
@@ -184,6 +192,9 @@ public class LoginServiceImp implements LoginService {
                     loginDAO.updateUserWithApple(loginDTO);
                 } else {
                     loginDAO.addUserWithApple(loginDTO);
+                    int userId = loginDAO.getUserId(socialId);
+                    loginDTO.setUserId(userId);
+                    addChallenges(userId);
                 }
 
                 loginResponse = loginDAO.getLoginResponseDTO(socialId);
@@ -609,5 +620,31 @@ public class LoginServiceImp implements LoginService {
 		}
 
         return socialId;
+    }
+
+    void addChallenges(int userId) {
+        Calendar dailyCal = Calendar.getInstance();
+        String format = "yyyy-MM-dd 10:00:00";
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        if (dailyCal.get(dailyCal.HOUR_OF_DAY) >= 10) {
+            dailyCal.add(dailyCal.DATE, +1);
+        }
+        String dailyDate = sdf.format(dailyCal.getTime());
+
+        Calendar weeklyCal = Calendar.getInstance();
+        if (weeklyCal.get(weeklyCal.DAY_OF_WEEK) == 1) {
+            weeklyCal.add(weeklyCal.DATE, +1);
+        } else if (weeklyCal.get(weeklyCal.DAY_OF_WEEK) == 2) {
+            if (weeklyCal.get(weeklyCal.HOUR_OF_DAY) >= 10) {
+                weeklyCal.add(weeklyCal.DATE, +7);
+            }
+        } else {
+            weeklyCal.add(weeklyCal.DATE, 9 - weeklyCal.get(weeklyCal.DAY_OF_WEEK));
+        }
+
+        String weeklyDate = sdf.format(weeklyCal.getTime());
+
+        scheduleDAO.insertDailyChallengeByUserId(new UserIdAndRecommendDateDTO(userId, dailyDate));
+        scheduleDAO.insertWeeklyChallengeByUserId(new UserIdAndRecommendDateDTO(userId, weeklyDate));
     }
 }
