@@ -644,6 +644,8 @@ public class LoginServiceImp implements LoginService {
 
         String weeklyDate = sdf.format(weeklyCal.getTime());
 
+        System.out.println(userId);
+
         scheduleDAO.insertDailyChallengeByUserId(new UserIdAndRecommendDateDTO(userId, dailyDate));
         scheduleDAO.insertWeeklyChallengeByUserId(new UserIdAndRecommendDateDTO(userId, weeklyDate));
     }
