@@ -2,15 +2,12 @@ package com.dangdiary.api.service;
 
 import java.util.List;
 
+import com.dangdiary.api.dto.challengeDetail.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dangdiary.api.dao.ChallengeDetailDAO;
-import com.dangdiary.api.dto.challengeDetail.ChallengeDetailDTO;
-import com.dangdiary.api.dto.challengeDetail.ChallengeDetailTempDTO;
-import com.dangdiary.api.dto.challengeDetail.OtherChallengeDTO;
-import com.dangdiary.api.dto.challengeDetail.ReasonDTO;
 
 @Service
 public class ChallengeDetailServiceImp implements ChallengeDetailService {
@@ -85,11 +82,18 @@ public class ChallengeDetailServiceImp implements ChallengeDetailService {
     }
 
     @Transactional
-    public int endChallenge(int userId, int challengeId) {
-        challengeDetailDAO.insertEmptyDiary(userId, challengeId);
+    public OverdueDiaryDTO endChallenge(int userId, int challengeId) {
+
+        if (!challengeDetailDAO.getIsOverdueDiary(userId, challengeId)) {
+            challengeDetailDAO.insertEmptyDiary(userId, challengeId);
+        }
+
         int diaryId = challengeDetailDAO.getDiaryId(userId, challengeId);
         challengeDetailDAO.updateEndDateAndDiaryId(userId, challengeId, diaryId);
 
-        return diaryId;
+        OverdueDiaryDTO overdueDiary = challengeDetailDAO.getOverdueDiary(diaryId);
+        overdueDiary.setTags(challengeDetailDAO.getTags(diaryId));
+
+        return overdueDiary;
     }
 }

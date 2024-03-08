@@ -3,12 +3,46 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!--  쓴 일기 화면, 월별 일기장 화면  -->
-<mapper namespace="com.dangdiary.api.dao.MyDiaryDAO">
-  <select id="getMyDiaryDTO" parameterType="int" resultType="com.dangdiary.api.dto.myDiary.MyDiaryDTO">
+<mapper namespace="com.dangdiary.api.dao.DiaryDAO">
+  <select id="getMyDiaryDTO" parameterType="int" resultType="com.dangdiary.api.dto.diary.MyDiaryDTO">
     SELECT dog_name dogName, profile_image profileImage
     FROM dogs
     WHERE user_id = #{userId}
     LIMIT 1;
+  </select>
+  <select id="getAutoCompleteWords" resultType="String">
+    SELECT DISTINCT title FROM diaries WHERE user_id = #{userId} AND register_date IS NOT NULL
+    UNION
+    SELECT title
+    FROM challenges
+    WHERE challenge_id
+              IN (SELECT DISTINCT challenge_id FROM diaries WHERE user_id = #{userId} AND register_date IS NOT NULL)
+  </select>
+  <select id="getDiaryByQuery" parameterType="com.dangdiary.api.dto.diary.SearchMyDiaryParameterDTO" resultType="com.dangdiary.api.dto.diary.SearchMyDiaryDTO">
+    SELECT d.diary_id diaryId, d.end_date endDate, d.title diaryTitle, IFNULL(l.cnt, 0) numberOfLike
+    FROM (SELECT d.diary_id, u.end_date, d.title
+          FROM (SELECT d.diary_id, d.user_id, d.challenge_id, d.title, d.register_date FROM diaries d LEFT JOIN challenges c ON d.challenge_id = c.challenge_id WHERE d.title LIKE CONCAT('%', #{query}, '%') OR c.title LIKE CONCAT('%', #{query}, '%')) d
+                 LEFT JOIN user_challenges u
+                           ON d.diary_id = u.diary_id
+          WHERE d.user_id = #{userId}
+            AND d.register_date IS NOT NULL) d
+           LEFT JOIN (SELECT diary_id, COUNT(*) cnt
+                      FROM likes
+                      WHERE diary_id
+                              IN (SELECT diary_id
+                                  FROM diaries
+                                  WHERE user_id = #{userId}
+                                    AND register_date IS NOT NULL)
+                      GROUP BY diary_id) l
+                     ON d.diary_id = l.diary_id
+    ORDER BY d.end_date DESC
+  </select>
+  <select id="getCoverIdAndCoverColor" parameterType="int" resultType="com.dangdiary.api.dto.diary.CoverIdAndCoverColorDTO">
+    SELECT cover_id coverId, cover_color coverColor
+    FROM diary_covers
+    WHERE user_id = #{userId}
+      AND diary_yyyymm = #{yyyymm}
+      LIMIT 1
   </select>
   <select id="getAdmissionDate" parameterType="int" resultType="String">
     SELECT admission_date admissionDate
@@ -28,7 +62,7 @@
     WHERE user_id = #{userId}
     AND register_date IS NULL
   </select>
-  <select id="getMyDiaryEachDTO" parameterType="int" resultType="com.dangdiary.api.dto.myDiary.MyDiaryEachDTO">
+  <select id="getMyDiaryEachDTO" parameterType="int" resultType="com.dangdiary.api.dto.diary.MyDiaryEachDTO">
     SELECT j.diaryId diaryId, j.endDate endDate, i.image image
     FROM
     (SELECT d.diary_id diaryId, u.end_date endDate
@@ -52,24 +86,27 @@
     WHERE diary_id = #{diaryId}
     AND user_id = #{userId} LIMIT 1)
   </select>
-  <select id="getMyDiaryByCoverDTO" parameterType="int" resultType="com.dangdiary.api.dto.myDiary.CoverDTO">
+  <select id="getMyDiaryByCoverDTO" parameterType="int" resultType="com.dangdiary.api.dto.diary.CoverDTO">
     SELECT cover_id coverId, user_id userId, diary_yyyymm yyyymm, cover_title coverTitle, cover_color coverColor, holder_color holderColor
     FROM diary_covers
     WHERE user_id = #{userId}
   </select>
 
-  <select id="getCoverDTO" parameterType="int" resultType="com.dangdiary.api.dto.myDiary.CoverDTO">
+  <select id="getCoverDTO" parameterType="int" resultType="com.dangdiary.api.dto.diary.CoverDTO">
     SELECT cover_id coverId, user_id userId, diary_yyyymm yyyymm, cover_title coverTitle, cover_color coverColor, holder_color holderColor
     FROM diary_covers
     WHERE cover_id = #{coverId}
   </select>
-  <select id="getDiaries" parameterType="int" resultType="com.dangdiary.api.dto.myDiary.DiaryDTO">
-    SELECT d.diary_id diaryId, d.title title, d.register_date registerDate, d.weather weather, d.feeling feeling, d.content content, c.sticker_image stickerImage, c.sticker_shape stickerShape
+  <select id="getDiaries" parameterType="int" resultType="com.dangdiary.api.dto.diary.DiaryDTO">
+    SELECT d.diaryId diaryId, d.diaryId challengeId, d.title title, u.end_date endDate, d.weather weather, d.feeling feeling, d.content content, d.stickerImage stickerImage, d.stickerShape stickerShape
+    FROM (SELECT d.diary_id diaryId, d.challenge_id challengeId, d.title title, d.weather weather, d.feeling feeling, d.content content, c.sticker_image stickerImage, c.sticker_shape stickerShape
     FROM diaries d
     LEFT JOIN challenges c
     ON d.challenge_id = c.challenge_id
     WHERE d.user_id = #{userId}
-    AND d.register_date IS NOT NULL
+    AND d.register_date IS NOT NULL) d
+    LEFT JOIN user_challenges u
+    ON d.diaryId = u.diary_id
   </select>
   <select id="getIsPublicAndNumberOfLikeAndIsLike" parameterType="int" resultType="int">
     SELECT is_public isPublic
@@ -107,7 +144,7 @@
     	#{diaryId}
     </foreach>
   </update>
-  <select id="getMakePublicAllDiariesByCoverResponseDTO" parameterType="int" resultType="com.dangdiary.api.dto.myDiary.MakePublicAllDiariesByCoverResponseDTO">
+  <select id="getMakePublicAllDiariesByCoverResponseDTO" parameterType="int" resultType="com.dangdiary.api.dto.diary.MakePublicAllDiariesByCoverResponseDTO">
     SELECT diary_id diaryId, is_public isPublic
     FROM diaries
     WHERE diary_id IN
@@ -116,33 +153,80 @@
     </foreach>
   </select>
 
-  <update id="editCoverTitle" parameterType="com.dangdiary.api.dto.myDiary.CoverIdAndCoverTitleDTO">
+  <update id="editCoverTitle" parameterType="com.dangdiary.api.dto.diary.CoverIdAndCoverTitleDTO">
     UPDATE diary_covers
     SET cover_title = #{coverTitleOrColor}
     WHERE cover_id = #{coverId}
   </update>
-  <select id="getEditCoverTitleResponse" parameterType="int" resultType="com.dangdiary.api.dto.myDiary.EditCoverTitleResponseDTO">
+  <select id="getEditCoverTitleResponse" parameterType="int" resultType="com.dangdiary.api.dto.diary.EditCoverTitleResponseDTO">
     SELECT cover_id coverId, cover_title coverTitle
     FROM diary_covers
     WHERE cover_id = #{coverId}
   </select>
 
-  <update id="editCoverColor" parameterType="com.dangdiary.api.dto.myDiary.CoverIdAndCoverHolderColorDTO">
+  <update id="editCoverColor" parameterType="com.dangdiary.api.dto.diary.CoverIdAndCoverHolderColorDTO">
     UPDATE diary_covers
     SET cover_color = #{coverColor}, holder_color = #{holderColor}
     WHERE cover_id = #{coverId}
   </update>
-  <select id="getEditCoverColorResponse" parameterType="int" resultType="com.dangdiary.api.dto.myDiary.EditCoverColorResponseDTO">
+  <select id="getEditCoverColorResponse" parameterType="int" resultType="com.dangdiary.api.dto.diary.EditCoverColorResponseDTO">
     SELECT cover_id coverId, cover_color coverColor, holder_color holderColor
     FROM diary_covers
     WHERE cover_id = #{coverId}
   </select>
 
+  <delete id="deleteCover" parameterType="int">
+    DELETE FROM diary_covers
+    WHERE cover_id = #{coverId}
+  </delete>
   <delete id="deleteAllDiaries" parameterType="int">
     DELETE FROM diaries
     WHERE diary_id IN
     <foreach collection="list" item="diaryId" open="(" close=")" separator=",">
     	#{diaryId}
+    </foreach>
+  </delete>
+  <delete id="deleteAllTags" parameterType="int">
+    DELETE FROM tags
+    WHERE diary_id IN
+    <foreach collection="list" item="diaryId" open="(" close=")" separator=",">
+      #{diaryId}
+    </foreach>
+  </delete>
+  <delete id="deleteAllLikes" parameterType="int">
+    DELETE FROM likes
+    WHERE diary_id IN
+    <foreach collection="list" item="diaryId" open="(" close=")" separator=",">
+      #{diaryId}
+    </foreach>
+  </delete>
+  <delete id="deleteAllUserChallenges" parameterType="int">
+    DELETE FROM user_challenges
+    WHERE diary_id IN
+    <foreach collection="list" item="diaryId" open="(" close=")" separator=",">
+      #{diaryId}
+    </foreach>
+  </delete>
+  <delete id="deleteAllNotifications" parameterType="int">
+    DELETE FROM notifications
+    WHERE diary_id IN
+    <foreach collection="list" item="diaryId" open="(" close=")" separator=",">
+      #{diaryId}
+    </foreach>
+  </delete>
+  <select id="getImageNames" parameterType="int" resultType="String">
+    SELECT image
+    FROM diary_images
+    WHERE diary_id IN
+    <foreach collection="list" item="diaryId" open="(" close=")" separator=",">
+      #{diaryId}
+    </foreach>
+  </select>
+  <delete id="deleteAllImages" parameterType="int">
+    DELETE FROM diary_images
+    WHERE diary_id IN
+    <foreach collection="list" item="diaryId" open="(" close=")" separator=",">
+      #{diaryId}
     </foreach>
   </delete>
 
@@ -151,15 +235,20 @@
     SET is_public = #{isPublic}
     WHERE diary_id = #{diaryId}
   </update>
-  <select id="getIsPublic" parameterType="int" resultType="com.dangdiary.api.dto.myDiary.MakePublicAllDiariesByCoverResponseDTO">
+  <select id="getIsPublic" parameterType="int" resultType="com.dangdiary.api.dto.diary.MakePublicAllDiariesByCoverResponseDTO">
     SELECT diary_id diaryId, is_public isPublic
     FROM diaries
     WHERE diary_id = #{diaryId}
   </select>
 
-  <update id="editDiary" parameterType="com.dangdiary.api.dto.myDiary.EditDiaryDTO">
+  <update id="editDiary" parameterType="com.dangdiary.api.dto.diary.EditDiaryDTO">
     UPDATE diaries
     SET weather = #{weather}, feeling = #{feeling}, title = #{title}, content = #{content}, is_public = #{isPublic}
+    WHERE diary_id = #{diaryId}
+  </update>
+  <update id="updateEndDate" parameterType="com.dangdiary.api.dto.diary.EditDiaryDTO">
+    UPDATE user_challenges
+    SET end_date = #{endDate}
     WHERE diary_id = #{diaryId}
   </update>
   <delete id="deleteImages" parameterType="int">
@@ -207,4 +296,29 @@
     DELETE FROM diaries
     WHERE diary_id = #{diaryId}
   </delete>
+  <delete id="deleteLikes" parameterType="int">
+    DELETE FROM likes
+    WHERE diary_id = #{diaryId}
+  </delete>
+  <delete id="deleteUserChallenges" parameterType="int">
+    DELETE FROM user_challenges
+    WHERE diary_id = #{diaryId}
+  </delete>
+  <delete id="deleteNotifications" parameterType="int">
+    DELETE FROM notifications
+    WHERE diary_id = #{diaryId}
+  </delete>
+  <select id="getYYYYMM" parameterType="int" resultType="int">
+    SELECT diary_yyyymm FROM diary_covers WHERE cover_id = #{coverId}
+  </select>
+  <select id="getIsCoverNotEmpty" parameterType="com.dangdiary.api.dto.diary.UserIdAndEndDateDTO" resultType="boolean">
+    SELECT EXISTS
+             (SELECT * FROM user_challenges u
+                              LEFT JOIN diaries d
+                                        ON u.diary_id = d.diary_id
+              WHERE d.register_date IS NOT NULL
+                AND u.user_id = #{userId}
+                AND u.end_date >= #{firstEndDate}
+                AND u.end_date &lt; #{lastEndDate})
+  </select>
 </mapper>

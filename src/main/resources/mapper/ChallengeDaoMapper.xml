@@ -5,7 +5,7 @@
 <mapper namespace="com.dangdiary.api.dao.ChallengeDAO">
 <!--  홈 화면에서 바텀 네비게이션 바의 챌린지 버튼(중앙에 있는)을 누르면 올라오는 추천 챌린지를 불러오기 위한 기능  -->
   <select id="getRecommendChallengeDTOs" parameterType="int" resultType="com.dangdiary.api.dto.challenge.RecommendChallengeDTO">
-    SELECT c.challenge_id challengeId, c.title title, c.content content, c.image image, r.recommend_date recommendDate, r.recommend_type recommendType
+    SELECT c.challenge_id challengeId, c.title title, c.content_summary contentSummary, c.image image, r.recommend_date recommendDate, r.recommend_type recommendType
     FROM challenges c
     RIGHT JOIN
     (SELECT challenge_id, recommend_date, recommend_type
@@ -18,7 +18,7 @@
   </select>
 <!--  위와 같은 화면의 진행중인 챌린지를 불러옴  -->
   <select id="getInProgressChallengeDTOs" parameterType="int" resultType="com.dangdiary.api.dto.challenge.RecommendChallengeDTO">
-    SELECT c.challenge_id challengeId, c.title title, c.content content, c.image image, r.recommend_date recommendDate, r.recommend_type recommendType
+    SELECT c.challenge_id challengeId, c.title title, c.content_summary contentSummary, c.image image, r.recommend_date recommendDate, r.recommend_type recommendType
     FROM challenges c
     RIGHT JOIN
     (SELECT challenge_id, recommend_date, recommend_type
@@ -31,7 +31,7 @@
   </select>
 <!--  위와 같은 화면의 밀린 일기 챌린지를 불러옴, 진행중인 챌린지 리스트에 포함  -->
   <select id="getOverdueChallengeDTOs" parameterType="int" resultType="com.dangdiary.api.dto.challenge.RecommendChallengeDTO">
-    SELECT c.challenge_id challengeId, c.title title, c.content content, c.image image, r.recommend_date recommendDate, r.recommend_type recommendType
+    SELECT c.challenge_id challengeId, c.title title, c.content_summary contentSummary, c.image image, r.recommend_date recommendDate, r.recommend_type recommendType
     FROM challenges c
     RIGHT JOIN
     (SELECT challenge_id, recommend_date, recommend_type

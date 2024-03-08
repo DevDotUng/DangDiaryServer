@@ -98,4 +98,35 @@
     WHERE title = #{hashTag}
     LIMIT 1
   </select>
+
+  <select id="getIsLike" parameterType="int" resultType="boolean">
+    SELECT EXISTS
+    (SELECT *
+    FROM likes
+    WHERE diary_id = #{diaryId}
+    AND user_id = #{userId} LIMIT 1)
+  </select>
+  <delete id="dislike" parameterType="int">
+    DELETE FROM likes
+    WHERE diary_id = #{diaryId}
+    AND user_id = #{userId}
+  </delete>
+  <insert id="like" parameterType="int">
+    INSERT INTO likes(diary_id, user_id, like_date)
+    VALUES
+    (#{diaryId}, #{userId}, NOW())
+  </insert>
+  <select id="getUserIdAndEndDate" parameterType="int" resultType="com.dangdiary.api.dto.browse.UserIdAndEndDateDTO">
+    SELECT user_id userId, end_date endDate
+    FROM user_challenges
+    WHERE diary_id = #{diaryId}
+  </select>
+  <select id="getCoverIdAndFirebaseTokenAndAgree" parameterType="int" resultType="com.dangdiary.api.dto.browse.CoverIdAndFirebaseTokenAndAgreeDTO">
+    SELECT c.cover_id coverId, u.firebase_token firebaseToken, u.agree_like_notification agreeLikeNotification
+    FROM diary_covers c
+        LEFT JOIN users u
+            ON c.user_id = u.user_id
+    WHERE c.user_id = #{userId}
+      AND c.diary_yyyymm = #{yyyymm}
+  </select>
 </mapper>

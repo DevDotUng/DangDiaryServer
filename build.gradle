@@ -6,7 +6,7 @@ plugins {
 
 group = 'com.dangdiary'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '8'
+sourceCompatibility = "8"
 
 repositories {
 	mavenCentral()
@@ -30,8 +30,9 @@ dependencies {
 	implementation 'com.google.code.gson:gson:2.9.0'
 	// https://mvnrepository.com/artifact/com.nimbusds/nimbus-jose-jwt
 	implementation 'com.nimbusds:nimbus-jose-jwt:3.10'
-}
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'com.google.firebase:firebase-admin:9.2.0'
 
-tasks.named('test') {
-	useJUnitPlatform()
+	implementation 'org.apache.poi:poi:5.2.2'
+	implementation 'org.apache.poi:poi-ooxml:5.2.2'
 }
