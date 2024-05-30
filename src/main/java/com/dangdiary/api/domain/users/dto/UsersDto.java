@@ -5,11 +5,13 @@ import java.time.Instant;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * DTO for {@link Users}
  */
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class UsersDto implements Serializable {

@@ -6,11 +6,13 @@ import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * DTO for {@link Dogs}
  */
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class DogsDto implements Serializable {
