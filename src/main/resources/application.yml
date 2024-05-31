@@ -23,3 +23,9 @@ image:
     path: /Users/ung/Documents/Spring/DangDiaryServer/src/main/webapp/upload/
 
 domain: localhost
+
+
+logging:
+  level:
+    root: INFO
+    com.dang diary: DEBUG

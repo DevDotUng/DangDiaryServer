@@ -55,4 +55,8 @@ public class Users {
     @Column(name = "agree_challenge_notification", nullable = false)
     private Boolean agreeChallengeNotification = false;
 
+    public void modifyNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
 }

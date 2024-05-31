@@ -1,11 +1,10 @@
 package com.dangdiary.api.domain.users;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.dangdiary.api.util.DateUtils;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -44,9 +43,22 @@ public class Dogs implements Serializable {
     private String gender;
 
     @Column
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    private LocalDateTime birth;
+    @JsonSerialize(using = LocalDateSerializer.class)
+    private LocalDate birth;
+
+    public static Dogs of(Users users, String dogName, String profileImage, String breed,
+        String gender, String birth) {
+
+        Dogs dogs = new Dogs();
+        dogs.dogName = dogName;
+        dogs.breed = breed;
+        dogs.gender = gender;
+        dogs.profileImage = profileImage;
+        dogs.users = users;
+        dogs.birth = DateUtils.toLocalDate(birth);
+        return dogs;
+
+    }
 
 
 }

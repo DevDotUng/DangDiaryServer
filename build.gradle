@@ -44,6 +44,8 @@ dependencies {
     annotationProcessor('jakarta.annotation:jakarta.annotation-api')
     annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jpa'
 
+    //validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 
     implementation 'org.apache.poi:poi:5.2.2'
     implementation 'org.apache.poi:poi-ooxml:5.2.2'

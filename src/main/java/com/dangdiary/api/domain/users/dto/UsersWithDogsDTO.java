@@ -3,12 +3,14 @@ package com.dangdiary.api.domain.users.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UsersWithDogsDTO extends UsersDto {
+@Setter
+public class UsersWithDogsDTO extends DogsDto {
 
-    DogsDto dogs;
+    UsersDto users;
 
 }
