@@ -1,5 +1,8 @@
 package com.dangdiary.common.support;
 
+import lombok.Getter;
+
+@Getter
 public class ErrorResponse {
 
     protected String code;

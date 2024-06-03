@@ -24,7 +24,6 @@ public class UsersController {
     public ResponseEntity<UsersWithDogsDTO> registerDogInfo(
         @RequestBody @Valid DogResisterRequest request) {
         return ResponseEntity.ok(usersService.registerDogInfo(request));
-
     }
 
 }

@@ -1,4 +1,4 @@
-package com.dangdiary.common.config;
+package com.dangdiary.api.config.exception;
 
 import com.dangdiary.common.support.ErrorResponse;
 import org.springframework.core.Ordered;
@@ -7,11 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
-@RestControllerAdvice(annotations = RestController.class)
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
     /**
@@ -33,14 +32,13 @@ public class GlobalExceptionHandler {
 
                 // Step2. @NotBlank.Object.Field 와 같이 코드 형식으로 정의 되어있는 메시지를 찾는다.
                 return defaultMessage;
-
                 // Step3. 위에서 없으면 message="직접입력메시지" 혹은 어노테이션 기본 메시지로 출력한다.
-
             })
             .orElse("에러");
 
         ErrorResponse errorResponse = ErrorResponse.of(
             String.valueOf(HttpStatus.BAD_REQUEST.value()), message);
-        return ResponseEntity.badRequest().body(errorResponse);
+        return ResponseEntity.badRequest()
+            .body(errorResponse);
     }
 }
