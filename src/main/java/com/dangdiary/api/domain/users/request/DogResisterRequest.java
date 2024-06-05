@@ -1,7 +1,7 @@
 package com.dangdiary.api.domain.users.request;
 
 import com.google.firebase.database.annotations.NotNull;
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
 

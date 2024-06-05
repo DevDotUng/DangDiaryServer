@@ -13,9 +13,13 @@ spring:
     suffix: .html
   jpa:
     show-sql: true
+    hibernate:
+      ddl-auto: create
     properties:
       hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
+        hbm2ddl.auto: update
 
 image:
   path: file:/Users/ung/Documents/Spring/DangDiaryServer/src/main/webapp/upload/

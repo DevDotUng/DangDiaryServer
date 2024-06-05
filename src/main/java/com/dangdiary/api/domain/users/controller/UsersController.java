@@ -3,7 +3,7 @@ package com.dangdiary.api.domain.users.controller;
 import com.dangdiary.api.domain.users.dto.UsersWithDogsDTO;
 import com.dangdiary.api.domain.users.request.DogResisterRequest;
 import com.dangdiary.api.domain.users.service.UsersService;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;

@@ -9,8 +9,8 @@ import com.dangdiary.api.domain.users.mapper.UsersMapper;
 import com.dangdiary.api.domain.users.repository.DogsRepository;
 import com.dangdiary.api.domain.users.repository.UsersRepository;
 import com.dangdiary.api.domain.users.request.DogResisterRequest;
+import jakarta.transaction.Transactional;
 import java.util.Optional;
-import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

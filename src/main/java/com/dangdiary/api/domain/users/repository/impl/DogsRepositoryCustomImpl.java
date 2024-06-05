@@ -1,7 +1,5 @@
 package com.dangdiary.api.domain.users.repository.impl;
 
-import static com.dangdiary.api.domain.users.QDogs.dogs;
-import static com.dangdiary.api.domain.users.QUsers.users;
 
 import com.dangdiary.api.domain.users.Dogs;
 import com.dangdiary.api.domain.users.repository.DogsRepositoryCustom;
@@ -18,8 +16,6 @@ public class DogsRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 
     @Override
     public Optional<Dogs> findByUserId(long userId) {
-        return Optional.ofNullable(from(dogs)
-            .join(dogs.users, users).fetchJoin()
-            .where(users.id.eq(userId)).fetchOne());
+        return null;
     }
 }
