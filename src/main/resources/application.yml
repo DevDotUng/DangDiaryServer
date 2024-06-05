@@ -1,0 +1,35 @@
+spring:
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/dang_diary?serverTimezone=UTC
+    username: root
+    password: 1234
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+        hbm2ddl.auto: update
+
+image:
+  path: file:/Users/ung/Documents/Spring/DangDiaryServer/src/main/webapp/upload/
+  save:
+    path: /Users/ung/Documents/Spring/DangDiaryServer/src/main/webapp/upload/
+
+domain: localhost
+
+
+logging:
+  level:
+    root: INFO
+    com.dang diary: DEBUG
