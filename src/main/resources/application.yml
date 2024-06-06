@@ -28,6 +28,16 @@ image:
 
 domain: localhost
 
+springdoc:
+  swagger-ui:
+    path: /dangdiary/swagger.html
+    groups-order: DESC # path, query, body, response 순으로 출력
+    tags-sorter: alpha # 태그를 알파벳 순으로 정렬
+    operations-sorter: method  # delete - get - patch - post - put 순으로 정렬, alpha를 사용하면 알파벳 순으로 정렬 가능
+
+
+server:
+  max-http-request-header-size: 32768
 
 logging:
   level:
