@@ -6,18 +6,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import javax.servlet.ServletContext;
-
+import com.dangdiary.api.dto.writeDiary.CoverIdAndDiaryIdDTO;
+import com.dangdiary.api.dto.writeDiary.OverdueDiaryRequestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.dangdiary.api.dto.writeDiary.WriteDiaryResponseDTO;
 import com.dangdiary.api.dto.writeDiary.WriteDiaryDTO;
 import com.dangdiary.api.service.WriteDiaryService;
 
@@ -29,21 +30,21 @@ public class WriteDiaryController {
     WriteDiaryService writeDiaryService;
 
     @Autowired
-	ServletContext ctx;
+    private Environment env;
     
     @PostMapping("writeDiary")
-    public ResponseEntity<WriteDiaryResponseDTO> home(
-        @RequestParam("diaryId") int diaryId,
-        @RequestParam("userId") int userId,
-        @RequestParam("challengeId") int challengeId,
-        @RequestParam("endDate") String endDate,
-        @RequestParam("weather") String weather,
-        @RequestParam("feeling") String feeling,
-        @RequestParam("title") String title,
-        @RequestParam("content") String content,
-        @RequestParam("images") List<MultipartFile> images,
-        @RequestParam("tags") List<String> tags,
-        @RequestParam("isPublic") Boolean isPublic
+    public ResponseEntity<CoverIdAndDiaryIdDTO> write(
+        @RequestParam(value = "diaryId") int diaryId,
+        @RequestParam(value = "userId") int userId,
+        @RequestParam(value = "challengeId") int challengeId,
+        @RequestParam(value = "endDate") String endDate,
+        @RequestParam(value = "weather") String weather,
+        @RequestParam(value = "feeling") String feeling,
+        @RequestParam(value = "title") String title,
+        @RequestParam(value = "content") String content,
+        @RequestParam(value = "images") List<MultipartFile> images,
+        @RequestParam(value = "tags") List<String> tags,
+        @RequestParam(value = "isPublic", defaultValue = "true") boolean isPublic
     ) throws IllegalStateException, IOException {
         
         List<String> imageList = saveImages(images);
@@ -68,9 +69,44 @@ public class WriteDiaryController {
             intIsPublic
         );
 
-        WriteDiaryResponseDTO result = writeDiaryService.postWriteDiary(writeDiaryRequestDTO);
+        CoverIdAndDiaryIdDTO result = writeDiaryService.postWriteDiary(writeDiaryRequestDTO);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    }
+
+    @PostMapping("writeDiary/overdue")
+    public void overdue(
+            @RequestParam("diaryId") int diaryId,
+            @RequestParam("userId") int userId,
+            @RequestParam("challengeId") int challengeId,
+            @RequestParam("endDate") String endDate,
+            @RequestParam("weather") @Nullable String weather,
+            @RequestParam("feeling") @Nullable String feeling,
+            @RequestParam("title") @Nullable String title,
+            @RequestParam("content") @Nullable String content,
+            @RequestParam(value = "isPublic", defaultValue = "true") boolean isPublic
+    ) throws IllegalStateException {
+
+        int intIsPublic;
+        if (isPublic) {
+            intIsPublic = 1;
+        } else {
+            intIsPublic = 0;
+        }
+
+        OverdueDiaryRequestDTO overdueDiary = new OverdueDiaryRequestDTO(
+                diaryId,
+                userId,
+                challengeId,
+                endDate,
+                weather,
+                feeling,
+                title,
+                content,
+                intIsPublic
+        );
+
+        writeDiaryService.postOverdueDiary(overdueDiary);
     }
 
     List<String> saveImages(List<MultipartFile> images) throws IllegalStateException, IOException {
@@ -82,9 +118,8 @@ public class WriteDiaryController {
                 String uuid = UUID.randomUUID().toString();
             
                 String fileName = uuid + image.getOriginalFilename();
-    
-                String webPath = "/upload/diary";
-                String realPath = ctx.getRealPath(webPath);
+
+                String realPath = env.getProperty("image.save.path") + "diary";
                 
                 File savePath = new File(realPath);
                 if (!savePath.exists())

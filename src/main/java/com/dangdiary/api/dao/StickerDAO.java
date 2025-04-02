@@ -5,10 +5,10 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import com.dangdiary.api.dto.sticker.DiaryByStickerDTO;
-import com.dangdiary.api.dto.sticker.LockedStickerDTO;
-import com.dangdiary.api.dto.sticker.MyStickerDTO;
-import com.dangdiary.api.dto.sticker.StickerDetailResponseDTO;
+import com.dangdiary.api.domain.sticker.dto.DiaryByStickerDTO;
+import com.dangdiary.api.domain.sticker.dto.LockedStickerDTO;
+import com.dangdiary.api.domain.sticker.dto.MyStickerDTO;
+import com.dangdiary.api.domain.sticker.dto.StickerDetailResponseDTO;
 
 @Mapper
 public interface StickerDAO {
@@ -24,5 +24,6 @@ public interface StickerDAO {
     String getFirstGetDate(@Param("userId") int userId, @Param("challengeId") int challengeId);
     String getRecentGetDate(@Param("userId") int userId, @Param("challengeId") int challengeId);
     List<DiaryByStickerDTO> getDiaryBySticker(@Param("userId") int userId, @Param("challengeId") int challengeId);
+    int getCoverId(@Param("userId") int userId, @Param("yyyymm") int yyyymm);
     String getCoverColor(@Param("userId") int userId, @Param("yyyymm") int yyyymm);
 }

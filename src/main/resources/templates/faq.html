@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <title>Admin FAQ</title>
+</head>
+<body>
+<h1>FAQ</h1>
+<p>왼쪽에 FAQ 오른쪽에 답변 적으시면 됩니당</p>
+<form action="/api/admin/faq/register" method="post">
+    <textarea name="question" style="width:300px;height:200px;"></textarea>
+    <textarea name="answer" style="width:300px;height:200px;"></textarea>
+    <input type="submit" value="등록하기">
+</form>
+<br><br>
+<table border="1">
+    <th>FAQ id</th>
+    <th>FAQ</th>
+    <th>답변</th>
+    <tr th:each="faq : ${faqs}">
+        <td><pre th:text="${faq.FAQId}"></pre></td>
+        <td><pre th:text="${faq.question}"></pre></td>
+        <td><pre th:text="${faq.answer}"></pre></td>
+        <td>
+            <form action="/api/admin/faq/delete" method="get">
+                <input type="text" name="faqId" th:value="${faq.FAQId}" style="width:50px;" readonly/>
+                <input type="submit" value="삭제하기">
+            </form>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

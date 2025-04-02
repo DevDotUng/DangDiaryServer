@@ -4,15 +4,12 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import com.dangdiary.api.dto.writeDiary.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dangdiary.api.dao.WriteDiaryDAO;
-import com.dangdiary.api.dto.writeDiary.WriteDiaryResponseDTO;
-import com.dangdiary.api.dto.writeDiary.ImageOrTagDTO;
-import com.dangdiary.api.dto.writeDiary.StickerDTO;
-import com.dangdiary.api.dto.writeDiary.WriteDiaryDTO;
 
 @Service
 @Transactional
@@ -22,7 +19,7 @@ public class WriteDiaryServiceImp implements WriteDiaryService {
     WriteDiaryDAO writeDiaryDAO;
 
     @Transactional
-    public WriteDiaryResponseDTO postWriteDiary(WriteDiaryDTO writeDiaryDTO) {
+    public CoverIdAndDiaryIdDTO postWriteDiary(WriteDiaryDTO writeDiaryDTO) {
 
         int diaryId = writeDiaryDTO.getDiaryId();
         
@@ -32,18 +29,17 @@ public class WriteDiaryServiceImp implements WriteDiaryService {
         postImages(diaryId, writeDiaryDTO.getImages());
         postTags(diaryId, writeDiaryDTO.getTags());
 
-        WriteDiaryResponseDTO result = writeDiaryDAO.getDiary(diaryId);
-        StickerDTO stickerDTO = writeDiaryDAO.getStickerDTO(writeDiaryDTO.getChallengeId());
+        int coverId = insertCoverIfIsNotExist(writeDiaryDTO.getUserId(), writeDiaryDTO.getEndDate());
 
-        result.setImages(writeDiaryDAO.getImages(diaryId));
-        result.setTags(writeDiaryDAO.getTags(diaryId));
-        result.setDogName(writeDiaryDAO.getDogName(writeDiaryDTO.getUserId()));
-        result.setStickerImage(stickerDTO.getStickerImage());
-        result.setStickerShape(stickerDTO.getStickerShape());
-
-        insertCoverIfIsNotExist(writeDiaryDTO.getUserId(), writeDiaryDTO.getEndDate());
+        CoverIdAndDiaryIdDTO result = new CoverIdAndDiaryIdDTO(coverId, diaryId);
 
         return result;
+    }
+
+    @Transactional
+    public void postOverdueDiary(OverdueDiaryRequestDTO overdueDiary) {
+        writeDiaryDAO.postOverdueDiary(overdueDiary);
+        writeDiaryDAO.updateOverdueDiaryEndDate(overdueDiary);
     }
 
     void postImages(int diaryId, List<String> images) {
@@ -52,7 +48,6 @@ public class WriteDiaryServiceImp implements WriteDiaryService {
             ImageOrTagDTO imageOrTagDTO = new ImageOrTagDTO(diaryId, index, image);
             writeDiaryDAO.postImage(imageOrTagDTO);
             index++;
-            System.out.print(image);
         }
     }
 
@@ -65,7 +60,7 @@ public class WriteDiaryServiceImp implements WriteDiaryService {
         }
     }
 
-    void insertCoverIfIsNotExist(int userId, String endDate) {
+    int insertCoverIfIsNotExist(int userId, String endDate) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDate endDateLocal = LocalDate.parse(endDate, formatter);
 
@@ -74,6 +69,8 @@ public class WriteDiaryServiceImp implements WriteDiaryService {
         if (writeDiaryDAO.getIsExistCover(userId, yyyymm) == 0) {
             writeDiaryDAO.insertCover(userId, yyyymm);
         }
+
+        return writeDiaryDAO.getCoverId(userId, yyyymm);
     }
     
 }

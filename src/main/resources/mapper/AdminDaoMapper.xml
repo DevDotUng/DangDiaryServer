@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dangdiary.api.dao.AdminDAO">
+  <select id="getInquiryHistory" resultType="com.dangdiary.api.dto.admin.AdminInquiryHistoryDTO">
+    SELECT i.inquiry_id inquiryId, i.user_id userId, u.nickname nickname, i.register_date registerDate, i.type type, i.title title, i.content content, i.progress progress, i.answer answer, i.answer_date answerDate, i.is_like isLike
+    FROM inquiries i
+        LEFT JOIN users u
+            ON i.user_id = u.user_id
+  </select>
+  <update id="receiveInquiry" parameterType="int">
+    UPDATE inquiries
+    SET progress = '접수 완료'
+    WHERE inquiry_id = #{inquiryId}
+  </update>
+  <update id="answerInquiry" parameterType="com.dangdiary.api.dto.admin.InquiryAnswerDTO">
+    UPDATE inquiries
+    SET progress = '답변 완료', answer = #{answer}, answer_date = NOW()
+    WHERE inquiry_id = #{inquiryId}
+  </update>
+  <select id="getFAQs" resultType="com.dangdiary.api.dto.admin.FAQDTO">
+    SELECT FAQ_id FAQId, question question, answer answer
+    FROM FAQs
+  </select>
+  <insert id="postFAQ" parameterType="String">
+    INSERT INTO FAQs(question, answer)
+    VALUES
+        (#{question}, #{answer})
+  </insert>
+  <delete id="deleteFAQ" parameterType="int">
+    DELETE FROM FAQs
+    WHERE FAQ_id = #{faqId}
+  </delete>
+
+  <select id="getChallenges" resultType="com.dangdiary.api.dto.admin.ChallengeDTO">
+    SELECT challenge_id challengeId, CONCAT('http://', #{domain}, ':8080/image/challenge/', image) image, title title, content content, content_summary contentSummary, authentication_method authenticationMethod, CONCAT('http://', #{domain}, ':8080/image/sticker/', sticker_image) stickerImage, sticker_shape stickerShape
+    FROM challenges
+  </select>
+  <insert id="registerChallenge" parameterType="com.dangdiary.api.dto.admin.ChallengeDTO">
+    INSERT INTO challenges(image, title, content, content_summary, authentication_method, sticker_image, sticker_shape)
+    VALUES
+      (#{image}, #{title}, #{content}, #{contentSummary}, #{authenticationMethod}, #{stickerImage}, #{stickerShape})
+  </insert>
+  <delete id="deleteChallenge" parameterType="int">
+    DELETE FROM challenges
+    WHERE challenge_id = #{challengeId}
+  </delete>
+  <select id="getChallengeImage" parameterType="int" resultType="com.dangdiary.api.dto.admin.ChallengeImageDTO">
+    SELECT image image, sticker_image stickerImage
+    FROM challenges
+    WHERE challenge_id = #{challengeId}
+  </select>
+</mapper>

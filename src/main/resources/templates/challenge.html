@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin Inquiry</title>
+</head>
+<body>
+<h1>FAQ</h1>
+<p>왼쪽에 FAQ 오른쪽에 답변 적으시면 됩니당</p>
+<form action="/api/admin/challenge/register" method="post" enctype="multipart/form-data">
+    <textarea name="title" style="width:300px;height:200px;"></textarea>
+    <textarea name="content" style="width:300px;height:200px;"></textarea>
+    <textarea name="authenticationMethod" style="width:300px;height:200px;"></textarea>
+    <textarea name="stickerShape" style="width:300px;height:200px;"></textarea>
+    <br>
+    챌린지 image : <input type="file" name="image" accept="image/*">
+    스티커 image : <input type="file" name="stickerImage" accept="image/*">
+    <input type="submit" value="등록하기">
+</form>
+<br><br>
+<form th:action="@{/api/admin/challenge/excel}" method="POST" enctype="multipart/form-data">
+    <input type="file" th:name="excelFile">
+    <input th:type="submit" value="제출" />
+</form>
+<br><br>
+<h1>챌린지</h1>
+<table border="1">
+    <th>챌린지 id</th>
+    <th>이미지</th>
+    <th>제목</th>
+    <th>내용</th>
+    <th>내용 요약</th>
+    <th>인증 방법</th>
+    <th>스티커 이미지</th>
+    <th>스티커 모양</th>
+    <th>삭제</th>
+        <tr th:each="challenge : ${challenges}">
+            <td th:text="${challenge.challengeId}"></td>
+            <td>
+                <img th:src="${challenge.image}" width="100" height="100">
+            </td>
+            <td th:text="${challenge.title}"></td>
+            <td th:text="${challenge.content}"></td>
+            <td th:text="${challenge.contentSummary}"></td>
+            <td th:text="${challenge.authenticationMethod}"></td>
+            <td>
+                <img th:src="${challenge.stickerImage}" width="100" height="100">
+            </td>
+            <td th:text="${challenge.stickerShape}"></td>
+            <td>
+                <form action="/api/admin/challenge/delete" method="get">
+                    <input type="text" name="challengeId" th:value="${challenge.challengeId}" style="width:50px;" readonly/>
+                    <input type="submit" value="삭제">
+                </form>
+            </td>
+        </tr>
+</table>
+</body>
+</html>

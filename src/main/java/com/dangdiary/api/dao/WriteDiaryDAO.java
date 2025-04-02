@@ -2,13 +2,9 @@ package com.dangdiary.api.dao;
 
 import java.util.List;
 
+import com.dangdiary.api.dto.writeDiary.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-
-import com.dangdiary.api.dto.writeDiary.WriteDiaryResponseDTO;
-import com.dangdiary.api.dto.writeDiary.ImageOrTagDTO;
-import com.dangdiary.api.dto.writeDiary.StickerDTO;
-import com.dangdiary.api.dto.writeDiary.WriteDiaryDTO;
 
 @Mapper
 public interface WriteDiaryDAO {
@@ -23,6 +19,10 @@ public interface WriteDiaryDAO {
     List<String> getTags(int diaryId);
     int getIsExistCover(@Param("userId") int userId, @Param("yyyymm") int yyyymm);
     void insertCover(@Param("userId") int userId, @Param("yyyymm") int yyyymm);
+    int getCoverId(@Param("userId") int userId, @Param("yyyymm") int yyyymm);
     String getDogName(int userId);
     StickerDTO getStickerDTO(int challengeId);
+
+    void postOverdueDiary(OverdueDiaryRequestDTO overdueDiary);
+    void updateOverdueDiaryEndDate(OverdueDiaryRequestDTO overdueDiary);
 }
