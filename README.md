@@ -54,7 +54,8 @@
 
 ### 다른 일기 둘러보기 ( 5 / 5 )
 
-<img width="375" alt="Untitled-10" src="https://github.com/user-attachments/assets/e74d9b4a-5dd6-4519-9647-426d6819c971" /> <img width="375" alt="Untitled-10" src="https://github.com/user-attachments/assets/0c88a23e-c921-4b0f-b7c5-d56e748ef7b6" />
+<img width="375" alt="Untitled-10" src="https://github.com/user-attachments/assets/e74d9b4a-5dd6-4519-9647-426d6819c971" /> <img width="375" alt="Untitled-11" src="https://github.com/user-attachments/assets/ba14e9a9-a340-446f-bf09-1177ed2baa43" />
+
 
 다른 보호자가 쓴 일기를 둘러보고 검색할 수 있습니다.
 
