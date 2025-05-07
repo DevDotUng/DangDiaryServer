@@ -5,6 +5,13 @@ import com.dangdiary.api.dto.admin.ChallengeDTO;
 import com.dangdiary.api.dto.admin.FAQDTO;
 import com.dangdiary.api.service.AdminService;
 import com.dangdiary.api.service.FirebaseCloudMessageService;
+import jakarta.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import org.apache.poi.ss.usermodel.PictureData;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -19,14 +26,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 @Controller
 @RequestMapping("/api/admin")
@@ -50,7 +49,7 @@ public class AdminController {
         List<AdminInquiryHistoryDTO> receivedList = new ArrayList<>();
         List<AdminInquiryHistoryDTO> answerCompleteList = new ArrayList<>();
 
-        for (AdminInquiryHistoryDTO inquiryHistory: inquiryHistoryList) {
+        for (AdminInquiryHistoryDTO inquiryHistory : inquiryHistoryList) {
             if (inquiryHistory.getProgress().equals("답변 준비중")) {
                 preparingForAnswerList.add(inquiryHistory);
             } else if (inquiryHistory.getProgress().equals("접수 완료")) {
@@ -139,10 +138,12 @@ public class AdminController {
         @RequestParam("stickerImage") MultipartFile stickerImage
     ) {
 
-        if (!title.isEmpty() && !content.isEmpty() && !authenticationMethod.isEmpty() && !stickerShape.isEmpty()) {
+        if (!title.isEmpty() && !content.isEmpty() && !authenticationMethod.isEmpty()
+            && !stickerShape.isEmpty()) {
             String imagePath = saveImage(image, "challenge");
             String stickerImagePath = saveImage(stickerImage, "sticker");
-            ChallengeDTO challenge = new ChallengeDTO(0, imagePath, title, content, "", authenticationMethod, stickerImagePath, stickerShape);
+            ChallengeDTO challenge = new ChallengeDTO(0, imagePath, title, content, "",
+                authenticationMethod, stickerImagePath, stickerShape);
             adminService.registerChallenge(challenge);
         }
 
@@ -151,9 +152,9 @@ public class AdminController {
 
     @PostMapping("/challenge/excel")
     public String registerChallengeWithExcel(
-            HttpServletRequest request,
-            Model model,
-            @RequestParam("excelFile") MultipartFile excelFile
+        HttpServletRequest request,
+        Model model,
+        @RequestParam("excelFile") MultipartFile excelFile
     ) throws IOException {
         List<ChallengeDTO> challengeList = new ArrayList<>();
 
@@ -180,14 +181,14 @@ public class AdminController {
             Row row = worksheet.getRow(i);
 
             ChallengeDTO challenge = new ChallengeDTO(
-                    0,
-                    challengeImage,
-                    row.getCell(0).getStringCellValue(),
-                    row.getCell(2).getStringCellValue(),
-                    row.getCell(1).getStringCellValue(),
-                    row.getCell(3).getStringCellValue(),
-                    stickerImage,
-                    "circle"
+                0,
+                challengeImage,
+                row.getCell(0).getStringCellValue(),
+                row.getCell(2).getStringCellValue(),
+                row.getCell(1).getStringCellValue(),
+                row.getCell(3).getStringCellValue(),
+                stickerImage,
+                "circle"
             );
 
             challengeList.add(challenge);
@@ -217,8 +218,9 @@ public class AdminController {
             String realPath = env.getProperty("image.save.path") + path;
 
             File savePath = new File(realPath);
-            if (!savePath.exists())
+            if (!savePath.exists()) {
                 savePath.mkdirs();
+            }
 
             realPath += File.separator + fileName;
             File saveFile = new File(realPath);
@@ -243,8 +245,9 @@ public class AdminController {
         String realPath = env.getProperty("image.save.path") + path;
 
         File savePath = new File(realPath);
-        if (!savePath.exists())
+        if (!savePath.exists()) {
             savePath.mkdirs();
+        }
 
         realPath += File.separator + fileName;
         File saveFile = new File(realPath);
